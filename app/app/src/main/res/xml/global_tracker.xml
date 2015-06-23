@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Уровень детализации для логгера SDK. -->
+    <string name="ga_logLevel">verbose</string>
+    <!-- Частота автоматической отправки данных (в секундах). -->
+    <integer name="ga_dispatchPeriod">30</integer>
+    <!-- Если задано значение true, будет включен холостой режим работы. -->
+    <bool name="ga_dryRun">true</bool>
+</resources>

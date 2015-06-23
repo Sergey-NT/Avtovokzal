@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">Автовокзал</string>
+    <string name="app_subtitle">Нижний Тагил</string>
+    <string name="name_bus">Марка автобуса:</string>
+    <string name="count_bus">Вместимость автобуса:</string>
+    <string name="free_bus">Кол-во свободных мест:</string>
+    <string name="price_bus">Стоимость проезда:</string>
+    <string name="baggage_bus">Стоимость провоза багажа:</string>
+    <string name="cancel_bus">Рейс не состоится</string>
+    <string name="schedule_bus">Дни следования:</string>
+    <string name="hint_main">Пункт назначения</string>
+    <string name="hint_arrival">Пункт отправления</string>
+    <string name="hint_menu">Выбрать остановку по умолчанию</string>
+    <string name="button_back">Попробовать еще раз</string>
+    <string name="no_internet">Для работы сервиса нужен доспут к сети Интернет. Проверьте подключение к сети и повторите попытку.</string>
+    <string name="no_connect">Нет соединения</string>
+    <string name="time_prib">Время прибытия:</string>
+    <string name="arrival_time_prib">Время прибытия в Нижний Тагил:</string>
+    <string name="time_way">Время в пути:</string>
+    <string name="time_otpr">Время отправления:</string>
+    <string name="button_next">Расписание на следующий день</string>
+    <string name="button_feedback">Оставить отзыв</string>
+    <string name="button_about">О приложении</string>
+    <string name="button_ads_disable">Отключить рекламу: 40</string>
+    <string name="no_items">Рейсы не найдены</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_status">Статус</string>
+    <string name="menu_arrival">Расписание прибытия автобусов</string>
+    <string name="menu_description">Настройки отображения расписания</string>
+    <string name="menu_ads_disable_toast">Оплата за отключение показа рекламы прошла успешно</string>
+    <string name="menu_station">Если Вы регулярно просматриваете расписание до одной и той же остановки, то можно эту остановку установить, как остановку по умолчанию. При запуске программы расписание сразу же будет загружаться до выбранного пункта назначения.</string>
+    <string name="checkbox_cancel">Скрывать рейсы, которые не состоятся</string>
+    <string name="checkbox_cancel_load">Не загружать расписание при запуске программы</string>
+    <string name="checkbox_sell">Скрывать рейсы с отсутствием свободных мест (кроме транзитных рейсов)</string>
+    <string name="checkbox_station_default">При запуске программы показывать расписание до остановки:</string>
+    <string name="info_description">Остановочные пункты</string>
+    <string name="info_note">Примечание:</string>
+    <string name="info_distance">Растояние:</string>
+    <string name="info_load_data">Загрузка данных</string>
+    <string name="main_schedule">Дата отправления:</string>
+    <string name="main_load_db">Подготовка к запуску</string>
+    <string name="main_load_schedule">Загрузка расписания</string>
+    <string name="main_invalid_date">Расписание доступно на 10 дней вперед</string>
+    <string name="main_status">Информация долго не обновлялась, мы работаем над решением этой проблемы</string>
+    <string name="main_status_error">Время обновления неизвестно</string>
+    <string name="main_description">Отправление автобусов</string>
+    <string name="admob_main_activity">ca-app-pub-3253485608797245/6313884709</string>
+    <string name="admob_info_activity">ca-app-pub-3253485608797245/2243611906</string>
+    <string name="admob_menu_activity">ca-app-pub-3253485608797245/3720345104</string>
+    <string name="admob_interstitial">ca-app-pub-3253485608797245/9783238303</string>
+    <string name="about_developer">Разработчик приложения: <a href="http://vk.com/id5170658" title="Сергей Ухарский">Сергей Ухарский</a></string>
+    <string name="about_version">Версия приложения: 1.3.2</string>
+    <string name="about_text">В приложении используются следующие иконки:
+        Bus hand drawn transport free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
+        Settings program free icon made by <a href="http://www.designmodo.com" title="Designmodo">Designmodo</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
+        Magnifier tool free icon made by <a href="http://www.simpleicon.com" title="SimpleIcon">SimpleIcon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
+        X free icon made by <a href="http://www.zurb.com" title="Zurb">Zurb</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
+        Lightbulb outline free icon made by <a href="http://www.elegantthemes.com" title="Elegant Themes">Elegant Themes</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
+        Timer with arrow free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
+        Calendar free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
+    </string>
+    <string name="arrival_attention">В расписании возможны изменения</string>
+    <string name="arrival_description">Прибытие автобусов</string>
+    <string name="analytics_category_button">Button</string>
+    <string name="analytics_category_listview">ListView</string>
+    <string name="analytics_category_dropdown">Dropdown</string>
+    <string name="analytics_category_checkbox">Checkbox</string>
+    <string name="analytics_action_next_day">Следующий день</string>
+    <string name="analytics_action_set_date">Выбор даты</string>
+    <string name="analytics_action_ads_disable">Отключение рекламы</string>
+    <string name="analytics_action_feedback">Оставить отзыв</string>
+    <string name="analytics_action_refresh">Повторное подключение</string>
+    <string name="analytics_action_listview_arrival_info">Arrival Info: расписание до остановки</string>
+    <string name="analytics_action_listview_info">Info: расписание до остановки</string>
+    <string name="analytics_action_dropdown_menu">Menu: выбор остановки по умолчанию</string>
+    <string name="analytics_action_checkbox_cancel">Опция отключена</string>
+    <string name="analytics_action_checkbox_ok">Опция включена</string>
+</resources>

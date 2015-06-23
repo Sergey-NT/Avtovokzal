@@ -1,0 +1,477 @@
+package com.www.avtovokzal.org;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
+import com.www.avtovokzal.org.Billing.IabHelper;
+import com.www.avtovokzal.org.Billing.IabResult;
+import com.www.avtovokzal.org.Billing.Inventory;
+import com.www.avtovokzal.org.Billing.Purchase;
+import com.www.avtovokzal.org.Listener.MenuAutoCompleteTextChangedListener;
+import com.www.avtovokzal.org.Object.AutoCompleteObject;
+
+public class MenuActivity extends ActionBarActivity {
+
+    CheckBox checkBoxCancel;
+    CheckBox checkBoxSell;
+    CheckBox checkBoxLoad;
+    CheckBox checkBoxDefaultStation;
+    Button btnAdsDisable;
+    IabHelper mHelper;
+
+    public CustomAutoCompleteView myAutoComplete;
+    public ArrayAdapter<AutoCompleteObject> myAdapter;
+    public DatabaseHandler databaseH;
+
+    private AdView adView;
+    private SharedPreferences settings;
+
+    private String activity;
+    private String code;
+    private int day;
+    private boolean cancel;
+    private boolean sell;
+    private boolean load;
+
+    private final static boolean LOG_ON = false;
+    private final static boolean DEVELOPER = false;
+    private static final String TAG = "MenuActivity";
+    private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
+    private static final int RC_REQUEST = 10001;
+
+    public static final String APP_PREFERENCES = "settings";
+    public static final String APP_PREFERENCES_CANCEL = "cancel";
+    public static final String APP_PREFERENCES_SELL = "sell";
+    public static final String APP_PREFERENCES_LOAD = "load";
+    public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
+    public static final String APP_PREFERENCES_DEFAULT = "default";
+    public static final String APP_PREFERENCES_STATION_NAME = "station_name";
+    public static final String APP_PREFERENCES_STATION_CODE = "station_code";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.menu_layout);
+
+        boolean AdShowGone;
+        boolean defaultStation;
+        Button btnAbout;
+        Button btnFeedback;
+        String btnAdsDisableText;
+        String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
+
+        // Google Analytics
+        Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+        t.enableAdvertisingIdCollection(true);
+
+        databaseH = new DatabaseHandler(MenuActivity.this);
+
+        // Определяем элементы интерфейса
+        btnAdsDisable = (Button) findViewById(R.id.btnAdsDisable);
+        btnAbout = (Button) findViewById(R.id.btnAbout);
+        btnFeedback = (Button) findViewById(R.id.btnFeedback);
+        checkBoxCancel = (CheckBox) findViewById(R.id.checkBoxCancel);
+        checkBoxSell = (CheckBox) findViewById(R.id.checkBoxSell);
+        checkBoxLoad = (CheckBox) findViewById(R.id.checkBoxCancelLoad);
+        checkBoxDefaultStation = (CheckBox) findViewById(R.id.checkBoxDefaultStation);
+        myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.autoCompleteMenu);
+
+        // Устанавливаем текст со знаком "рубль" на кнопку
+        btnAdsDisableText = getString(R.string.button_ads_disable) + " \u20BD";
+        CharSequence spannedBtnAdsDisableText = spanWithRoubleTypeface(btnAdsDisableText);
+        btnAdsDisable.setText(spannedBtnAdsDisableText);
+
+        // Отменяем преобразование текста кнопок в AllCaps програмно
+        btnAbout.setTransformationMethod(null);
+        btnAdsDisable.setTransformationMethod(null);
+        btnFeedback.setTransformationMethod(null);
+
+        // Переменная, отвечает за работу с настройками
+        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
+        // Проверка отключения рекламы
+        AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
+
+        // Создание Helper, передавая ему наш контекст и открытый ключ для проверки подписи
+        mHelper = new IabHelper(this, base64EncodedPublicKey);
+
+        // Включаем логирование в debug режиме (перед публикацией поставить false)
+        mHelper.enableDebugLogging(false);
+
+        // Инициализируем. Запрос асинхронен будет вызван, когда инициализация завершится
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    if(LOG_ON) {Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);}
+                    return;
+                }
+                if (mHelper == null) return;
+                // Проверка уже купленного.
+                mHelper.queryInventoryAsync(mGotInventoryListener);
+            }
+        });
+
+        if (DEVELOPER) {
+            AdShowGone = true;
+        }
+
+        // Если покупка совершена скрывать кнопку оплаты
+        if (AdShowGone) {
+            btnAdsDisable.setVisibility(View.GONE);
+        }
+
+        // Реклама в приложении
+        if (!AdShowGone) {
+            // Создание экземпляра adView
+            adView = new AdView(this);
+            adView.setAdUnitId(getString(R.string.admob_menu_activity));
+            adView.setAdSize(AdSize.SMART_BANNER);
+
+            // Поиск разметки LinearLayout
+            LinearLayout layout = (LinearLayout)findViewById(R.id.adViewMenuActivity);
+
+            // Добавление в разметку экземпляра adView
+            layout.addView(adView);
+
+            // Инициирование общего запроса
+            AdRequest request = new AdRequest.Builder().build();
+
+            // Загрузка adView с объявлением
+            adView.loadAd(request);
+        }
+
+        // Получаем переменные
+        code = getIntent().getStringExtra("code");
+        day = getIntent().getIntExtra("day", 0);
+        activity = getIntent().getStringExtra("activity");
+
+        // Получаем значения настроек
+        cancel = getSettingsParams(APP_PREFERENCES_CANCEL);
+        sell = getSettingsParams(APP_PREFERENCES_SELL);
+        load = getSettingsParams(APP_PREFERENCES_LOAD);
+        defaultStation = getSettingsParams(APP_PREFERENCES_DEFAULT);
+
+        checkBoxCancel.setChecked(cancel);
+        checkBoxSell.setChecked(sell);
+        checkBoxLoad.setChecked(load);
+        checkBoxDefaultStation.setChecked(defaultStation);
+
+        checkBoxCancel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                updateCheckBoxValue(APP_PREFERENCES_CANCEL);
+            }
+        });
+
+        checkBoxSell.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                updateCheckBoxValue(APP_PREFERENCES_SELL);
+            }
+        });
+
+        checkBoxLoad.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                updateCheckBoxValue(APP_PREFERENCES_LOAD);
+            }
+        });
+
+        checkBoxDefaultStation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                updateCheckBoxValue(APP_PREFERENCES_DEFAULT);
+            }
+        });
+
+        // Загружаем если есть сохраненную остановку из настроек
+        if (settings.contains(APP_PREFERENCES_STATION_NAME)) {
+            myAutoComplete.setText(settings.getString(APP_PREFERENCES_STATION_NAME, null));
+        }
+
+        myAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View agr1, int pos, long id) {
+
+                RelativeLayout rl = (RelativeLayout) agr1;
+                TextView tv = (TextView) rl.getChildAt(0);
+                myAutoComplete.setText(tv.getText().toString());
+
+                // Програмное скрытие клавиатуры
+                InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
+
+                code = tv.getTag().toString();
+
+                checkBoxDefaultStation.setChecked(true);
+
+                // Запись названия и кода остановки в файл настроек
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(APP_PREFERENCES_DEFAULT, true);
+                editor.putString(APP_PREFERENCES_STATION_NAME, tv.getText().toString());
+                editor.putString(APP_PREFERENCES_STATION_CODE, code);
+                editor.apply();
+
+                // Google Analytics
+                Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+                t.send(new HitBuilders.EventBuilder()
+                        .setCategory(getString(R.string.analytics_category_dropdown))
+                        .setAction(getString(R.string.analytics_action_dropdown_menu))
+                        .build());
+
+                myAutoComplete.clearFocus();
+            }
+        });
+
+        // При получении фокуса полем AutoComplete стираем ранее введенный текст
+        myAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean bool) {
+                if(bool) {
+                    myAutoComplete.setText("");
+                }
+            }
+        });
+
+        myAutoComplete.addTextChangedListener(new MenuAutoCompleteTextChangedListener(this));
+        AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
+        myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
+
+    }
+
+    // Listener для востановителя покупок.
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            if (mHelper == null) return;
+
+            if (result.isFailure()) {
+                if(LOG_ON) {Log.v(TAG, "Failed to query inventory: " + result);}
+                return;
+            }
+
+            // Проверка отключена ли реклама в приложении
+            Purchase purchase = inventory.getPurchase(SKU_ADS_DISABLE);
+
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(APP_PREFERENCES_ADS_SHOW, (purchase != null && verifyDeveloperPayload(purchase)));
+            editor.apply();
+        }
+    };
+
+    // Callback когда покупка завершена
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            if (mHelper == null) return;
+
+            if (result.isFailure()) {
+                if(LOG_ON) {Log.v(TAG, "Error purchasing: " + result);}
+                return;
+            }
+            if (!verifyDeveloperPayload(purchase)) {
+                if(LOG_ON) {Log.v(TAG,"Error purchasing. Authenticity verification failed.");}
+                return;
+            }
+
+            if (purchase.getSku().equals(SKU_ADS_DISABLE)) {
+                Toast.makeText(getApplicationContext(), getString(R.string.menu_ads_disable_toast), Toast.LENGTH_LONG).show();
+
+                // Сохраняем в настройках
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(APP_PREFERENCES_ADS_SHOW, true);
+                editor.apply();
+
+                // Убираем ракламу, кнопку оплаты
+                if (adView != null) {
+                    adView.setVisibility(View.GONE);
+                    btnAdsDisable.setVisibility(View.GONE);
+                }
+            }
+        }
+    };
+
+    boolean verifyDeveloperPayload(Purchase p) {
+        String payload = p.getDeveloperPayload();
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (mHelper == null) return;
+
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            if(LOG_ON){Log.v(TAG, "onActivityResult handled by IABUtil.");}
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Google Analytics
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Google Analytics
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+    }
+
+    @Override
+    protected void onPause() {
+        if (adView != null) {
+            adView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adView != null) {
+            adView.resume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Если перешли в MenuActivity из MainActivity
+        if (activity != null) {
+            boolean checkBoxCancelValue = getSettingsParams(APP_PREFERENCES_CANCEL);
+            boolean checkBoxSellValue = getSettingsParams(APP_PREFERENCES_SELL);
+            boolean checkBoxLoadValue = getSettingsParams(APP_PREFERENCES_LOAD);
+
+            // Если изменили настройки отображения расписания передаем переменные в MainActivity
+            if (checkBoxCancelValue != cancel || checkBoxLoadValue != load || checkBoxSellValue != sell) {
+                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
+                intent.putExtra("cancel", checkBoxCancelValue);
+                intent.putExtra("sell", checkBoxSellValue);
+                intent.putExtra("cancel_load", checkBoxLoadValue);
+                intent.putExtra("day", day);
+
+                if (code != null) {
+                    intent.putExtra("code", code);
+                }
+                startActivity(intent);
+            }
+        }
+
+        if (adView != null) {
+            adView.destroy();
+        }
+
+        if (mHelper != null) {
+            mHelper.dispose();
+            mHelper = null;
+        }
+        super.onDestroy();
+    }
+
+    public void btnAdsDisableOnClick (View view) {
+        // Google Analytics
+        Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(getString(R.string.analytics_category_button))
+                .setAction(getString(R.string.analytics_action_ads_disable))
+                .build());
+
+        String payload = "";
+        mHelper.launchPurchaseFlow(this, SKU_ADS_DISABLE, RC_REQUEST, mPurchaseFinishedListener, payload);
+    }
+
+    public void btnFeedbackOnClick (View view) {
+        // Google Analytics
+        Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(getString(R.string.analytics_category_button))
+                .setAction(getString(R.string.analytics_action_feedback))
+                .build());
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("market://details?id=com.www.avtovokzal.org"));
+        startActivity(intent);
+    }
+
+    public void btnAboutOnClick (View view) {
+        Intent intent = new Intent(MenuActivity.this, AboutActivity.class);
+        startActivity(intent);
+    }
+
+    // Обновляем параметры настроек в зависимости от изменения состояния CheckBox
+    private void updateCheckBoxValue(String params) {
+        boolean checkBoxValue;
+        // Получаем значение из настроек
+        checkBoxValue = getSettingsParams(params);
+        if(checkBoxValue) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(params, false);
+            editor.apply();
+            // Google Analytics
+            Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+            t.send(new HitBuilders.EventBuilder()
+                    .setCategory(getString(R.string.analytics_category_checkbox))
+                    .setAction(params + " " + getString(R.string.analytics_action_checkbox_cancel))
+                    .build());
+        } else {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(params, true);
+            editor.apply();
+            // Google Analytics
+            Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+            t.send(new HitBuilders.EventBuilder()
+                    .setCategory(getString(R.string.analytics_category_checkbox))
+                    .setAction(params + " " + getString(R.string.analytics_action_checkbox_ok))
+                    .build());
+        }
+    }
+
+    // Получаем параметры из файла настроек
+    private boolean getSettingsParams(String params) {
+        boolean checkBoxValue;
+        checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
+        return checkBoxValue;
+    }
+
+    private CharSequence spanWithRoubleTypeface(String priceHint) {
+        final Typeface roubleSupportedTypeface = Typeface.createFromAsset(this.getAssets(), "fonts/rouble2.ttf");
+
+        SpannableStringBuilder resultSpan = new SpannableStringBuilder(priceHint);
+        for (int i = 0; i < resultSpan.length(); i++) {
+            if (resultSpan.charAt(i) == '\u20BD') {
+                TypefaceSpan2 roubleTypefaceSpan = new TypefaceSpan2(roubleSupportedTypeface);
+                resultSpan.setSpan(roubleTypefaceSpan, i, i + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return resultSpan;
+    }
+}

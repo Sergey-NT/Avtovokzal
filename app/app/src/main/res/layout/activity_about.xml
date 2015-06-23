@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adViewAboutActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#ECEFF1" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="15sp"
+                android:background="#B0BEC5"
+                android:text="@string/button_about"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                android:textColor="#000" />
+
+            <TextView
+                android:id="@+id/about_icons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15sp"
+                android:text="@string/about_text"
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:textColorLink="#78909C" />
+
+            <TextView
+                android:id="@+id/about_developer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="5sp"
+                android:text="@string/about_developer"
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:textColorLink="#78909C" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/about_version"
+                android:textSize="14sp"
+                android:textColor="#000" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

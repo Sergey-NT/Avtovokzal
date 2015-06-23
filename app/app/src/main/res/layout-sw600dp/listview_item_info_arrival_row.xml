@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10sp" >
+
+    <TextView
+        android:id="@+id/textViewInfoArrivalNameStation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="19sp"
+        android:textStyle="bold"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewInfoArrivalNoteStationDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoArrivalNameStation"
+        android:text="@string/info_note"
+        android:textSize="14sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewInfoArrivalStationNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoArrivalNameStation"
+        android:layout_toEndOf="@+id/textViewInfoArrivalNoteStationDesc"
+        android:layout_toRightOf="@+id/textViewInfoArrivalNoteStationDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewInfoArrivalTimeOtprDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoArrivalStationNote"
+        android:text="@string/time_otpr"
+        android:textSize="14sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewInfoArrivalTimeOtpr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoArrivalStationNote"
+        android:layout_toEndOf="@+id/textViewInfoArrivalTimeOtprDesc"
+        android:layout_toRightOf="@+id/textViewInfoArrivalTimeOtprDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="#000" />
+
+</RelativeLayout>

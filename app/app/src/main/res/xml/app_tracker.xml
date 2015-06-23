@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Идентификатор отслеживания Google Analytics -->
+    <string name="ga_trackingId">UA-25056266-2</string>
+    <!-- Значение true задает автоматическое отслеживание Activity. -->
+    <bool name="ga_autoActivityTracking">true</bool>
+    <!-- Если значение равно true, неперехваченные исключения будут отслеживаться автоматически. -->
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+    <!-- Указывает, сколько времени (в секундах) ваше приложение может оставаться в фоновом режиме до завершения сеанса. -->
+    <integer name="ga_sessionTimeout">-1</integer>
+
+    <screenName name="com.google.android.gms.ads.AdActivity">Ad Activity</screenName>
+    <screenName name="com.www.avtovokzal.org.ErrorActivity">Error Activity</screenName>
+    <screenName name="com.www.avtovokzal.org.MainActivity">Main Activity</screenName>
+    <screenName name="com.www.avtovokzal.org.InfoActivity">Info Activity</screenName>
+    <screenName name="com.www.avtovokzal.org.MenuActivity">Menu Activity</screenName>
+    <screenName name="com.www.avtovokzal.org.ArrivalActivity">Arrival Activity</screenName>
+    <screenName name="com.www.avtovokzal.org.AboutActivity">About Activity</screenName>
+    <screenName name="com.www.avtovokzal.org.InfoArrivalActivity">Info Arrival Activity</screenName>
+</resources>

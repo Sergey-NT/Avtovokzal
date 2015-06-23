@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout   xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adViewMainActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5sp"
+            android:background="#B0BEC5"
+            android:text="@string/main_description"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:textColor="#000" />
+
+        <com.www.avtovokzal.org.CustomAutoCompleteView
+            android:id="@+id/autoCompleteMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="5sp"
+            android:layout_marginStart="5sp"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
+            android:layout_marginEnd="5sp"
+            android:nextFocusUp="@id/autoCompleteMain"
+            android:nextFocusLeft="@id/autoCompleteMain"
+            android:drawableLeft="@drawable/ic_search"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="5sp"
+            android:inputType="textNoSuggestions"
+            android:hint="@string/hint_main"
+            android:textColorHint="#90A4AE"
+            android:completionThreshold="1"
+            android:textColor="#000"
+            android:textSize="17sp" >
+        </com.www.avtovokzal.org.CustomAutoCompleteView>
+
+        <Button
+            android:id="@+id/header"
+            android:onClick="showDatePickerDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10sp"
+            android:background="#607D8B"
+            android:textColor="#FFF"
+            android:textSize="17sp"
+            android:drawablePadding="5sp"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:drawableRight="@drawable/ic_calendar" />
+
+        <TextView
+            android:id="@+id/noItems"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_items"
+            android:textSize="17sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginBottom="25sp"
+            android:textColor="#000"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/listViewMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:soundEffectsEnabled="true"
+            android:divider="#CFD8DC"
+            android:dividerHeight="1sp" />
+
+    </LinearLayout>
+</LinearLayout>

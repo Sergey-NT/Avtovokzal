@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10sp" >
+
+    <TextView
+        android:id="@+id/textViewInfoNameStation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="19sp"
+        android:textStyle="bold"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewInfoNoteStationDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoNameStation"
+        android:text="@string/info_note"
+        android:textSize="14sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewInfoStationNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoNameStation"
+        android:layout_toEndOf="@+id/textViewInfoNoteStationDesc"
+        android:layout_toRightOf="@+id/textViewInfoNoteStationDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewInfoInfoTimeWayDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoNoteStationDesc"
+        android:text="@string/time_way"
+        android:textSize="14sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewInfoTimeWay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoNoteStationDesc"
+        android:layout_toEndOf="@+id/textViewInfoInfoTimeWayDesc"
+        android:layout_toRightOf="@+id/textViewInfoInfoTimeWayDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewInfoTimePribDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoNoteStationDesc"
+        android:layout_toEndOf="@+id/textViewInfoTimeWay"
+        android:layout_toRightOf="@+id/textViewInfoTimeWay"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:text="@string/time_prib"
+        android:textSize="14sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewInfoTimePrib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoNoteStationDesc"
+        android:layout_toEndOf="@+id/textViewInfoTimePribDesc"
+        android:layout_toRightOf="@+id/textViewInfoTimePribDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewInfoDistanceDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoTimePribDesc"
+        android:text="@string/info_distance"
+        android:textSize="14sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewInfoDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoTimePribDesc"
+        android:layout_toEndOf="@+id/textViewInfoDistanceDesc"
+        android:layout_toRightOf="@+id/textViewInfoDistanceDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewInfoPriceBusDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoDistanceDesc"
+        android:text="@string/price_bus"
+        android:textSize="14sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewInfoPriceBus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoDistanceDesc"
+        android:layout_toEndOf="@+id/textViewInfoPriceBusDesc"
+        android:layout_toRightOf="@+id/textViewInfoPriceBusDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewInfoBaggageBusDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoDistanceDesc"
+        android:layout_toEndOf="@+id/textViewInfoPriceBus"
+        android:layout_toRightOf="@+id/textViewInfoPriceBus"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:text="@string/baggage_bus"
+        android:textSize="14sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewInfoBaggageBus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoDistanceDesc"
+        android:layout_toEndOf="@+id/textViewInfoBaggageBusDesc"
+        android:layout_toRightOf="@+id/textViewInfoBaggageBusDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="#000" />
+
+</RelativeLayout>

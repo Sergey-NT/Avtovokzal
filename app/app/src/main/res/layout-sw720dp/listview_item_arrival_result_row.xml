@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10sp"
+    android:id="@+id/listViewArrivalResultItem" >
+
+    <TextView
+        android:id="@+id/textViewArrivalTimeOtpr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="22sp"
+        android:textColor="#000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewArrivalNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/textViewArrivalTimeOtpr"
+        android:layout_toRightOf="@+id/textViewArrivalTimeOtpr"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="22sp"
+        android:textColor="#000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewArrivalName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/textViewArrivalNumber"
+        android:layout_toRightOf="@+id/textViewArrivalNumber"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textSize="22sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/textViewArrivalTimePribDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewArrivalName"
+        android:text="@string/arrival_time_prib"
+        android:textSize="15sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewArrivalTimePrib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewArrivalName"
+        android:layout_toEndOf="@+id/textViewArrivalTimePribDesc"
+        android:layout_toRightOf="@+id/textViewArrivalTimePribDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="15sp"
+        android:textColor="#000"/>
+
+    <TextView
+        android:id="@+id/textViewArrivalScheduleDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewArrivalName"
+        android:layout_toEndOf="@+id/textViewArrivalTimePrib"
+        android:layout_toRightOf="@+id/textViewArrivalTimePrib"
+        android:text="@string/schedule_bus"
+        android:layout_marginStart="10sp"
+        android:layout_marginLeft="10sp"
+        android:textSize="15sp"
+        android:textColor="#90A4AE" />
+
+    <TextView
+        android:id="@+id/textViewArrivalSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewArrivalName"
+        android:layout_toEndOf="@+id/textViewArrivalScheduleDesc"
+        android:layout_toRightOf="@+id/textViewArrivalScheduleDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="15sp"
+        android:textColor="#000" />
+
+</RelativeLayout>
