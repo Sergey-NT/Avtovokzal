@@ -6,6 +6,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 public class ActionBarActivity extends AppCompatActivity {
+
+    public static final boolean DEVELOPER = true;
+    public static final boolean LOG_ON = false;
+    public static final String APP_PREFERENCES = "settings";
+    public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
+    public static final String APP_PREFERENCES_DEFAULT = "default";
+    public static final String APP_PREFERENCES_STATION_NAME = "station_name";
+    public static final String APP_PREFERENCES_STATION_CODE = "station_code";
+    public static final String APP_PREFERENCES_CANCEL = "cancel";
+    public static final String APP_PREFERENCES_SELL = "sell";
+    public static final String APP_PREFERENCES_LOAD = "load";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

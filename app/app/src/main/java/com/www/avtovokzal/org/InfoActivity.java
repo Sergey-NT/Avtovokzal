@@ -59,13 +59,7 @@ public class InfoActivity extends ActionBarActivity {
 
     private int day;
 
-    private final static boolean LOG_ON = false;
-    private final static boolean DEVELOPER = false;
-
     private final static String TAG = "InfoActivity";
-
-    public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
-    public static final String APP_PREFERENCES = "settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

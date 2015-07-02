@@ -26,8 +26,6 @@ public class ErrorActivity extends ActionBarActivity {
     private boolean cancel;
     private boolean sell;
 
-    private final static boolean LOG_ON = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

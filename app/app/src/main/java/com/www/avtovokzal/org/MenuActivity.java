@@ -59,20 +59,9 @@ public class MenuActivity extends ActionBarActivity {
     private boolean sell;
     private boolean load;
 
-    private final static boolean LOG_ON = false;
-    private final static boolean DEVELOPER = false;
     private static final String TAG = "MenuActivity";
     private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
     private static final int RC_REQUEST = 10001;
-
-    public static final String APP_PREFERENCES = "settings";
-    public static final String APP_PREFERENCES_CANCEL = "cancel";
-    public static final String APP_PREFERENCES_SELL = "sell";
-    public static final String APP_PREFERENCES_LOAD = "load";
-    public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
-    public static final String APP_PREFERENCES_DEFAULT = "default";
-    public static final String APP_PREFERENCES_STATION_NAME = "station_name";
-    public static final String APP_PREFERENCES_STATION_CODE = "station_code";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

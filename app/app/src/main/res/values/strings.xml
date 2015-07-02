@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Автовокзал</string>
     <string name="app_subtitle">Нижний Тагил</string>
+    <string name="app_subtitle_main">Нижний Тагил. Отправление автобусов</string>
+    <string name="app_subtitle_arrival">Нижний Тагил. Прибытие автобусов</string>
     <string name="name_bus">Марка автобуса:</string>
     <string name="count_bus">Вместимость автобуса:</string>
     <string name="free_bus">Кол-во свободных мест:</string>
@@ -43,7 +45,6 @@
     <string name="main_invalid_date">Расписание доступно на 10 дней вперед</string>
     <string name="main_status">Информация долго не обновлялась, мы работаем над решением этой проблемы</string>
     <string name="main_status_error">Время обновления неизвестно</string>
-    <string name="main_description">Отправление автобусов</string>
     <string name="admob_main_activity">ca-app-pub-3253485608797245/6313884709</string>
     <string name="admob_info_activity">ca-app-pub-3253485608797245/2243611906</string>
     <string name="admob_menu_activity">ca-app-pub-3253485608797245/3720345104</string>
@@ -60,7 +61,6 @@
         Calendar free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
     </string>
     <string name="arrival_attention">В расписании возможны изменения</string>
-    <string name="arrival_description">Прибытие автобусов</string>
     <string name="analytics_category_button">Button</string>
     <string name="analytics_category_listview">ListView</string>
     <string name="analytics_category_dropdown">Dropdown</string>

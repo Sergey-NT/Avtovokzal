@@ -19,11 +19,6 @@ public class AboutActivity extends ActionBarActivity {
     private AdView adView;
     private SharedPreferences settings;
 
-    private final static boolean DEVELOPER = false;
-
-    public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
-    public static final String APP_PREFERENCES = "settings";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

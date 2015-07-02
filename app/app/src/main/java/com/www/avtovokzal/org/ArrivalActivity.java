@@ -61,16 +61,7 @@ public class ArrivalActivity extends ActionBarActivity {
     private String code;
     private String newNameStation;
 
-    private final static boolean LOG_ON = false;
-    private final static boolean DEVELOPER = false;
-
-    private final static String TAG = "ArrivalActivity";
-
-    public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
-    public static final String APP_PREFERENCES = "settings";
-    public static final String APP_PREFERENCES_DEFAULT = "default";
-    public static final String APP_PREFERENCES_STATION_NAME = "station_name";
-    public static final String APP_PREFERENCES_STATION_CODE = "station_code";
+    private static final String TAG = "ArrivalActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +198,11 @@ public class ArrivalActivity extends ActionBarActivity {
         myAutoComplete.addTextChangedListener(new ArrivalAutoCompleteTextChangedListener(this));
         AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
         myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
+
+        // Изменение текста подстроки ActionBar
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        assert ab != null;
+        ab.setSubtitle(getString(R.string.app_subtitle_arrival));
     }
 
     @Override
