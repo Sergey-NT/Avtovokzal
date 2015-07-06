@@ -22,7 +22,7 @@ public class ActionBarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Установка названия приложения в две строки и цвета ActionBar
+        // РЈСЃС‚Р°РЅРѕРІРєР° РЅР°Р·РІР°РЅРёСЏ РїСЂРёР»РѕР¶РµРЅРёСЏ РІ РґРІРµ СЃС‚СЂРѕРєРё Рё С†РІРµС‚Р° ActionBar
         android.support.v7.app.ActionBar ab = getSupportActionBar();
         assert ab != null;
         ab.setTitle(getString(R.string.app_name));
