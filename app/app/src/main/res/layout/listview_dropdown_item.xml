@@ -10,6 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:textSize="14sp"
-        android:textColor="#000"/>
+        android:textColor="@color/text_color"/>
 
 </RelativeLayout>

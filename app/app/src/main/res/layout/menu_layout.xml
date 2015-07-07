@@ -17,23 +17,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#ECEFF1" >
+            android:background="@color/background" >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="15sp"
-                android:background="#B0BEC5"
+                android:background="@color/background_header"
                 android:text="@string/menu_description"
                 android:textStyle="bold"
                 android:textSize="17sp"
-                android:textColor="#000" />
+                android:textColor="@color/text_color" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="#CFD8DC" />
+                android:background="@color/divider_color" />
 
             <CheckBox
                 android:id="@+id/checkBoxCancel"
@@ -48,12 +48,12 @@
                 android:paddingLeft="15sp"
                 android:text="@string/checkbox_cancel"
                 android:textSize="17sp"
-                android:textColor="#000" />
+                android:textColor="@color/text_color" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="#CFD8DC" />
+                android:background="@color/divider_color" />
 
             <CheckBox
                 android:id="@+id/checkBoxSell"
@@ -68,12 +68,12 @@
                 android:paddingLeft="15sp"
                 android:text="@string/checkbox_sell"
                 android:textSize="17sp"
-                android:textColor="#000" />
+                android:textColor="@color/text_color" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="#CFD8DC" />
+                android:background="@color/divider_color" />
 
             <CheckBox
                 android:id="@+id/checkBoxCancelLoad"
@@ -88,12 +88,12 @@
                 android:paddingLeft="15sp"
                 android:text="@string/checkbox_cancel_load"
                 android:textSize="17sp"
-                android:textColor="#000" />
+                android:textColor="@color/text_color" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="#CFD8DC" />
+                android:background="@color/divider_color" />
 
             <CheckBox
                 android:id="@+id/checkBoxDefaultStation"
@@ -108,7 +108,7 @@
                 android:paddingLeft="15sp"
                 android:text="@string/checkbox_station_default"
                 android:textSize="17sp"
-                android:textColor="#000" />
+                android:textColor="@color/text_color" />
 
             <com.www.avtovokzal.org.CustomAutoCompleteView
                 android:id="@+id/autoCompleteMenu"
@@ -125,12 +125,12 @@
                 android:drawablePadding="5sp"
                 android:inputType="textNoSuggestions"
                 android:hint="@string/hint_menu"
-                android:textColorHint="#90A4AE"
+                android:textColorHint="@color/text_color_hint"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:lines="1"
                 android:completionThreshold="1"
-                android:textColor="#000"
+                android:textColor="@color/text_color"
                 android:textSize="17sp" >
             </com.www.avtovokzal.org.CustomAutoCompleteView>
 
@@ -143,12 +143,12 @@
                 android:paddingLeft="15sp"
                 android:text="@string/menu_station"
                 android:textSize="14sp"
-                android:textColor="#000" />
+                android:textColor="@color/text_color" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="#CFD8DC" />
+                android:background="@color/divider_color" />
 
             <Button
                 android:id="@+id/btnAdsDisable"
@@ -160,11 +160,11 @@
                 android:layout_marginLeft="15sp"
                 android:layout_marginRight="15sp"
                 android:layout_gravity="center"
-                android:background="#607D8B"
+                android:background="@color/primary"
                 android:padding="10sp"
                 android:text="@string/button_ads_disable"
                 android:textSize="17sp"
-                android:textColor="#FFF" />
+                android:textColor="@color/text_color_white" />
 
             <Button
                 android:id="@+id/btnFeedback"
@@ -176,11 +176,11 @@
                 android:layout_marginLeft="15sp"
                 android:layout_marginRight="15sp"
                 android:layout_gravity="center"
-                android:background="#607D8B"
+                android:background="@color/primary"
                 android:padding="10sp"
                 android:text="@string/button_feedback"
                 android:textSize="17sp"
-                android:textColor="#FFF" />
+                android:textColor="@color/text_color_white" />
 
             <Button
                 android:id="@+id/btnAbout"
@@ -192,11 +192,11 @@
                 android:layout_marginLeft="15sp"
                 android:layout_marginRight="15sp"
                 android:layout_gravity="center"
-                android:background="#607D8B"
+                android:background="@color/primary"
                 android:padding="10sp"
                 android:text="@string/button_about"
                 android:textSize="17sp"
-                android:textColor="#FFF" />
+                android:textColor="@color/text_color_white" />
 
         </LinearLayout>
     </ScrollView>

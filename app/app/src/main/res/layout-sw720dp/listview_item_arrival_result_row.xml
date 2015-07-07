@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:textSize="22sp"
-        android:textColor="#000"
+        android:textColor="@color/text_color"
         android:textStyle="bold" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="22sp"
-        android:textColor="#000"
+        android:textColor="@color/text_color"
         android:textStyle="bold" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:textSize="22sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewArrivalTimePribDesc"
@@ -47,7 +47,7 @@
         android:layout_below="@+id/textViewArrivalName"
         android:text="@string/arrival_time_prib"
         android:textSize="15sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewArrivalTimePrib"
@@ -59,7 +59,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="15sp"
-        android:textColor="#000"/>
+        android:textColor="@color/text_color"/>
 
     <TextView
         android:id="@+id/textViewArrivalScheduleDesc"
@@ -72,7 +72,7 @@
         android:layout_marginStart="10sp"
         android:layout_marginLeft="10sp"
         android:textSize="15sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewArrivalSchedule"
@@ -84,6 +84,6 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="15sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
 </RelativeLayout>

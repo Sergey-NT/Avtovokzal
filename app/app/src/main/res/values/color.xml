@@ -2,4 +2,11 @@
 <resources>
     <item name="primary_dark" type="color">#455A64</item>
     <item name="primary" type="color">#607D8B</item>
+    <item name="background" type="color">#ECEFF1</item>
+    <item name="background_header" type="color">#B0BEC5</item>
+    <item name="divider_color" type="color">#CFD8DC</item>
+    <item name="text_color" type="color">#000</item>
+    <item name="text_color_white" type="color">#FFF</item>
+    <item name="text_color_link" type="color">#78909C</item>
+    <item name="text_color_hint" type="color">#90A4AE</item>
 </resources>

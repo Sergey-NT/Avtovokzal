@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:textSize="19sp"
-        android:textColor="#000"
+        android:textColor="@color/text_color"
         android:textStyle="bold" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="19sp"
-        android:textColor="#000"
+        android:textColor="@color/text_color"
         android:textStyle="bold" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:textSize="19sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainResultTimePribDesc"
@@ -47,7 +47,7 @@
         android:layout_below="@+id/textViewMainResultName"
         android:text="@string/time_prib"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainResultTimePrib"
@@ -59,7 +59,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000"/>
+        android:textColor="@color/text_color"/>
 
     <TextView
         android:id="@+id/textViewMainResultNameBusDesc"
@@ -68,7 +68,7 @@
         android:layout_below="@+id/textViewMainResultTimePribDesc"
         android:text="@string/name_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainResultNameBus"
@@ -80,7 +80,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainResultCountBusDesc"
@@ -89,7 +89,7 @@
         android:layout_below="@+id/textViewMainResultNameBusDesc"
         android:text="@string/count_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainResultCountBus"
@@ -101,7 +101,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainResultFreeBusDesc"
@@ -114,7 +114,7 @@
         android:layout_marginLeft="5sp"
         android:text="@string/free_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainResultFreeBus"
@@ -126,7 +126,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainResultPriceBusDesc"
@@ -135,7 +135,7 @@
         android:layout_below="@+id/textViewMainResultFreeBusDesc"
         android:text="@string/price_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainResultPriceBus"
@@ -147,7 +147,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainResultBaggageBusDesc"
@@ -160,7 +160,7 @@
         android:layout_marginLeft="5sp"
         android:text="@string/baggage_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainResultBaggageBus"
@@ -172,7 +172,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainResultCancel"
@@ -180,7 +180,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/textViewMainResultName"
         android:gravity="center"
-        android:background="#CFD8DC"
+        android:background="@color/divider_color"
         android:visibility="invisible"
         android:textSize="19sp"
         android:text="@string/cancel_bus" />

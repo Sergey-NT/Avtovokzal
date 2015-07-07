@@ -1,6 +1,5 @@
 package com.www.avtovokzal.org;
 
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +26,6 @@ public class ActionBarActivity extends AppCompatActivity {
         assert ab != null;
         ab.setTitle(getString(R.string.app_name));
         ab.setSubtitle(getString(R.string.app_subtitle));
-        ab.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#607D8B")));
+        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
     }
 }

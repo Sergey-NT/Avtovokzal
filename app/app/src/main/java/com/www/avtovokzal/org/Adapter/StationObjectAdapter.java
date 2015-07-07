@@ -1,7 +1,6 @@
 package com.www.avtovokzal.org.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,10 @@ public class StationObjectAdapter extends BaseAdapter {
 
     private List<StationsObject> list;
     private LayoutInflater layoutInflater;
+    private Context myContext;
 
     public StationObjectAdapter(Context context, List<StationsObject> list) {
+        myContext = context;
         this.list = list;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -56,9 +57,9 @@ public class StationObjectAdapter extends BaseAdapter {
         TextView item6 = (TextView) view.findViewById(R.id.textViewMainCancel);
 
         if (stationsObject.getFreeBus().equals("нет данных") || stationsObject.getFreeBus().equals("мест нет")) {
-            item5.setTextColor(Color.parseColor("#90A4AE"));
+            item5.setTextColor(myContext.getResources().getColor(R.color.text_color_hint));
         } else {
-            item5.setTextColor(Color.parseColor("#000000"));
+            item5.setTextColor(myContext.getResources().getColor(R.color.text_color));
         }
 
         if (stationsObject.getCancelBus() == 1){
@@ -69,7 +70,7 @@ public class StationObjectAdapter extends BaseAdapter {
             item4.setVisibility(View.GONE);
             item5.setVisibility(View.GONE);
             item6.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.listViewMainItem).setBackgroundColor(Color.parseColor("#CFD8DC"));
+            view.findViewById(R.id.listViewMainItem).setBackgroundColor(myContext.getResources().getColor(R.color.divider_color));
         } else {
             view.findViewById(R.id.textViewMainNameBusDesc).setVisibility(View.VISIBLE);
             view.findViewById(R.id.textViewMainCountBusDesc).setVisibility(View.VISIBLE);
@@ -78,7 +79,7 @@ public class StationObjectAdapter extends BaseAdapter {
             item4.setVisibility(View.VISIBLE);
             item5.setVisibility(View.VISIBLE);
             item6.setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.listViewMainItem).setBackgroundColor(Color.parseColor("#ECEFF1"));
+            view.findViewById(R.id.listViewMainItem).setBackgroundColor(myContext.getResources().getColor(R.color.background));
         }
 
         item0.setText(stationsObject.getTimeOtpr());

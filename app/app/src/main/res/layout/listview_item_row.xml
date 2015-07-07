@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:textSize="17sp"
-        android:textColor="#000"
+        android:textColor="@color/text_color"
         android:textStyle="bold" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="17sp"
-        android:textColor="#000"
+        android:textColor="@color/text_color"
         android:textStyle="bold" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:textSize="17sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainNameBusDesc"
@@ -47,7 +47,7 @@
         android:layout_below="@+id/textViewMainName"
         android:text="@string/name_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainNameBus"
@@ -59,7 +59,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainCountBusDesc"
@@ -68,7 +68,7 @@
         android:layout_below="@+id/textViewMainNameBusDesc"
         android:text="@string/count_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainCountBus"
@@ -80,7 +80,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainFreeBusDesc"
@@ -89,7 +89,7 @@
         android:layout_below="@+id/textViewMainCountBusDesc"
         android:text="@string/free_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewMainFreeBus"
@@ -101,7 +101,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewMainCancel"
@@ -109,7 +109,7 @@
         android:layout_height="fill_parent"
         android:layout_below="@+id/textViewMainName"
         android:gravity="center"
-        android:background="#CFD8DC"
+        android:background="@color/divider_color"
         android:visibility="invisible"
         android:textSize="17sp"
         android:text="@string/cancel_bus" />

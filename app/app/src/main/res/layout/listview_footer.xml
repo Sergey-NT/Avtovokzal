@@ -14,10 +14,10 @@
         android:layout_marginLeft="15sp"
         android:layout_marginRight="15sp"
         android:layout_gravity="center"
-        android:background="#607D8B"
+        android:background="@color/primary"
         android:padding="10sp"
         android:text="@string/button_next"
         android:textSize="17sp"
-        android:textColor="#FFF" />
+        android:textColor="@color/text_color_white" />
 
 </LinearLayout>

@@ -30,9 +30,9 @@
             android:drawablePadding="5sp"
             android:inputType="textNoSuggestions"
             android:hint="@string/hint_arrival"
-            android:textColorHint="#90A4AE"
+            android:textColorHint="@color/text_color_hint"
             android:completionThreshold="1"
-            android:textColor="#000"
+            android:textColor="@color/text_color"
             android:textSize="17sp" >
         </com.www.avtovokzal.org.CustomAutoCompleteView>
 
@@ -44,9 +44,9 @@
             android:paddingBottom="10sp"
             android:paddingLeft="5sp"
             android:paddingRight="5sp"
-            android:background="#607D8B"
+            android:background="@color/primary"
             android:text="@string/arrival_attention"
-            android:textColor="#FFF"
+            android:textColor="@color/text_color_white"
             android:textSize="17sp" />
 
         <TextView
@@ -57,7 +57,7 @@
             android:textSize="17sp"
             android:layout_marginTop="25sp"
             android:layout_marginBottom="25sp"
-            android:textColor="#000"
+            android:textColor="@color/text_color"
             android:gravity="center"
             android:visibility="gone"/>
 
@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:soundEffectsEnabled="true"
-            android:divider="#CFD8DC"
+            android:divider="@color/divider_color"
             android:dividerHeight="1sp" />
 
     </LinearLayout>

@@ -1,7 +1,6 @@
 package com.www.avtovokzal.org.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -79,7 +78,7 @@ public class RouteObjectResultAdapter extends BaseAdapter{
             item7.setVisibility(View.GONE);
             item8.setVisibility(View.GONE);
             item9.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.listViewMainResultItem).setBackgroundColor(Color.parseColor("#CFD8DC"));
+            view.findViewById(R.id.listViewMainResultItem).setBackgroundColor(myContext.getResources().getColor(R.color.divider_color));
         } else {
             view.findViewById(R.id.textViewMainResultTimePribDesc).setVisibility(View.VISIBLE);
             view.findViewById(R.id.textViewMainResultNameBusDesc).setVisibility(View.VISIBLE);
@@ -94,13 +93,13 @@ public class RouteObjectResultAdapter extends BaseAdapter{
             item7.setVisibility(View.VISIBLE);
             item8.setVisibility(View.VISIBLE);
             item9.setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.listViewMainResultItem).setBackgroundColor(Color.parseColor("#ECEFF1"));
+            view.findViewById(R.id.listViewMainResultItem).setBackgroundColor(myContext.getResources().getColor(R.color.background));
         }
 
         if(routeObjectResult.getFreeBus().equals("нет данных") || routeObjectResult.getFreeBus().equals("мест нет")) {
-            item5.setTextColor(Color.parseColor("#90A4AE"));
+            item5.setTextColor(myContext.getResources().getColor(R.color.text_color_hint));
         } else {
-            item5.setTextColor(Color.parseColor("#000000"));
+            item5.setTextColor(myContext.getResources().getColor(R.color.text_color));
         }
 
         String priceBus = routeObjectResult.getPriceBus() + " \u20BD";

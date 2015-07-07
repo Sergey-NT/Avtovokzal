@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:textSize="17sp"
         android:textStyle="bold"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewInfoNoteStationDesc"
@@ -20,7 +20,7 @@
         android:layout_below="@+id/textViewInfoNameStation"
         android:text="@string/info_note"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewInfoStationNote"
@@ -32,7 +32,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewInfoInfoTimeWayDesc"
@@ -41,7 +41,7 @@
         android:layout_below="@+id/textViewInfoStationNote"
         android:text="@string/time_way"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewInfoTimeWay"
@@ -53,7 +53,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewInfoTimePribDesc"
@@ -62,7 +62,7 @@
         android:layout_below="@+id/textViewInfoTimeWay"
         android:text="@string/time_prib"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewInfoTimePrib"
@@ -74,7 +74,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewInfoDistanceDesc"
@@ -83,7 +83,7 @@
         android:layout_below="@+id/textViewInfoTimePrib"
         android:text="@string/info_distance"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewInfoDistance"
@@ -95,7 +95,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewInfoPriceBusDesc"
@@ -104,7 +104,7 @@
         android:layout_below="@+id/textViewInfoDistance"
         android:text="@string/price_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewInfoPriceBus"
@@ -116,7 +116,7 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
     <TextView
         android:id="@+id/textViewInfoBaggageBusDesc"
@@ -125,7 +125,7 @@
         android:layout_below="@+id/textViewInfoPriceBus"
         android:text="@string/baggage_bus"
         android:textSize="14sp"
-        android:textColor="#90A4AE" />
+        android:textColor="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/textViewInfoBaggageBus"
@@ -137,6 +137,6 @@
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
-        android:textColor="#000" />
+        android:textColor="@color/text_color" />
 
 </RelativeLayout>
