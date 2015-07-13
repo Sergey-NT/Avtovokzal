@@ -72,7 +72,6 @@ public class MenuActivity extends ActionBarActivity {
         boolean defaultStation;
         Button btnAbout;
         Button btnFeedback;
-        String btnAdsDisableText;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
 
         // Google Analytics
@@ -90,11 +89,6 @@ public class MenuActivity extends ActionBarActivity {
         checkBoxLoad = (CheckBox) findViewById(R.id.checkBoxCancelLoad);
         checkBoxDefaultStation = (CheckBox) findViewById(R.id.checkBoxDefaultStation);
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.autoCompleteMenu);
-
-        // Устанавливаем текст со знаком "рубль" на кнопку
-        btnAdsDisableText = getString(R.string.button_ads_disable) + " \u20BD";
-        CharSequence spannedBtnAdsDisableText = spanWithRoubleTypeface(btnAdsDisableText);
-        btnAdsDisable.setText(spannedBtnAdsDisableText);
 
         // Отменяем преобразование текста кнопок в AllCaps програмно
         btnAbout.setTransformationMethod(null);
@@ -267,6 +261,19 @@ public class MenuActivity extends ActionBarActivity {
 
             // Проверка отключена ли реклама в приложении
             Purchase purchase = inventory.getPurchase(SKU_ADS_DISABLE);
+
+            // Устанавливаем текст со знаком "рубль" на кнопку
+            String btnAdsDisableText;
+
+            if (inventory.getSkuDetails(SKU_ADS_DISABLE) != null) {
+                btnAdsDisableText = getString(R.string.button_ads_disable) + " " + inventory.getSkuDetails(SKU_ADS_DISABLE).getPrice();
+                CharSequence spannedBtnAdsDisableText = spanWithRoubleTypeface(btnAdsDisableText);
+                btnAdsDisable.setText(spannedBtnAdsDisableText);
+            } else {
+                btnAdsDisableText = getString(R.string.button_ads_disable) + " \u20BD";
+                CharSequence spannedBtnAdsDisableText = spanWithRoubleTypeface(btnAdsDisableText);
+                btnAdsDisable.setText(spannedBtnAdsDisableText);
+            }
 
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(APP_PREFERENCES_ADS_SHOW, (purchase != null && verifyDeveloperPayload(purchase)));

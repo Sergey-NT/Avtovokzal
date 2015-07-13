@@ -38,8 +38,6 @@ public class AutocompleteCustomArrayAdapter extends ArrayAdapter<AutoCompleteObj
             textViewItem.setText(objectItem.objectName);
             textViewItem.setTag(objectItem.objectCode);
 
-        } catch (NullPointerException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
