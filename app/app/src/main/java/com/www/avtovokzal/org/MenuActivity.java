@@ -36,6 +36,9 @@ import com.www.avtovokzal.org.Billing.Purchase;
 import com.www.avtovokzal.org.Listener.MenuAutoCompleteTextChangedListener;
 import com.www.avtovokzal.org.Object.AutoCompleteObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MenuActivity extends ActionBarActivity {
 
     CheckBox checkBoxCancel;
@@ -116,7 +119,9 @@ public class MenuActivity extends ActionBarActivity {
                 }
                 if (mHelper == null) return;
                 // Проверка уже купленного.
-                mHelper.queryInventoryAsync(mGotInventoryListener);
+                ArrayList<String> skuList = new ArrayList<>();
+                skuList.add(SKU_ADS_DISABLE);
+                mHelper.queryInventoryAsync(true, skuList, mGotInventoryListener);
             }
         });
 
@@ -262,17 +267,18 @@ public class MenuActivity extends ActionBarActivity {
             // Проверка отключена ли реклама в приложении
             Purchase purchase = inventory.getPurchase(SKU_ADS_DISABLE);
 
-            // Устанавливаем текст со знаком "рубль" на кнопку
+            // Устанавливаем текст с ценой со знаком "рубль" на кнопку
             String btnAdsDisableText;
 
             if (inventory.getSkuDetails(SKU_ADS_DISABLE) != null) {
-                btnAdsDisableText = getString(R.string.button_ads_disable) + " " + inventory.getSkuDetails(SKU_ADS_DISABLE).getPrice();
+                String price = inventory.getSkuDetails(SKU_ADS_DISABLE).getPrice();
+                String replacePrice = price.replace("руб.", "\u20BD");
+                btnAdsDisableText = getString(R.string.button_ads_disable) + " " + replacePrice;
                 CharSequence spannedBtnAdsDisableText = spanWithRoubleTypeface(btnAdsDisableText);
                 btnAdsDisable.setText(spannedBtnAdsDisableText);
             } else {
-                btnAdsDisableText = getString(R.string.button_ads_disable) + " \u20BD";
-                CharSequence spannedBtnAdsDisableText = spanWithRoubleTypeface(btnAdsDisableText);
-                btnAdsDisable.setText(spannedBtnAdsDisableText);
+                btnAdsDisableText = getString(R.string.button_ads_disable);
+                btnAdsDisable.setText(btnAdsDisableText);
             }
 
             SharedPreferences.Editor editor = settings.edit();

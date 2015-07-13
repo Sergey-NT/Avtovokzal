@@ -23,7 +23,7 @@
     <string name="button_next">Расписание на следующий день</string>
     <string name="button_feedback">Оставить отзыв</string>
     <string name="button_about">О приложении</string>
-    <string name="button_ads_disable">Отключить рекламу: 40</string>
+    <string name="button_ads_disable">Отключить рекламу:</string>
     <string name="no_items">Рейсы не найдены</string>
     <string name="menu_settings">Настройки</string>
     <string name="menu_status">Статус</string>
