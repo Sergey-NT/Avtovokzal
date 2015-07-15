@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 
 public class ActionBarActivity extends AppCompatActivity {
 
-    public static final boolean DEVELOPER = false;
-    public static final boolean LOG_ON = false;
+    public static final boolean DEVELOPER = true;
+    public static final boolean LOG_ON = true;
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
     public static final String APP_PREFERENCES_DEFAULT = "default";

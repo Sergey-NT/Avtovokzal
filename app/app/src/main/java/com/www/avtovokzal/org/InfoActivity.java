@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -245,15 +246,13 @@ public class InfoActivity extends ActionBarActivity {
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    JSONObject dataJsonQbj;
-                    List<RouteObjectInfo> list = new ArrayList<>();
-
                     if (response == null) {
                         callErrorActivity();
                         finish();
                     }
 
-                    if(LOG_ON){Log.d(TAG, response);}
+                    processingLoadRouteInfo task = new processingLoadRouteInfo();
+                    task.execute(response);
 
                     try {
                         if (progressDialog != null && progressDialog.isShowing()) {
@@ -264,30 +263,6 @@ public class InfoActivity extends ActionBarActivity {
                     }  finally {
                         progressDialog = null;
                     }
-
-                    try {
-                        dataJsonQbj = new JSONObject(response);
-                        JSONArray rasp = dataJsonQbj.getJSONArray("info");
-
-                        for (int i = 0; i < rasp.length(); i++) {
-                            JSONObject oneObject = rasp.getJSONObject(i);
-
-                            String timePrib = oneObject.getString("time_prib");
-                            String timeWay = oneObject.getString("time_way");
-                            String nameStation = oneObject.getString("name_station");
-                            String noteStation = oneObject.getString("note_station");
-                            long codeStation = oneObject.getLong("id_station");
-                            String priceBus = oneObject.getString("price_data");
-                            String baggageBus = oneObject.getString("baggage_data");
-                            String distanceData = oneObject.getString("distance_data");
-                            list.add(new RouteObjectInfo(timePrib, timeWay, nameStation, noteStation, codeStation, priceBus, baggageBus, distanceData));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    RouteObjectInfoAdapter adapter = new RouteObjectInfoAdapter(InfoActivity.this, list);
-                    listView.setAdapter(adapter);
                  }
             }, new Response.ErrorListener() {
                 @Override
@@ -388,5 +363,44 @@ public class InfoActivity extends ActionBarActivity {
         boolean checkBoxValue;
         checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
         return checkBoxValue;
+    }
+
+    private class processingLoadRouteInfo extends AsyncTask<String, Void, List<RouteObjectInfo>>{
+        @Override
+        protected List<RouteObjectInfo> doInBackground(String... response) {
+            JSONObject dataJsonQbj;
+            List<RouteObjectInfo> list = new ArrayList<>();
+
+            if(LOG_ON){Log.d(TAG, response[0]);}
+
+            try {
+                dataJsonQbj = new JSONObject(response[0]);
+                JSONArray rasp = dataJsonQbj.getJSONArray("info");
+
+                for (int i = 0; i < rasp.length(); i++) {
+                    JSONObject oneObject = rasp.getJSONObject(i);
+
+                    String timePrib = oneObject.getString("time_prib");
+                    String timeWay = oneObject.getString("time_way");
+                    String nameStation = oneObject.getString("name_station");
+                    String noteStation = oneObject.getString("note_station");
+                    long codeStation = oneObject.getLong("id_station");
+                    String priceBus = oneObject.getString("price_data");
+                    String baggageBus = oneObject.getString("baggage_data");
+                    String distanceData = oneObject.getString("distance_data");
+                    list.add(new RouteObjectInfo(timePrib, timeWay, nameStation, noteStation, codeStation, priceBus, baggageBus, distanceData));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<RouteObjectInfo> list) {
+            final RouteObjectInfoAdapter adapter = new RouteObjectInfoAdapter(InfoActivity.this, list);
+            listView.setAdapter(adapter);
+            super.onPostExecute(list);
+        }
     }
 }

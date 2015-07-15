@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -238,15 +239,13 @@ public class InfoArrivalActivity extends ActionBarActivity {
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    JSONObject dataJsonQbj;
-                    List<RouteObjectInfoArrival> list = new ArrayList<>();
-
                     if (response == null) {
                         callErrorActivity();
                         finish();
                     }
 
-                    if(LOG_ON){Log.d(TAG, response);}
+                    processingLoadRouteInfoArrival task = new processingLoadRouteInfoArrival();
+                    task.execute(response);
 
                     try {
                         if (progressDialog != null && progressDialog.isShowing()) {
@@ -257,26 +256,6 @@ public class InfoArrivalActivity extends ActionBarActivity {
                     }  finally {
                         progressDialog = null;
                     }
-
-                    try {
-                        dataJsonQbj = new JSONObject(response);
-                        JSONArray rasp = dataJsonQbj.getJSONArray("info_arrival");
-
-                        for (int i = 0; i < rasp.length(); i++) {
-                            JSONObject oneObject = rasp.getJSONObject(i);
-
-                            String timeOtpr = oneObject.getString("time_otpr");
-                            String nameStation = oneObject.getString("name_station");
-                            String noteStation = oneObject.getString("note_station");
-                            String code = oneObject.getString("id_station");
-                            list.add(new RouteObjectInfoArrival(timeOtpr, nameStation, noteStation, code));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    RouteObjectInfoArrivalAdapter adapter = new RouteObjectInfoArrivalAdapter(InfoArrivalActivity.this, list);
-                    listView.setAdapter(adapter);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -377,5 +356,40 @@ public class InfoArrivalActivity extends ActionBarActivity {
         boolean checkBoxValue;
         checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
         return checkBoxValue;
+    }
+
+    private class processingLoadRouteInfoArrival extends AsyncTask<String, Void, List<RouteObjectInfoArrival>> {
+        @Override
+        protected List<RouteObjectInfoArrival> doInBackground(String... response) {
+            JSONObject dataJsonQbj;
+            List<RouteObjectInfoArrival> list = new ArrayList<>();
+
+            if(LOG_ON){Log.d(TAG, response[0]);}
+
+            try {
+                dataJsonQbj = new JSONObject(response[0]);
+                JSONArray rasp = dataJsonQbj.getJSONArray("info_arrival");
+
+                for (int i = 0; i < rasp.length(); i++) {
+                    JSONObject oneObject = rasp.getJSONObject(i);
+
+                    String timeOtpr = oneObject.getString("time_otpr");
+                    String nameStation = oneObject.getString("name_station");
+                    String noteStation = oneObject.getString("note_station");
+                    String code = oneObject.getString("id_station");
+                    list.add(new RouteObjectInfoArrival(timeOtpr, nameStation, noteStation, code));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<RouteObjectInfoArrival> list) {
+            final RouteObjectInfoArrivalAdapter adapter = new RouteObjectInfoArrivalAdapter(InfoArrivalActivity.this, list);
+            listView.setAdapter(adapter);
+            super.onPostExecute(list);
+        }
     }
 }

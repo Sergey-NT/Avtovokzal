@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -422,14 +423,13 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    JSONObject dataJsonQbj;
-
                     if (response == null) {
                         callErrorActivity();
                         finish();
                     }
 
-                    if(LOG_ON){Log.d(TAG, response);}
+                    processingLoadStationToDB task = new processingLoadStationToDB();
+                    task.execute(response);
 
                     try {
                         if (loadDialog != null && loadDialog.isShowing()) {
@@ -439,23 +439,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                         e.printStackTrace();
                     }  finally {
                         loadDialog = null;
-                    }
-
-                    try {
-                        dataJsonQbj = new JSONObject(response);
-                        JSONArray rasp = dataJsonQbj.getJSONArray("station");
-
-                        for (int i = 0; i < rasp.length(); i++) {
-                            JSONObject oneObject = rasp.getJSONObject(i);
-
-                            String nameStation = oneObject.getString("name_station");
-                            String noteStation = oneObject.getString("note_station");
-                            long codeStation = oneObject.getLong("id_station");
-                            long sumStation = oneObject.getLong("sum_station");
-                            databaseH.create(new AutoCompleteObject((nameStation + " " + noteStation), sumStation, codeStation));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
             }, new Response.ErrorListener() {
@@ -496,51 +479,13 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    JSONObject dataJsonQbj;
-                    List<StationsObject> list = new ArrayList<>();
-
                     if (response == null) {
                         callErrorActivity();
                         finish();
                     }
 
-                    if(LOG_ON){Log.d(TAG, response);}
-
-
-
-                    try {
-                        dataJsonQbj = new JSONObject(response);
-                        JSONArray rasp = dataJsonQbj.getJSONArray("rasp");
-
-                        if(LOG_ON) Log.v("Length", "" + rasp.length());
-
-                        if (rasp.length() == 0) {
-                            TextView textView1 = (TextView) findViewById(R.id.noItems);
-                            textView1.setVisibility(View.VISIBLE);
-                        } else {
-                            TextView textView1 = (TextView) findViewById(R.id.noItems);
-                            textView1.setVisibility(View.GONE);
-                        }
-                        for (int i = 0; i < rasp.length(); i++) {
-                            JSONObject oneObject = rasp.getJSONObject(i);
-
-                            String timeMarsh = oneObject.getString("time_otpr");
-                            String numberMarsh = oneObject.getString("new_number_data");
-                            String nameMarsh = oneObject.getString("name_data");
-                            String nameBus = oneObject.getString("name_bus");
-                            String countBus = oneObject.getString("count_bus");
-                            String freeBus = oneObject.getString("free_place_new_schedule");
-                            int cancelBus = oneObject.getInt("cancel_new_schedule");
-                            String numberMarshToSend = oneObject.getString("number_new_schedule");
-                            list.add(new StationsObject(timeMarsh, numberMarsh, numberMarshToSend, nameMarsh, nameBus, countBus, freeBus, cancelBus));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    StationObjectAdapter adapter = new StationObjectAdapter(MainActivity.this, list);
-                    listView.setAdapter(adapter);
+                    processingLoadSchedule task = new processingLoadSchedule();
+                    task.execute(response);
 
                     try {
                         if (queryDialog != null && queryDialog.isShowing()) {
@@ -550,7 +495,7 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                     }  finally {
-                        queryDialog = null;
+                       queryDialog = null;
                     }
                 }
             }, new Response.ErrorListener() {
@@ -591,15 +536,13 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    JSONObject dataJsonQbj;
-                    List<RouteObjectResult> list = new ArrayList<>();
-
                     if (response == null) {
                         callErrorActivity();
                         finish();
                     }
 
-                    if(LOG_ON){Log.d(TAG, response);}
+                    processingLoadScheduleResult task = new processingLoadScheduleResult();
+                    task.execute(response);
 
                     try {
                         if (queryDialog != null && queryDialog.isShowing()) {
@@ -610,40 +553,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                     }  finally {
                         queryDialog = null;
                     }
-
-                    try {
-                        dataJsonQbj = new JSONObject(response);
-                        JSONArray rasp = dataJsonQbj.getJSONArray("rasp");
-
-                        if (rasp.length() == 0) {
-                            TextView textView1 = (TextView) findViewById(R.id.noItems);
-                            textView1.setVisibility(View.VISIBLE);
-                        } else {
-                            TextView textView1 = (TextView) findViewById(R.id.noItems);
-                            textView1.setVisibility(View.GONE);
-                        }
-                        for (int i = 0; i < rasp.length(); i++) {
-                            JSONObject oneObject = rasp.getJSONObject(i);
-
-                            String timeMarsh = oneObject.getString("time_otpr");
-                            String numberMarsh = oneObject.getString("new_number_data");
-                            String numberMarshToSend = oneObject.getString("number_new_schedule");
-                            String nameMarsh = oneObject.getString("name_data");
-                            String nameBus = oneObject.getString("name_bus");
-                            String countBus = oneObject.getString("count_bus");
-                            String freeBus = oneObject.getString("free_place_new_schedule");
-                            String priceBus = oneObject.getString("price_data");
-                            String baggageBus = oneObject.getString("baggage_data");
-                            String timePrib = oneObject.getString("time_prib_result");
-                            int cancelBus = oneObject.getInt("cancel_new_schedule");
-                            list.add(new RouteObjectResult(timeMarsh, numberMarsh, numberMarshToSend, nameMarsh, nameBus, countBus, freeBus, priceBus, baggageBus, timePrib, cancelBus));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    RouteObjectResultAdapter adapterResult = new RouteObjectResultAdapter(MainActivity.this, list);
-                    listView.setAdapter(adapterResult);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -994,5 +903,149 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
         return true;
+    }
+
+    private class processingLoadSchedule extends AsyncTask<String, Void, List<StationsObject>> {
+        @Override
+        protected List<StationsObject> doInBackground(String... response) {
+            JSONObject dataJsonQbj;
+            List<StationsObject> list = new ArrayList<>();
+
+            if (LOG_ON) Log.v("Result", response[0]);
+
+            try {
+                dataJsonQbj = new JSONObject(response[0]);
+                JSONArray rasp = dataJsonQbj.getJSONArray("rasp");
+
+                if(LOG_ON) Log.v("Length", " " + rasp.length());
+
+                if (rasp.length() == 0) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView textView1 = (TextView) findViewById(R.id.noItems);
+                            textView1.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView textView1 = (TextView) findViewById(R.id.noItems);
+                            textView1.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                for (int i = 0; i < rasp.length(); i++) {
+                    JSONObject oneObject = rasp.getJSONObject(i);
+
+                    String timeMarsh = oneObject.getString("time_otpr");
+                    String numberMarsh = oneObject.getString("new_number_data");
+                    String nameMarsh = oneObject.getString("name_data");
+                    String nameBus = oneObject.getString("name_bus");
+                    String countBus = oneObject.getString("count_bus");
+                    String freeBus = oneObject.getString("free_place_new_schedule");
+                    int cancelBus = oneObject.getInt("cancel_new_schedule");
+                    String numberMarshToSend = oneObject.getString("number_new_schedule");
+                    list.add(new StationsObject(timeMarsh, numberMarsh, numberMarshToSend, nameMarsh, nameBus, countBus, freeBus, cancelBus));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<StationsObject> list) {
+            final StationObjectAdapter adapter = new StationObjectAdapter(MainActivity.this, list);
+            listView.setAdapter(adapter);
+            super.onPostExecute(list);
+        }
+    }
+
+    private class processingLoadStationToDB extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... response) {
+            JSONObject dataJsonQbj;
+
+            if(LOG_ON){Log.d(TAG, response[0]);}
+
+            try {
+                dataJsonQbj = new JSONObject(response[0]);
+                JSONArray rasp = dataJsonQbj.getJSONArray("station");
+
+                for (int i = 0; i < rasp.length(); i++) {
+                    JSONObject oneObject = rasp.getJSONObject(i);
+
+                    String nameStation = oneObject.getString("name_station");
+                    String noteStation = oneObject.getString("note_station");
+                    long codeStation = oneObject.getLong("id_station");
+                    long sumStation = oneObject.getLong("sum_station");
+                    databaseH.create(new AutoCompleteObject((nameStation + " " + noteStation), sumStation, codeStation));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private class processingLoadScheduleResult extends AsyncTask<String, Void, List<RouteObjectResult>> {
+        @Override
+        protected List<RouteObjectResult> doInBackground(String... response) {
+            JSONObject dataJsonQbj;
+            List<RouteObjectResult> list = new ArrayList<>();
+
+            if(LOG_ON){Log.d(TAG, response[0]);}
+
+            try {
+                dataJsonQbj = new JSONObject(response[0]);
+                JSONArray rasp = dataJsonQbj.getJSONArray("rasp");
+
+                if (rasp.length() == 0) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView textView1 = (TextView) findViewById(R.id.noItems);
+                            textView1.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView textView1 = (TextView) findViewById(R.id.noItems);
+                            textView1.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                for (int i = 0; i < rasp.length(); i++) {
+                    JSONObject oneObject = rasp.getJSONObject(i);
+
+                    String timeMarsh = oneObject.getString("time_otpr");
+                    String numberMarsh = oneObject.getString("new_number_data");
+                    String numberMarshToSend = oneObject.getString("number_new_schedule");
+                    String nameMarsh = oneObject.getString("name_data");
+                    String nameBus = oneObject.getString("name_bus");
+                    String countBus = oneObject.getString("count_bus");
+                    String freeBus = oneObject.getString("free_place_new_schedule");
+                    String priceBus = oneObject.getString("price_data");
+                    String baggageBus = oneObject.getString("baggage_data");
+                    String timePrib = oneObject.getString("time_prib_result");
+                    int cancelBus = oneObject.getInt("cancel_new_schedule");
+                    list.add(new RouteObjectResult(timeMarsh, numberMarsh, numberMarshToSend, nameMarsh, nameBus, countBus, freeBus, priceBus, baggageBus, timePrib, cancelBus));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<RouteObjectResult> list) {
+            final RouteObjectResultAdapter adapterResult = new RouteObjectResultAdapter(MainActivity.this, list);
+            listView.setAdapter(adapterResult);
+            super.onPostExecute(list);
+        }
     }
 }

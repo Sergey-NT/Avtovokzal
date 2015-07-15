@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -311,15 +312,13 @@ public class ArrivalActivity extends ActionBarActivity {
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    JSONObject dataJsonQbj;
-                    List<ArrivalObjectResult> list = new ArrayList<>();
-
                     if (response == null) {
                         callErrorActivity();
                         finish();
                     }
 
-                    if(LOG_ON){Log.d(TAG, response);}
+                    processingLoadArrivalResult task = new processingLoadArrivalResult();
+                    task.execute(response);
 
                     try {
                         if (progressDialog != null && progressDialog.isShowing()) {
@@ -330,36 +329,6 @@ public class ArrivalActivity extends ActionBarActivity {
                     }  finally {
                         progressDialog = null;
                     }
-
-                    try {
-                        dataJsonQbj = new JSONObject(response);
-                        JSONArray rasp = dataJsonQbj.getJSONArray("arrival");
-
-                        if (rasp.length() == 0) {
-                                TextView textView1 = (TextView) findViewById(R.id.noArrivalItems);
-                                textView1.setVisibility(View.VISIBLE);
-                        } else {
-                                TextView textView1 = (TextView) findViewById(R.id.noArrivalItems);
-                                textView1.setVisibility(View.GONE);
-                        }
-
-                        for (int i = 0; i < rasp.length(); i++) {
-                            JSONObject oneObject = rasp.getJSONObject(i);
-
-                            String timeOtpr = oneObject.getString("time_otpr");
-                            String timePrib = oneObject.getString("time_prib");
-                            String timeFromStation = oneObject.getString("time_nt_reverse_schedule");
-                            String numberMarsh = oneObject.getString("number_reverse_schedule");
-                            String nameMarsh = oneObject.getString("name_reverse_schedule");
-                            String scheduleMarsh = oneObject.getString("day_reverse_schedule");
-                            list.add(new ArrivalObjectResult(timeOtpr, timePrib, timeFromStation, numberMarsh, nameMarsh, scheduleMarsh));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    ArrivalObjectResultAdapter adapter = new ArrivalObjectResultAdapter(ArrivalActivity.this, list);
-                    listView.setAdapter(adapter);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -458,5 +427,61 @@ public class ArrivalActivity extends ActionBarActivity {
         boolean checkBoxValue;
         checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
         return checkBoxValue;
+    }
+
+    private class processingLoadArrivalResult extends AsyncTask<String, Void, List<ArrivalObjectResult>> {
+        @Override
+        protected List<ArrivalObjectResult> doInBackground(String... response) {
+            JSONObject dataJsonQbj;
+            List<ArrivalObjectResult> list = new ArrayList<>();
+
+            if(LOG_ON){Log.d(TAG, response[0]);}
+
+            try {
+                dataJsonQbj = new JSONObject(response[0]);
+                JSONArray rasp = dataJsonQbj.getJSONArray("arrival");
+
+                if (rasp.length() == 0) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView textView1 = (TextView) findViewById(R.id.noArrivalItems);
+                            textView1.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+                } else {
+                     runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView textView1 = (TextView) findViewById(R.id.noArrivalItems);
+                            textView1.setVisibility(View.GONE);
+                        }
+                     });
+                }
+
+                for (int i = 0; i < rasp.length(); i++) {
+                    JSONObject oneObject = rasp.getJSONObject(i);
+
+                    String timeOtpr = oneObject.getString("time_otpr");
+                    String timePrib = oneObject.getString("time_prib");
+                    String timeFromStation = oneObject.getString("time_nt_reverse_schedule");
+                    String numberMarsh = oneObject.getString("number_reverse_schedule");
+                    String nameMarsh = oneObject.getString("name_reverse_schedule");
+                    String scheduleMarsh = oneObject.getString("day_reverse_schedule");
+                    list.add(new ArrivalObjectResult(timeOtpr, timePrib, timeFromStation, numberMarsh, nameMarsh, scheduleMarsh));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<ArrivalObjectResult> list) {
+            final ArrivalObjectResultAdapter adapter = new ArrivalObjectResultAdapter(ArrivalActivity.this, list);
+            listView.setAdapter(adapter);
+            super.onPostExecute(list);
+        }
     }
 }

@@ -37,7 +37,6 @@ import com.www.avtovokzal.org.Listener.MenuAutoCompleteTextChangedListener;
 import com.www.avtovokzal.org.Object.AutoCompleteObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MenuActivity extends ActionBarActivity {
 
@@ -118,7 +117,7 @@ public class MenuActivity extends ActionBarActivity {
                     return;
                 }
                 if (mHelper == null) return;
-                // Проверка уже купленного.
+                // Проверка уже купленного, запрос цены.
                 ArrayList<String> skuList = new ArrayList<>();
                 skuList.add(SKU_ADS_DISABLE);
                 mHelper.queryInventoryAsync(true, skuList, mGotInventoryListener);
