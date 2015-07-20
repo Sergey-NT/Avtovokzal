@@ -129,7 +129,6 @@ public class ArrivalActivity extends ActionBarActivity {
         if (defaultStation && settings.contains(APP_PREFERENCES_STATION_CODE) && settings.contains(APP_PREFERENCES_STATION_NAME)) {
             code = settings.getString(APP_PREFERENCES_STATION_CODE, null);
             myAutoComplete.setText(settings.getString(APP_PREFERENCES_STATION_NAME, null));
-
             loadArrivalResult(code);
         } else if (code != null) {
             loadArrivalResult(code);
@@ -316,19 +315,8 @@ public class ArrivalActivity extends ActionBarActivity {
                         callErrorActivity();
                         finish();
                     }
-
                     processingLoadArrivalResult task = new processingLoadArrivalResult();
                     task.execute(response);
-
-                    try {
-                        if (progressDialog != null && progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                        progressDialog = null;
-                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -449,7 +437,6 @@ public class ArrivalActivity extends ActionBarActivity {
                             textView1.setVisibility(View.VISIBLE);
                         }
                     });
-
                 } else {
                      runOnUiThread(new Runnable() {
                         @Override
@@ -482,6 +469,16 @@ public class ArrivalActivity extends ActionBarActivity {
             final ArrivalObjectResultAdapter adapter = new ArrivalObjectResultAdapter(ArrivalActivity.this, list);
             listView.setAdapter(adapter);
             super.onPostExecute(list);
+
+            try {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }  finally {
+                progressDialog = null;
+            }
         }
     }
 }

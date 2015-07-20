@@ -11,7 +11,6 @@ import com.www.avtovokzal.org.Object.AutoCompleteObject;
 import com.www.avtovokzal.org.R;
 
 public class MenuAutoCompleteTextChangedListener implements TextWatcher {
-
     Context context;
     private final static boolean LOG_ON = false;
 
@@ -29,32 +28,21 @@ public class MenuAutoCompleteTextChangedListener implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence userInput, int start, int before, int count) {
-
         try {
-
             if(userInput.length() > 0) {
 
                 if (LOG_ON) Log.v("Input: ", "User input: " + userInput);
 
                 MenuActivity menuActivity = ((MenuActivity) context);
-
                 menuActivity.myAdapter.notifyDataSetChanged();
-
                 AutoCompleteObject[] myObj = menuActivity.databaseH.read(userInput.toString());
 
                 // обновление адапрета
                 menuActivity.myAdapter = new AutocompleteCustomArrayAdapter(menuActivity, R.layout.listview_dropdown_item, myObj);
                 menuActivity.myAutoComplete.setAdapter(menuActivity.myAdapter);
             }
-
-        } catch (NullPointerException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
-
-
 }

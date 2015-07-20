@@ -25,7 +25,7 @@ public class AppController extends Application {
         APP_TRACKER, GLOBAL_TRACKER,
     }
 
-    HashMap<TrackerName, Tracker> mTrackers = new HashMap<TrackerName, Tracker>();
+    HashMap<TrackerName, Tracker> mTrackers = new HashMap<>();
 
     public AppController() {
         super();

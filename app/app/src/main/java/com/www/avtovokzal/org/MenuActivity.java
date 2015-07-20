@@ -203,7 +203,6 @@ public class MenuActivity extends ActionBarActivity {
         }
 
         myAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View agr1, int pos, long id) {
 

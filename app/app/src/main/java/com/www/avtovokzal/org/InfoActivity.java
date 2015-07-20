@@ -250,19 +250,8 @@ public class InfoActivity extends ActionBarActivity {
                         callErrorActivity();
                         finish();
                     }
-
                     processingLoadRouteInfo task = new processingLoadRouteInfo();
                     task.execute(response);
-
-                    try {
-                        if (progressDialog != null && progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                        progressDialog = null;
-                    }
                  }
             }, new Response.ErrorListener() {
                 @Override
@@ -401,6 +390,16 @@ public class InfoActivity extends ActionBarActivity {
             final RouteObjectInfoAdapter adapter = new RouteObjectInfoAdapter(InfoActivity.this, list);
             listView.setAdapter(adapter);
             super.onPostExecute(list);
+
+            try {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }  finally {
+                progressDialog = null;
+            }
         }
     }
 }

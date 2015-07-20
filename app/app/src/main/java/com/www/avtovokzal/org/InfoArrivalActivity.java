@@ -243,19 +243,8 @@ public class InfoArrivalActivity extends ActionBarActivity {
                         callErrorActivity();
                         finish();
                     }
-
                     processingLoadRouteInfoArrival task = new processingLoadRouteInfoArrival();
                     task.execute(response);
-
-                    try {
-                        if (progressDialog != null && progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                        progressDialog = null;
-                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -390,6 +379,16 @@ public class InfoArrivalActivity extends ActionBarActivity {
             final RouteObjectInfoArrivalAdapter adapter = new RouteObjectInfoArrivalAdapter(InfoArrivalActivity.this, list);
             listView.setAdapter(adapter);
             super.onPostExecute(list);
+
+            try {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }  finally {
+                progressDialog = null;
+            }
         }
     }
 }

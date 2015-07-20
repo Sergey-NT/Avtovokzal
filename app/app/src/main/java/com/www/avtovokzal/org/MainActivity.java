@@ -208,7 +208,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String name;
@@ -238,7 +237,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
 
 
         myAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View agr1, int pos, long id) {
                 RelativeLayout rl = (RelativeLayout) agr1;
@@ -427,19 +425,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                         callErrorActivity();
                         finish();
                     }
-
                     processingLoadStationToDB task = new processingLoadStationToDB();
                     task.execute(response);
-
-                    try {
-                        if (loadDialog != null && loadDialog.isShowing()) {
-                            loadDialog.dismiss();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                        loadDialog = null;
-                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -483,20 +470,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                         callErrorActivity();
                         finish();
                     }
-
                     processingLoadSchedule task = new processingLoadSchedule();
                     task.execute(response);
-
-                    try {
-                        if (queryDialog != null && queryDialog.isShowing()) {
-                            queryDialog.dismiss();
-                            if(LOG_ON){Log.d(TAG, "Dialog.dismiss");}
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                       queryDialog = null;
-                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -540,19 +515,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                         callErrorActivity();
                         finish();
                     }
-
                     processingLoadScheduleResult task = new processingLoadScheduleResult();
                     task.execute(response);
-
-                    try {
-                        if (queryDialog != null && queryDialog.isShowing()) {
-                            queryDialog.dismiss();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                        queryDialog = null;
-                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -637,10 +601,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
 
         if (isOnline()) {
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-
                 @Override
                 public void onResponse(String response) {
-
                     if (response == null) {
                         callErrorActivity();
                         finish();
@@ -654,10 +616,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
 
                     textView = (TextView) findViewById(R.id.header);
                     textView.setText(getString(R.string.main_schedule) + " " + dateNow);
-
                 }
             }, new Response.ErrorListener() {
-
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -665,10 +625,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                     finish();
                 }
             });
-
             // Установливаем TimeOut, Retry
             strReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
             // Добавляем запрос в очередь
             AppController.getInstance().addToRequestQueue(strReq);
         } else {
@@ -801,7 +759,7 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         day = 0;
         day = day + days;
 
-        if (month < 9) {
+        if (month < 10) {
             monthNumber = "0" + (month + 1);
         } else {
             monthNumber = "" + (month + 1);
@@ -960,6 +918,17 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
             final StationObjectAdapter adapter = new StationObjectAdapter(MainActivity.this, list);
             listView.setAdapter(adapter);
             super.onPostExecute(list);
+
+            try {
+                if (queryDialog != null && queryDialog.isShowing()) {
+                    queryDialog.dismiss();
+                    if(LOG_ON){Log.d(TAG, "Dialog.dismiss");}
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }  finally {
+                queryDialog = null;
+            }
         }
     }
 
@@ -987,6 +956,21 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            try {
+                if (loadDialog != null && loadDialog.isShowing()) {
+                    loadDialog.dismiss();
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }  finally {
+                loadDialog = null;
+            }
         }
     }
 
@@ -1046,6 +1030,16 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
             final RouteObjectResultAdapter adapterResult = new RouteObjectResultAdapter(MainActivity.this, list);
             listView.setAdapter(adapterResult);
             super.onPostExecute(list);
+
+            try {
+                if (queryDialog != null && queryDialog.isShowing()) {
+                    queryDialog.dismiss();
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }  finally {
+                queryDialog = null;
+            }
         }
     }
 }
