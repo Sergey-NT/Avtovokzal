@@ -75,7 +75,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
     private InterstitialAd interstitial;
     private SharedPreferences settings;
     private ProgressDialog queryDialog;
-    private ProgressDialog loadDialog;
 
     private String code;
     private String dateNow;
@@ -172,16 +171,16 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
             adView.loadAd(request);
         }
 
+        // Проверка есть ли изменения в списке остановок
+        if(!checkMD5Hash()){
+            loadStationToDB();
+        }
+
         // Проверка статуса сервера
         getServerStatus();
 
         // Установка текущей даты
         getDateNow();
-
-        // Проверка есть ли изменения в списке остановок
-        if(!checkMD5Hash()){
-            loadStationToDB();
-        }
 
         // Определяем элементы интерфейса
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.autoCompleteMain);
@@ -341,15 +340,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         }  finally {
             queryDialog = null;
         }
-        try {
-            if (loadDialog != null && loadDialog.isShowing()) {
-                loadDialog.dismiss();
-            }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }  finally {
-            loadDialog = null;
-        }
         super.onDestroy();
     }
 
@@ -413,11 +403,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         String url = "http://www.avtovokzal.org/php/app/station.php";
 
         if (isOnline()) {
-            loadDialog = new ProgressDialog(MainActivity.this);
-            loadDialog.setMessage(getString(R.string.main_load_db));
-            loadDialog.setCancelable(false);
-            loadDialog.show();
-
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -425,6 +410,9 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                         callErrorActivity();
                         finish();
                     }
+                    // Отключаем вожможность ввода до загрузки остановок в базу данных
+                    myAutoComplete.setEnabled(false);
+
                     processingLoadStationToDB task = new processingLoadStationToDB();
                     task.execute(response);
                 }
@@ -432,15 +420,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
-                    try {
-                        if (loadDialog != null && loadDialog.isShowing()) {
-                            loadDialog.dismiss();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                        loadDialog = null;
-                    }
                     callErrorActivity();
                 }
             });
@@ -459,7 +438,7 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
 
         if (isOnline()) {
             queryDialog = new ProgressDialog(MainActivity.this);
-            queryDialog.setMessage(getString(R.string.main_load_schedule));
+            queryDialog.setMessage(getString(R.string.main_load));
             queryDialog.setCancelable(false);
             queryDialog.show();
 
@@ -504,7 +483,7 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
 
         if (isOnline()) {
             queryDialog = new ProgressDialog(MainActivity.this);
-            queryDialog.setMessage(getString(R.string.main_load_schedule));
+            queryDialog.setMessage(getString(R.string.main_load));
             queryDialog.setCancelable(false);
             queryDialog.show();
 
@@ -961,16 +940,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-            try {
-                if (loadDialog != null && loadDialog.isShowing()) {
-                    loadDialog.dismiss();
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }  finally {
-                loadDialog = null;
-            }
+            // Включаем возможность ввода после загрузки остановок в базу данных
+            myAutoComplete.setEnabled(true);
         }
     }
 

@@ -7,8 +7,8 @@ android {
         applicationId "com.www.avtovokzal.org"
         minSdkVersion 10
         targetSdkVersion 22
-        versionCode 20
-        versionName "1.3.2"
+        versionCode 21
+        versionName "1.3.3"
     }
     buildTypes {
         release {

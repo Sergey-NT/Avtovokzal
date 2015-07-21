@@ -239,7 +239,7 @@ public class InfoActivity extends ActionBarActivity {
 
         if (isOnline()) {
             progressDialog = new ProgressDialog(InfoActivity.this);
-            progressDialog.setMessage(getString(R.string.info_load_data));
+            progressDialog.setMessage(getString(R.string.main_load));
             progressDialog.setCancelable(false);
             progressDialog.show();
 

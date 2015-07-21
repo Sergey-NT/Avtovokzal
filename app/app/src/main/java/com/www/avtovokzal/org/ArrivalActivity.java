@@ -304,7 +304,7 @@ public class ArrivalActivity extends ActionBarActivity {
 
         if (isOnline()) {
             progressDialog = new ProgressDialog(ArrivalActivity.this);
-            progressDialog.setMessage(getString(R.string.info_load_data));
+            progressDialog.setMessage(getString(R.string.main_load));
             progressDialog.setCancelable(false);
             progressDialog.show();
 

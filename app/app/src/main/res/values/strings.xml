@@ -38,10 +38,8 @@
     <string name="info_description">Остановочные пункты</string>
     <string name="info_note">Примечание:</string>
     <string name="info_distance">Растояние:</string>
-    <string name="info_load_data">Загрузка данных</string>
     <string name="main_schedule">Дата отправления:</string>
-    <string name="main_load_db">Подготовка к запуску</string>
-    <string name="main_load_schedule">Загрузка расписания</string>
+    <string name="main_load">Пожалуйста, подождите…</string>
     <string name="main_invalid_date">Расписание доступно на 10 дней вперед</string>
     <string name="main_status">Информация долго не обновлялась, мы работаем над решением этой проблемы</string>
     <string name="main_status_error">Время обновления неизвестно</string>
@@ -50,7 +48,7 @@
     <string name="admob_menu_activity">ca-app-pub-3253485608797245/3720345104</string>
     <string name="admob_interstitial">ca-app-pub-3253485608797245/9783238303</string>
     <string name="about_developer">Разработчик приложения: <a href="http://vk.com/id5170658" title="Сергей Ухарский">Сергей Ухарский</a></string>
-    <string name="about_version">Версия приложения: 1.3.2</string>
+    <string name="about_version">Версия приложения: 1.3.3</string>
     <string name="about_text">В приложении используются следующие иконки:
         Bus hand drawn transport free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
         Settings program free icon made by <a href="http://www.designmodo.com" title="Designmodo">Designmodo</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
