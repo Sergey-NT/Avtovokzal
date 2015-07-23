@@ -25,7 +25,6 @@ public class ActionBarActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar ab = getSupportActionBar();
         assert ab != null;
         ab.setTitle(getString(R.string.app_name));
-        ab.setSubtitle(getString(R.string.app_subtitle));
         ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
     }
 }

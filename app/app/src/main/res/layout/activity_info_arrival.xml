@@ -12,17 +12,6 @@
         android:layout_weight="1" >
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:background="@color/background_header"
-            android:padding="5sp"
-            android:text="@string/info_description"
-            android:textStyle="bold"
-            android:textSize="17sp"
-            android:textColor="@color/text_color" />
-
-        <TextView
             android:id="@+id/textViewInfoArrivalName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,5 +41,4 @@
             android:dividerHeight="1sp" />
 
     </LinearLayout>
-
 </LinearLayout>

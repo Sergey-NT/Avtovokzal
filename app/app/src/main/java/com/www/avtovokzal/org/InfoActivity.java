@@ -152,6 +152,15 @@ public class InfoActivity extends ActionBarActivity {
                 finish();
             }
         });
+
+        changeTitleActionBar();
+    }
+
+    private void changeTitleActionBar() {
+        // Изменение текста подстроки ActionBar
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        assert ab != null;
+        ab.setSubtitle(getString(R.string.info_description));
     }
 
     @Override

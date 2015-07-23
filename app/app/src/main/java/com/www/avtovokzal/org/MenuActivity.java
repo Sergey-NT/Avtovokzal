@@ -250,6 +250,14 @@ public class MenuActivity extends ActionBarActivity {
         AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
         myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
 
+        changeTitleActionBar();
+    }
+
+    private void changeTitleActionBar() {
+        // Изменение текста подстроки ActionBar
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        assert ab != null;
+        ab.setSubtitle(getString(R.string.menu_settings));
     }
 
     // Listener для востановителя покупок.

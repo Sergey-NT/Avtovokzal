@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Автовокзал</string>
     <string name="app_subtitle">Нижний Тагил</string>
-    <string name="app_subtitle_main">Нижний Тагил. Отправление автобусов</string>
-    <string name="app_subtitle_arrival">Нижний Тагил. Прибытие автобусов</string>
+    <string name="app_subtitle_main">Отправление автобусов</string>
+    <string name="app_subtitle_arrival">Прибытие автобусов</string>
     <string name="name_bus">Марка автобуса:</string>
     <string name="count_bus">Вместимость автобуса:</string>
     <string name="free_bus">Кол-во свободных мест:</string>
@@ -28,7 +28,6 @@
     <string name="menu_settings">Настройки</string>
     <string name="menu_status">Статус</string>
     <string name="menu_arrival">Расписание прибытия автобусов</string>
-    <string name="menu_description">Настройки отображения расписания</string>
     <string name="menu_ads_disable_toast">Оплата за отключение показа рекламы прошла успешно</string>
     <string name="menu_station">Если Вы регулярно просматриваете расписание до одной и той же остановки, то можно эту остановку установить, как остановку по умолчанию. При запуске программы расписание сразу же будет загружаться до выбранного пункта назначения.</string>
     <string name="checkbox_cancel">Скрывать рейсы, которые не состоятся</string>

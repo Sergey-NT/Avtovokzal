@@ -276,9 +276,14 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         btnDate.setTransformationMethod(null);
         btnNextDay.setTransformationMethod(null);
 
+        changeTitleActionBar();
+    }
+
+    private void changeTitleActionBar() {
         // Изменение текста подстроки ActionBar
         android.support.v7.app.ActionBar ab = getSupportActionBar();
         assert ab != null;
+        ab.setTitle(getString(R.string.app_subtitle));
         ab.setSubtitle(getString(R.string.app_subtitle_main));
     }
 

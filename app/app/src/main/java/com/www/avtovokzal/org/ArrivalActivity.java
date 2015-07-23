@@ -199,9 +199,14 @@ public class ArrivalActivity extends ActionBarActivity {
         AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
         myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
 
+        changeTitleActionBar();
+    }
+
+    private void changeTitleActionBar() {
         // Изменение текста подстроки ActionBar
         android.support.v7.app.ActionBar ab = getSupportActionBar();
         assert ab != null;
+        ab.setTitle(getString(R.string.app_subtitle));
         ab.setSubtitle(getString(R.string.app_subtitle_arrival));
     }
 
