@@ -65,6 +65,15 @@ public class AboutActivity extends ActionBarActivity {
         tv1.setMovementMethod(LinkMovementMethod.getInstance());
         TextView tv2 = (TextView) findViewById(R.id.about_developer);
         tv2.setMovementMethod(LinkMovementMethod.getInstance());
+
+        changeTitleActionBar();
+    }
+
+    private void changeTitleActionBar() {
+        // Изменение текста подстроки ActionBar
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        assert ab != null;
+        ab.setSubtitle(getString(R.string.button_about));
     }
 
     @Override

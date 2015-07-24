@@ -17,17 +17,6 @@
             android:background="@color/background" >
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="15sp"
-                android:background="@color/background_header"
-                android:text="@string/button_about"
-                android:textStyle="bold"
-                android:textSize="17sp"
-                android:textColor="@color/text_color" />
-
-            <TextView
                 android:id="@+id/about_icons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
