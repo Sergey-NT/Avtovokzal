@@ -215,9 +215,6 @@ public class InfoArrivalActivity extends ActionBarActivity {
         // Скрываем статус сервера
         MenuItem item = myMenu.findItem(R.id.lamp);
         item.setVisible(false);
-        // Скрываем расписание прибытия
-        MenuItem itemArrival = myMenu.findItem(R.id.arrival);
-        itemArrival.setVisible(false);
         return true;
     }
 

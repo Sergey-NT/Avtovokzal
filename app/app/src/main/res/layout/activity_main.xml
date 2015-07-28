@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout   xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/adViewMainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:focusable="true"
-    android:focusableInTouchMode="true" >
+    android:focusableInTouchMode="true">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -34,8 +33,7 @@
             android:textColorHint="@color/text_color_hint"
             android:completionThreshold="1"
             android:textColor="@color/text_color"
-            android:textSize="17sp" >
-        </com.www.avtovokzal.org.CustomAutoCompleteView>
+            android:textSize="17sp" />
 
         <Button
             android:id="@+id/header"
@@ -61,15 +59,29 @@
             android:layout_marginBottom="25sp"
             android:textColor="@color/text_color"
             android:gravity="center"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
-        <ListView
-            android:id="@+id/listViewMain"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:soundEffectsEnabled="true"
-            android:divider="@color/divider_color"
-            android:dividerHeight="1sp" />
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/coordinator"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" >
 
+            <ListView
+                android:id="@+id/listViewMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:soundEffectsEnabled="true"
+                android:divider="@color/divider_color"
+                android:dividerHeight="1sp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_arrival" />
+
+        </android.support.design.widget.CoordinatorLayout>
     </LinearLayout>
 </LinearLayout>

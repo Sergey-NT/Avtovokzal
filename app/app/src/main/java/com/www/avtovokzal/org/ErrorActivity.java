@@ -71,9 +71,6 @@ public class ErrorActivity extends ActionBarActivity {
         // Скрываем статус сервера
         MenuItem itemLamp = menu.findItem(R.id.lamp);
         itemLamp.setVisible(false);
-        // Скрываем расписание прибытия
-        MenuItem itemArrival = menu.findItem(R.id.arrival);
-        itemArrival.setVisible(false);
         return true;
     }
 

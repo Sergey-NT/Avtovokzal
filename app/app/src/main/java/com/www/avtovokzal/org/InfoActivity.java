@@ -233,10 +233,6 @@ public class InfoActivity extends ActionBarActivity {
             case R.id.lamp:
                 Toast.makeText(getApplicationContext(), getString(R.string.main_status), Toast.LENGTH_LONG).show();
                 return true;
-            case R.id.arrival:
-                Intent intentArrival = new Intent(InfoActivity.this, ArrivalActivity.class);
-                startActivity(intentArrival);
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }

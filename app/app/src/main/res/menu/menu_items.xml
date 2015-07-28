@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sabd="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/arrival"
-        android:title="@string/menu_arrival"
-        android:icon="@drawable/ic_arrival"
-        sabd:showAsAction="always" />
-    <item
         android:id="@+id/lamp"
         android:title="@string/menu_status"
         android:icon="@drawable/ic_lamp"

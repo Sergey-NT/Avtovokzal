@@ -33,8 +33,7 @@
             android:textColorHint="@color/text_color_hint"
             android:completionThreshold="1"
             android:textColor="@color/text_color"
-            android:textSize="17sp" >
-        </com.www.avtovokzal.org.CustomAutoCompleteView>
+            android:textSize="17sp" />
 
         <TextView
             android:layout_width="match_parent"

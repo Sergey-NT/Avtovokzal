@@ -199,7 +199,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
 
         if (defaultStation && settings.contains(APP_PREFERENCES_STATION_CODE) && settings.contains(APP_PREFERENCES_STATION_NAME) && !load) {
             code = settings.getString(APP_PREFERENCES_STATION_CODE, null);
-            myAutoComplete.setText(settings.getString(APP_PREFERENCES_STATION_NAME, null));
+            nameStation = settings.getString(APP_PREFERENCES_STATION_NAME, null);
+            myAutoComplete.setText(nameStation);
 
             loadScheduleResult(code, day, cancel, sell);
         } else if (!load && !defaultStation)  {
@@ -269,6 +270,21 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         myAutoComplete.addTextChangedListener(new CustomAutoCompleteTextChangedListener(this));
         AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
         myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
+
+        // Floating Action Button
+        findViewById(R.id.fab).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intentArrival = new Intent(MainActivity.this, ArrivalActivity.class);
+                        if (code != null) {
+                            intentArrival.putExtra("code", code);
+                            intentArrival.putExtra("newNameStation", nameStation);
+                        }
+                        startActivity(intentArrival);
+                    }
+                }
+        );
 
         // Отменяем преобразование текста кнопок в AllCaps програмно
         btnDate = (Button) findViewById(R.id.header);
@@ -394,10 +410,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                 return true;
             case R.id.lamp:
                 Toast.makeText(getApplicationContext(), getString(R.string.main_status), Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.arrival:
-                Intent intentArrival = new Intent(MainActivity.this, ArrivalActivity.class);
-                startActivity(intentArrival);
                 return true;
         }
         return super.onOptionsItemSelected(item);
