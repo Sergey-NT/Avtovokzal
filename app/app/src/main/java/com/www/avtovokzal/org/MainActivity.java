@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +42,12 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
 import com.www.avtovokzal.org.Adapter.RouteObjectResultAdapter;
 import com.www.avtovokzal.org.Adapter.StationObjectAdapter;
@@ -107,6 +114,31 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         Button btnNextDay;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
         databaseH = new DatabaseHandler(MainActivity.this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withDisplayBelowToolbar(true)
+                .withActionBarDrawerToggleAnimated(true)
+                .addDrawerItems(
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_main)
+                                .withIdentifier(1),
+                        new SecondaryDrawerItem()
+                                .withName(R.string.app_subtitle_arrival)
+                                .withIdentifier(2),
+                        new DividerDrawerItem(),
+                        new SecondaryDrawerItem()
+                                .withName(R.string.menu_settings)
+                                .withIdentifier(3)
+                )
+                .build();
+
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
@@ -292,7 +324,7 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         btnDate.setTransformationMethod(null);
         btnNextDay.setTransformationMethod(null);
 
-        changeTitleActionBar();
+//        changeTitleActionBar();
     }
 
     private void changeTitleActionBar() {
