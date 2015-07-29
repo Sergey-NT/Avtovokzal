@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,12 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.RouteObjectInfoAdapter;
 import com.www.avtovokzal.org.Object.RouteObjectInfo;
 
@@ -52,6 +59,8 @@ public class InfoActivity extends ActionBarActivity {
     private ListView listView;
     private AdView adView;
     private ProgressDialog progressDialog;
+    private Toolbar toolbar;
+    private Drawer drawerResult;
 
     private String number;
     private String time;
@@ -153,14 +162,78 @@ public class InfoActivity extends ActionBarActivity {
             }
         });
 
-        changeTitleActionBar();
+        initializeToolbar();
+        initializeNavigationDrawer();
     }
 
-    private void changeTitleActionBar() {
-        // Изменение текста подстроки ActionBar
-        android.support.v7.app.ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setSubtitle(getString(R.string.info_description));
+    private void initializeNavigationDrawer() {
+        drawerResult = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withDisplayBelowToolbar(true)
+                .withActionBarDrawerToggleAnimated(true)
+                .addDrawerItems(
+                        new SectionDrawerItem()
+                                .withName(R.string.app_name_city),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_main)
+                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_arrival)
+                                .withIcon(R.drawable.ic_vertical_align_bottom_black_18dp),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.menu_settings)
+                                .withIcon(R.drawable.ic_settings_black_18dp),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.menu_about)
+                                .withIcon(R.drawable.ic_info_outline_black_18dp)
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
+                        switch (position) {
+                            case 1:
+                                finish();
+                                return true;
+                            case 2:
+                                Intent intentArrival = new Intent(InfoActivity.this, ArrivalActivity.class);
+                                startActivity(intentArrival);
+                                finish();
+                                return true;
+                            case 4:
+                                Intent intentMenu = new Intent(InfoActivity.this, MenuActivity.class);
+                                startActivity(intentMenu);
+                                finish();
+                                return true;
+                            case  5:
+                                Intent intentAbout = new Intent(InfoActivity.this, AboutActivity.class);
+                                startActivity(intentAbout);
+                                finish();
+                                return true;
+                        }
+                        return false;
+                    }
+                })
+                .build();
+    }
+
+    private void initializeToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.app_name);
+            toolbar.setSubtitle(R.string.app_subtitle_info);
+            setSupportActionBar(toolbar);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerResult != null && drawerResult.isDrawerOpen()) {
+            drawerResult.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -226,10 +299,6 @@ public class InfoActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.settings:
-                Intent intent = new Intent(InfoActivity.this, MenuActivity.class);
-                startActivity(intent);
-                return true;
             case R.id.lamp:
                 Toast.makeText(getApplicationContext(), getString(R.string.main_status), Toast.LENGTH_LONG).show();
                 return true;

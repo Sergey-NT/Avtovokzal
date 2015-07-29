@@ -4,6 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,4 +51,5 @@
         android:textSize="17sp"
         android:textAllCaps="false"
         android:textColor="@color/text_color_white" />
+
 </LinearLayout>

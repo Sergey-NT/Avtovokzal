@@ -2,6 +2,7 @@ package com.www.avtovokzal.org;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +50,17 @@ public class ErrorActivity extends ActionBarActivity {
         newNameStation = getIntent().getStringExtra("newNameStation");
 
         if (LOG_ON) {Log.v("Params", "newNameStation: " + newNameStation + "Number: " + number + " Time: " + time + " TimePrib: " + timePrib + " TimeFromStation: " + timeFromStation + " Activity: " + activity + " Number: " + numberToView + " Name: " + name + " Day: " + day + " Code: " + code + " Cancel: " + cancel + " Sell: " + sell);}
+
+        initializeToolbar();
+    }
+
+    private void initializeToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.app_name);
+            toolbar.setSubtitle(R.string.no_connect);
+            setSupportActionBar(toolbar);
+        }
     }
 
     @Override
@@ -72,17 +84,6 @@ public class ErrorActivity extends ActionBarActivity {
         MenuItem itemLamp = menu.findItem(R.id.lamp);
         itemLamp.setVisible(false);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Intent intent = new Intent(ErrorActivity.this, MenuActivity.class);
-                startActivity(intent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public void onBack(View view){

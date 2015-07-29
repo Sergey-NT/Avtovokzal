@@ -46,7 +46,7 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
 import com.www.avtovokzal.org.Adapter.RouteObjectResultAdapter;
@@ -82,6 +82,8 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
     private InterstitialAd interstitial;
     private SharedPreferences settings;
     private ProgressDialog queryDialog;
+    private Toolbar toolbar;
+    private Drawer drawerResult = null;
 
     private String code;
     private String dateNow;
@@ -114,31 +116,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         Button btnNextDay;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
         databaseH = new DatabaseHandler(MainActivity.this);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-        }
-
-        Drawer result = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withDisplayBelowToolbar(true)
-                .withActionBarDrawerToggleAnimated(true)
-                .addDrawerItems(
-                        new PrimaryDrawerItem()
-                                .withName(R.string.app_subtitle_main)
-                                .withIdentifier(1),
-                        new SecondaryDrawerItem()
-                                .withName(R.string.app_subtitle_arrival)
-                                .withIdentifier(2),
-                        new DividerDrawerItem(),
-                        new SecondaryDrawerItem()
-                                .withName(R.string.menu_settings)
-                                .withIdentifier(3)
-                )
-                .build();
-
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
@@ -303,6 +280,18 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
         myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
 
+        // Отменяем преобразование текста кнопок в AllCaps програмно
+        btnDate = (Button) findViewById(R.id.header);
+        btnNextDay = (Button) findViewById(R.id.buttonNextDay);
+        btnDate.setTransformationMethod(null);
+        btnNextDay.setTransformationMethod(null);
+
+        initializeToolbar();
+        initializeNavigationDrawer();
+        initializeFloatingActionButton();
+    }
+
+    private void initializeFloatingActionButton() {
         // Floating Action Button
         findViewById(R.id.fab).setOnClickListener(
                 new View.OnClickListener() {
@@ -317,22 +306,87 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
                     }
                 }
         );
-
-        // Отменяем преобразование текста кнопок в AllCaps програмно
-        btnDate = (Button) findViewById(R.id.header);
-        btnNextDay = (Button) findViewById(R.id.buttonNextDay);
-        btnDate.setTransformationMethod(null);
-        btnNextDay.setTransformationMethod(null);
-
-//        changeTitleActionBar();
     }
 
-    private void changeTitleActionBar() {
-        // Изменение текста подстроки ActionBar
-        android.support.v7.app.ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setTitle(getString(R.string.app_subtitle));
-        ab.setSubtitle(getString(R.string.app_subtitle_main));
+    private void initializeToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.app_name_city);
+            toolbar.setSubtitle(R.string.app_subtitle_main);
+            setSupportActionBar(toolbar);
+        }
+    }
+
+    private void initializeNavigationDrawer() {
+        drawerResult = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withDisplayBelowToolbar(true)
+                .withActionBarDrawerToggleAnimated(true)
+                .addDrawerItems(
+                        new SectionDrawerItem()
+                                .withName(R.string.app_name_city),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_main)
+                                .withIdentifier(1)
+                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_arrival)
+                                .withIcon(R.drawable.ic_vertical_align_bottom_black_18dp),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.menu_settings)
+                                .withIcon(R.drawable.ic_settings_black_18dp),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.menu_about)
+                                .withIcon(R.drawable.ic_info_outline_black_18dp)
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
+                        switch (position) {
+                            case 1:
+                                drawerResult.closeDrawer();
+                                return true;
+                            case 2:
+                                Intent intentArrival = new Intent(MainActivity.this, ArrivalActivity.class);
+                                if (code != null) {
+                                    intentArrival.putExtra("code", code);
+                                    intentArrival.putExtra("newNameStation", nameStation);
+                                }
+                                startActivity(intentArrival);
+                                drawerResult.closeDrawer();
+                                return true;
+                            case 4:
+                                Intent intentMenu = new Intent(MainActivity.this, MenuActivity.class);
+                                intentMenu.putExtra("day", day);
+                                intentMenu.putExtra("activity", "MainActivity");
+                                if (code != null) {
+                                    intentMenu.putExtra("code", code);
+                                }
+                                startActivity(intentMenu);
+                                drawerResult.closeDrawer();
+                                return true;
+                            case  5:
+                                Intent intentAbout = new Intent(MainActivity.this, AboutActivity.class);
+                                startActivity(intentAbout);
+                                drawerResult.closeDrawer();
+                                return true;
+                        }
+                        return false;
+                    }
+                })
+                .build();
+        drawerResult.setSelectionByIdentifier(1);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerResult != null && drawerResult.isDrawerOpen()) {
+            drawerResult.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -366,6 +420,7 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
         if (adView != null && getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
             adView.setVisibility(View.GONE);
         }
+        drawerResult.setSelectionByIdentifier(1);
     }
 
     @Override
@@ -431,15 +486,6 @@ public class MainActivity extends ActionBarActivity implements DatePickerDialog.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.settings:
-                Intent intent = new Intent(MainActivity.this, MenuActivity.class);
-                intent.putExtra("day", day);
-                intent.putExtra("activity", "MainActivity");
-                if (code != null) {
-                    intent.putExtra("code", code);
-                }
-                startActivity(intent);
-                return true;
             case R.id.lamp:
                 Toast.makeText(getApplicationContext(), getString(R.string.main_status), Toast.LENGTH_LONG).show();
                 return true;

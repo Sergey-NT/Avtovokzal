@@ -64,7 +64,7 @@
         android:layout_toRightOf="@+id/textViewInfoTimeWay"
         android:layout_marginStart="10sp"
         android:layout_marginLeft="10sp"
-        android:text="@string/time_prib"
+        android:text="@string/main_time_arrival"
         android:textSize="15sp"
         android:textColor="@color/text_color_hint" />
 

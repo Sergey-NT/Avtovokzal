@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Log;
@@ -28,6 +29,12 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
 import com.www.avtovokzal.org.Billing.IabHelper;
 import com.www.avtovokzal.org.Billing.IabResult;
@@ -53,6 +60,8 @@ public class MenuActivity extends ActionBarActivity {
 
     private AdView adView;
     private SharedPreferences settings;
+    private Toolbar toolbar;
+    private Drawer drawerResult = null;
 
     private String activity;
     private String code;
@@ -72,7 +81,6 @@ public class MenuActivity extends ActionBarActivity {
 
         boolean AdShowGone;
         boolean defaultStation;
-        Button btnAbout;
         Button btnFeedback;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
 
@@ -84,7 +92,6 @@ public class MenuActivity extends ActionBarActivity {
 
         // Определяем элементы интерфейса
         btnAdsDisable = (Button) findViewById(R.id.btnAdsDisable);
-        btnAbout = (Button) findViewById(R.id.btnAbout);
         btnFeedback = (Button) findViewById(R.id.btnFeedback);
         checkBoxCancel = (CheckBox) findViewById(R.id.checkBoxCancel);
         checkBoxSell = (CheckBox) findViewById(R.id.checkBoxSell);
@@ -93,7 +100,6 @@ public class MenuActivity extends ActionBarActivity {
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.autoCompleteMenu);
 
         // Отменяем преобразование текста кнопок в AllCaps програмно
-        btnAbout.setTransformationMethod(null);
         btnAdsDisable.setTransformationMethod(null);
         btnFeedback.setTransformationMethod(null);
 
@@ -250,14 +256,78 @@ public class MenuActivity extends ActionBarActivity {
         AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
         myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
 
-        changeTitleActionBar();
+        initializeToolbar();
+        initializeNavigationDrawer();
     }
 
-    private void changeTitleActionBar() {
-        // Изменение текста подстроки ActionBar
-        android.support.v7.app.ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setSubtitle(getString(R.string.menu_settings));
+    private void initializeNavigationDrawer() {
+        drawerResult = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withDisplayBelowToolbar(true)
+                .withActionBarDrawerToggleAnimated(true)
+                .addDrawerItems(
+                        new SectionDrawerItem()
+                                .withName(R.string.app_name_city),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_main)
+                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_arrival)
+                                .withIcon(R.drawable.ic_vertical_align_bottom_black_18dp),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.menu_settings)
+                                .withIdentifier(1)
+                                .withIcon(R.drawable.ic_settings_black_18dp),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.menu_about)
+                                .withIcon(R.drawable.ic_info_outline_black_18dp)
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
+                        switch (position) {
+                            case 1:
+                                finish();
+                                return true;
+                            case 2:
+                                Intent intentArrival = new Intent(MenuActivity.this, ArrivalActivity.class);
+                                startActivity(intentArrival);
+                                finish();
+                                return true;
+                            case 4:
+                                drawerResult.closeDrawer();
+                                return true;
+                            case  5:
+                                Intent intentAbout = new Intent(MenuActivity.this, AboutActivity.class);
+                                startActivity(intentAbout);
+                                finish();
+                                return true;
+                        }
+                        return false;
+                    }
+                })
+                .build();
+        drawerResult.setSelectionByIdentifier(1);
+    }
+
+    private void initializeToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.app_name);
+            toolbar.setSubtitle(R.string.menu_settings);
+            setSupportActionBar(toolbar);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerResult != null && drawerResult.isDrawerOpen()) {
+            drawerResult.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     // Listener для востановителя покупок.
@@ -427,11 +497,6 @@ public class MenuActivity extends ActionBarActivity {
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("market://details?id=com.www.avtovokzal.org"));
-        startActivity(intent);
-    }
-
-    public void btnAboutOnClick (View view) {
-        Intent intent = new Intent(MenuActivity.this, AboutActivity.class);
         startActivity(intent);
     }
 

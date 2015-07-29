@@ -8,6 +8,10 @@
     android:focusable="true"
     android:focusableInTouchMode="true" >
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -104,8 +108,8 @@
                 android:layout_marginEnd="15sp"
                 android:nextFocusUp="@id/autoCompleteMenu"
                 android:nextFocusLeft="@id/autoCompleteMenu"
-                android:drawableLeft="@drawable/ic_search"
-                android:drawableStart="@drawable/ic_search"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                android:drawableStart="@drawable/ic_search_black_24dp"
                 android:drawablePadding="5sp"
                 android:inputType="textNoSuggestions"
                 android:hint="@string/hint_menu"
@@ -162,22 +166,6 @@
                 android:background="@color/primary"
                 android:padding="10sp"
                 android:text="@string/button_feedback"
-                android:textSize="17sp"
-                android:textColor="@color/text_color_white" />
-
-            <Button
-                android:id="@+id/btnAbout"
-                android:onClick="btnAboutOnClick"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10sp"
-                android:layout_marginBottom="10sp"
-                android:layout_marginLeft="15sp"
-                android:layout_marginRight="15sp"
-                android:layout_gravity="center"
-                android:background="@color/primary"
-                android:padding="10sp"
-                android:text="@string/button_about"
                 android:textSize="17sp"
                 android:textColor="@color/text_color_white" />
 
