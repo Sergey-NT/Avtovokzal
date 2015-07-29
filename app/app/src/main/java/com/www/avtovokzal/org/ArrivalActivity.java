@@ -53,7 +53,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrivalActivity extends ActionBarActivity {
+public class ArrivalActivity extends AppCompatSettingsActivity {
 
     Menu myMenu;
 

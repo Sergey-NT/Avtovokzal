@@ -70,7 +70,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements DatePickerDialog.OnDateSetListener {
+public class MainActivity extends AppCompatSettingsActivity implements DatePickerDialog.OnDateSetListener {
 
     public CustomAutoCompleteView myAutoComplete;
     public ArrayAdapter<AutoCompleteObject> myAdapter;

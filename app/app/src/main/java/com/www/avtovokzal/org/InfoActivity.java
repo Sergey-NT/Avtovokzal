@@ -50,7 +50,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InfoActivity extends ActionBarActivity {
+public class InfoActivity extends AppCompatSettingsActivity {
 
     TextView textView;
     Menu myMenu;

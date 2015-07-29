@@ -48,7 +48,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InfoArrivalActivity extends ActionBarActivity {
+public class InfoArrivalActivity extends AppCompatSettingsActivity {
 
     TextView textViewName;
     TextView textViewTime;

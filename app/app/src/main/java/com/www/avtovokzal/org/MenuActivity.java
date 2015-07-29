@@ -45,7 +45,7 @@ import com.www.avtovokzal.org.Object.AutoCompleteObject;
 
 import java.util.ArrayList;
 
-public class MenuActivity extends ActionBarActivity {
+public class MenuActivity extends AppCompatSettingsActivity {
 
     CheckBox checkBoxCancel;
     CheckBox checkBoxSell;

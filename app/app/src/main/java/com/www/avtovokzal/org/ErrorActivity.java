@@ -12,7 +12,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-public class ErrorActivity extends ActionBarActivity {
+public class ErrorActivity extends AppCompatSettingsActivity {
 
     private String number;
     private String time;

@@ -23,7 +23,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-public class AboutActivity extends ActionBarActivity {
+public class AboutActivity extends AppCompatSettingsActivity {
 
     private AdView adView;
     private SharedPreferences settings;
