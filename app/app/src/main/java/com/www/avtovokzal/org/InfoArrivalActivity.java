@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -52,14 +51,13 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
 
     TextView textViewName;
     TextView textViewTime;
-    Menu myMenu;
 
     private SharedPreferences settings;
     private ListView listView;
     private AdView adView;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
-    private Drawer drawerResult;
+    private Drawer drawerResult = null;
 
     private String number;
     private String timePrib;
@@ -91,26 +89,8 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
 
         // Реклама в приложении
         if (!AdShowGone) {
-            // Создание экземпляра adView
-            adView = new AdView(this);
-            adView.setAdUnitId(getString(R.string.admob_info_activity));
-            adView.setAdSize(AdSize.SMART_BANNER);
-
-            // Поиск разметки LinearLayout
-            LinearLayout layout = (LinearLayout)findViewById(R.id.adViewInfoArrivalActivity);
-
-            // Добавление в разметку экземпляра adView
-            layout.addView(adView);
-
-            // Инициирование общего запроса
-            AdRequest request = new AdRequest.Builder().build();
-
-            // Загрузка adView с объявлением
-            adView.loadAd(request);
+            initializeAd();
         }
-
-        // Проверка статуса сервера
-        getServerStatus();
 
         // Определяем элементы интерфейса
         listView = (ListView) findViewById(R.id.listViewInfoArrival);
@@ -129,6 +109,13 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
         // Загружаем информацию об остановках на маршруте
         loadRouteInfoArrival(number, timePrib, timeFromStation);
 
+        listViewListener();
+
+        initializeToolbar();
+        initializeNavigationDrawer();
+    }
+
+    private void listViewListener() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -156,9 +143,25 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                 finish();
             }
         });
+    }
 
-        initializeToolbar();
-        initializeNavigationDrawer();
+    private void initializeAd() {
+        // Создание экземпляра adView
+        adView = new AdView(this);
+        adView.setAdUnitId(getString(R.string.admob_info_activity));
+        adView.setAdSize(AdSize.SMART_BANNER);
+
+        // Поиск разметки LinearLayout
+        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewInfoArrivalActivity);
+
+        // Добавление в разметку экземпляра adView
+        layout.addView(adView);
+
+        // Инициирование общего запроса
+        AdRequest request = new AdRequest.Builder().build();
+
+        // Загрузка adView с объявлением
+        adView.loadAd(request);
     }
 
     private void initializeNavigationDrawer() {
@@ -286,21 +289,10 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items, menu);
-        myMenu = menu;
         // Скрываем статус сервера
-        MenuItem item = myMenu.findItem(R.id.lamp);
+        MenuItem item = menu.findItem(R.id.lamp);
         item.setVisible(false);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.lamp:
-                Toast.makeText(getApplicationContext(), getString(R.string.main_status), Toast.LENGTH_LONG).show();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // Запрос информации об остановках на маршруте
@@ -337,55 +329,6 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                     }  finally {
                         progressDialog = null;
                     }
-                    callErrorActivity();
-                }
-            });
-            // Установливаем TimeOut, Retry
-            strReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            // Добавляем запрос в очередь
-            AppController.getInstance().addToRequestQueue(strReq);
-        } else {
-            callErrorActivity();
-        }
-    }
-
-    // Проверка статуса сервера
-    private void getServerStatus(){
-        String url = "http://www.avtovokzal.org/php/app/status.php";
-
-        if (isOnline()) {
-            StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    if (response == null || response.length() == 0) {
-                        callErrorActivity();
-                        finish();
-                    }
-
-                    if(LOG_ON){Log.d(TAG, response);}
-
-                    assert response != null;
-                    response = response.trim();
-
-                    // Проверяем когда было последнее обновление расписания
-                    try {
-                        int delta = Integer.parseInt(response);
-
-                        if (delta > 900) {
-                            MenuItem item = myMenu.findItem(R.id.lamp);
-                            item.setVisible(true);
-                        }
-                    } catch (RuntimeException e) {
-                        e.printStackTrace();
-                        MenuItem item = myMenu.findItem(R.id.lamp);
-                        item.setVisible(true);
-                        Toast.makeText(getApplicationContext(), getString(R.string.main_status_error), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
                     callErrorActivity();
                 }
             });

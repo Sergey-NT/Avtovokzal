@@ -89,19 +89,18 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     private String dateNow;
     private String number;
     private String time;
-    private String md5hash;
     private String nameStation;
     private int day = 0;
     private boolean cancel;
     private boolean load;
     private boolean sell;
     private boolean AdShowGone;
-    private boolean checkMD5;
 
     private static final String TAG = "MainActivity";
     private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
 
     public static final String APP_PREFERENCES_MD5 = "md5";
+    public static final String APP_PREFERENCES_MD5_CHECK = "checkMD5";
 
     Menu myMenu;
     IabHelper mHelper;
@@ -112,6 +111,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         setContentView(R.layout.activity_main);
 
         boolean defaultStation;
+        boolean checkMD5;
         Button btnDate;
         Button btnNextDay;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
@@ -152,44 +152,18 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
         // Реклама в приложении
         if (!AdShowGone) {
-            // Создание межстраничного объявления
-            interstitial = new InterstitialAd(this);
-            interstitial.setAdUnitId(getString(R.string.admob_interstitial));
-
-            // Создание запроса объявления.
-            AdRequest adRequest = new AdRequest.Builder().build();
-
-            // Запуск загрузки межстраничного объявления
-            interstitial.loadAd(adRequest);
-
-            // Создание экземпляра adView
-            adView = new AdView(this);
-            adView.setAdUnitId(getString(R.string.admob_main_activity));
-            adView.setAdSize(AdSize.SMART_BANNER);
-
-            // Поиск разметки LinearLayout
-            LinearLayout layout = (LinearLayout)findViewById(R.id.adViewMainActivity);
-
-            // Добавление в разметку экземпляра adView
-            layout.addView(adView);
-
-            // Инициирование общего запроса
-            AdRequest request = new AdRequest.Builder().build();
-
-            // Загрузка adView с объявлением
-            adView.loadAd(request);
+            initializeAd();
         }
+
+        loadSystemInfo();
 
         // Проверка есть ли изменения в списке остановок
-        if(!checkMD5Hash()){
+        checkMD5 = settings.contains(APP_PREFERENCES_MD5_CHECK) && settings.getBoolean(APP_PREFERENCES_MD5_CHECK, false);
+
+        if(!checkMD5){
+            if(LOG_ON) Log.v("checkMD5", "Load Station To DB");
             loadStationToDB();
         }
-
-        // Проверка статуса сервера
-        getServerStatus();
-
-        // Установка текущей даты
-        getDateNow();
 
         // Определяем элементы интерфейса
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.autoCompleteMain);
@@ -216,6 +190,61 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             loadSchedule(day, cancel, sell);
         }
 
+        listViewListener();
+        myAutoCompleteListener();
+        myAutoCompleteFocus();
+
+        myAutoComplete.addTextChangedListener(new CustomAutoCompleteTextChangedListener(this));
+        AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
+        myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
+
+        // Отменяем преобразование текста кнопок в AllCaps програмно
+        btnDate = (Button) findViewById(R.id.header);
+        btnNextDay = (Button) findViewById(R.id.buttonNextDay);
+        btnDate.setTransformationMethod(null);
+        btnNextDay.setTransformationMethod(null);
+
+        initializeToolbar();
+        initializeNavigationDrawer();
+        initializeFloatingActionButton();
+    }
+
+    private void myAutoCompleteFocus() {
+        // При получении фокуса полем AutoComplete стираем ранее введенный текст
+        myAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean bool) {
+                if (bool) {
+                    myAutoComplete.setText("");
+                }
+            }
+        });
+    }
+
+    private void myAutoCompleteListener() {
+        myAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View agr1, int pos, long id) {
+                RelativeLayout rl = (RelativeLayout) agr1;
+                TextView tv = (TextView) rl.getChildAt(0);
+                nameStation = tv.getText().toString();
+                myAutoComplete.setText(nameStation);
+
+                // Програмное скрытие клавиатуры
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
+
+                code = tv.getTag().toString();
+
+                // Запрос и отображение результатов поиска
+                loadScheduleResult(code, day, cancel, sell);
+
+                myAutoComplete.clearFocus();
+            }
+        });
+    }
+
+    private void listViewListener() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -243,52 +272,35 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 startActivity(intent);
             }
         });
+    }
 
+    private void initializeAd() {
+        // Создание межстраничного объявления
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
 
-        myAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View agr1, int pos, long id) {
-                RelativeLayout rl = (RelativeLayout) agr1;
-                TextView tv = (TextView) rl.getChildAt(0);
-                nameStation = tv.getText().toString();
-                myAutoComplete.setText(nameStation);
+        // Создание запроса объявления.
+        AdRequest adRequest = new AdRequest.Builder().build();
 
-                // Програмное скрытие клавиатуры
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
+        // Запуск загрузки межстраничного объявления
+        interstitial.loadAd(adRequest);
 
-                code = tv.getTag().toString();
+        // Создание экземпляра adView
+        adView = new AdView(this);
+        adView.setAdUnitId(getString(R.string.admob_main_activity));
+        adView.setAdSize(AdSize.SMART_BANNER);
 
-                // Запрос и отображение результатов поиска
-                loadScheduleResult(code, day, cancel, sell);
+        // Поиск разметки LinearLayout
+        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewMainActivity);
 
-                myAutoComplete.clearFocus();
-            }
-        });
+        // Добавление в разметку экземпляра adView
+        layout.addView(adView);
 
-        // При получении фокуса полем AutoComplete стираем ранее введенный текст
-        myAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean bool) {
-                if (bool) {
-                    myAutoComplete.setText("");
-                }
-            }
-        });
+        // Инициирование общего запроса
+        AdRequest request = new AdRequest.Builder().build();
 
-        myAutoComplete.addTextChangedListener(new CustomAutoCompleteTextChangedListener(this));
-        AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
-        myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
-
-        // Отменяем преобразование текста кнопок в AllCaps програмно
-        btnDate = (Button) findViewById(R.id.header);
-        btnNextDay = (Button) findViewById(R.id.buttonNextDay);
-        btnDate.setTransformationMethod(null);
-        btnNextDay.setTransformationMethod(null);
-
-        initializeToolbar();
-        initializeNavigationDrawer();
-        initializeFloatingActionButton();
+        // Загрузка adView с объявлением
+        adView.loadAd(request);
     }
 
     private void initializeFloatingActionButton() {
@@ -617,9 +629,9 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         }
     }
 
-    // Проверка требуется ли обновлять список остановок
-    private boolean checkMD5Hash() {
-        String url = "http://www.avtovokzal.org/php/app/md5stations.php";
+    // Запрос даты, хеша остановок, времени обновления
+    private void loadSystemInfo() {
+        String url = "http://www.avtovokzal.org/php/app/system.php";
 
         if (isOnline()) {
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -632,115 +644,50 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         finish();
                     }
 
-                    if(LOG_ON){Log.d(TAG, response);}
+                    JSONObject dataJsonQbj;
 
-                    md5hash = response != null ? response.trim() : null;
+                    if (LOG_ON) Log.v("Result", response);
 
-                    if (settings.contains(APP_PREFERENCES_MD5)) {
-                        md5hashFromSettings = settings.getString(APP_PREFERENCES_MD5, null);
-                    } else {
-                        md5hashFromSettings = "";
-                    }
-
-                    if (md5hash.equals(md5hashFromSettings)) {
-                        checkMD5 = true;
-                    } else {
-                        // Сохраняем значение нового md5 хэша остановок в настройках
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString(APP_PREFERENCES_MD5, md5hash);
-                        editor.apply();
-                        checkMD5 = false;
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
-                    callErrorActivity();
-                }
-            });
-            // Установливаем TimeOut, Retry
-            strReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            // Добавляем запрос в очередь
-            AppController.getInstance().addToRequestQueue(strReq);
-        } else {
-            callErrorActivity();
-        }
-        return checkMD5;
-    }
-
-    // Запрос текущей даты
-    private void getDateNow() {
-        String url = "http://www.avtovokzal.org/php/app/getDate.php";
-
-        if (isOnline()) {
-            StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    if (response == null) {
-                        callErrorActivity();
-                        finish();
-                    }
-
-                    if(LOG_ON){Log.d(TAG, response);}
-
-                    dateNow = response;
-                    dateNow = dateNow != null ? dateNow.substring(1) : null;
-                    dateNow = dateNow != null ? dateNow.trim() : null;
-
-                    textView = (TextView) findViewById(R.id.header);
-                    textView.setText(getString(R.string.main_schedule) + " " + dateNow);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.d(TAG, "Error: " + error.getMessage());
-                    callErrorActivity();
-                    finish();
-                }
-            });
-            // Установливаем TimeOut, Retry
-            strReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            // Добавляем запрос в очередь
-            AppController.getInstance().addToRequestQueue(strReq);
-        } else {
-            callErrorActivity();
-            finish();
-        }
-    }
-
-    // Проверка статуса сервера
-    private void getServerStatus(){
-        String url = "http://www.avtovokzal.org/php/app/status.php";
-
-        if (isOnline()) {
-            StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-
-                    if (response == null || response.length() == 0) {
-                        callErrorActivity();
-                        finish();
-                    }
-
-                    if(LOG_ON){Log.d(TAG, response);}
-
-                    assert response != null;
-                    response = response.trim();
-
-                    // Проверяем когда было последнее обновление расписания
                     try {
-                        int delta = Integer.parseInt(response);
+                        dataJsonQbj = new JSONObject(response);
+                        JSONArray system = dataJsonQbj.getJSONArray("system");
 
+                        JSONObject oneObject = system.getJSONObject(0);
+
+                        dateNow = oneObject.getString("date");
+                        int delta = oneObject.getInt("delta");
+                        String md5hash = oneObject.getString("md5");
+
+                        // Установка текущей даты
+                        textView = (TextView) findViewById(R.id.header);
+                        textView.setText(getString(R.string.main_schedule) + " " + dateNow);
+
+                        // Проверяем когда было последнее обновление расписания
                         if (delta > 900) {
                             MenuItem item = myMenu.findItem(R.id.lamp);
                             item.setVisible(true);
                         }
-                    } catch (RuntimeException e) {
+
+                        // Проверка требуется ли обновлять список остановок
+                        if (settings.contains(APP_PREFERENCES_MD5)) {
+                            md5hashFromSettings = settings.getString(APP_PREFERENCES_MD5, null);
+                        } else {
+                            md5hashFromSettings = "";
+                        }
+
+                        if (md5hash.equals(md5hashFromSettings)) {
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putBoolean(APP_PREFERENCES_MD5_CHECK, true);
+                            editor.apply();
+                        } else {
+                            // Сохраняем значение нового md5 хэша остановок в настройках
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putBoolean(APP_PREFERENCES_MD5_CHECK, false);
+                            editor.putString(APP_PREFERENCES_MD5, md5hash);
+                            editor.apply();
+                        }
+                    } catch (JSONException e) {
                         e.printStackTrace();
-                        MenuItem item = myMenu.findItem(R.id.lamp);
-                        item.setVisible(true);
-                        Toast.makeText(getApplicationContext(), getString(R.string.main_status_error), Toast.LENGTH_SHORT).show();
                     }
                 }
             }, new Response.ErrorListener() {
@@ -748,7 +695,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 public void onErrorResponse(VolleyError error) {
                     if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
                     callErrorActivity();
-                    finish();
                 }
             });
             // Установливаем TimeOut, Retry
@@ -757,7 +703,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             AppController.getInstance().addToRequestQueue(strReq);
         } else {
             callErrorActivity();
-            finish();
         }
     }
 

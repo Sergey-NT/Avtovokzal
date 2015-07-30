@@ -141,22 +141,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
 
         // Реклама в приложении
         if (!AdShowGone) {
-            // Создание экземпляра adView
-            adView = new AdView(this);
-            adView.setAdUnitId(getString(R.string.admob_menu_activity));
-            adView.setAdSize(AdSize.SMART_BANNER);
-
-            // Поиск разметки LinearLayout
-            LinearLayout layout = (LinearLayout)findViewById(R.id.adViewMenuActivity);
-
-            // Добавление в разметку экземпляра adView
-            layout.addView(adView);
-
-            // Инициирование общего запроса
-            AdRequest request = new AdRequest.Builder().build();
-
-            // Загрузка adView с объявлением
-            adView.loadAd(request);
+            initializeAd();
         }
 
         // Получаем переменные
@@ -208,6 +193,30 @@ public class MenuActivity extends AppCompatSettingsActivity {
             myAutoComplete.setText(settings.getString(APP_PREFERENCES_STATION_NAME, null));
         }
 
+        myAutoCompleteListener();
+        myAutoCompleteFocus();
+
+        myAutoComplete.addTextChangedListener(new MenuAutoCompleteTextChangedListener(this));
+        AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
+        myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
+
+        initializeToolbar();
+        initializeNavigationDrawer();
+    }
+
+    private void myAutoCompleteFocus() {
+        // При получении фокуса полем AutoComplete стираем ранее введенный текст
+        myAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean bool) {
+                if(bool) {
+                    myAutoComplete.setText("");
+                }
+            }
+        });
+    }
+
+    private void myAutoCompleteListener() {
         myAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View agr1, int pos, long id) {
@@ -241,23 +250,25 @@ public class MenuActivity extends AppCompatSettingsActivity {
                 myAutoComplete.clearFocus();
             }
         });
+    }
 
-        // При получении фокуса полем AutoComplete стираем ранее введенный текст
-        myAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean bool) {
-                if(bool) {
-                    myAutoComplete.setText("");
-                }
-            }
-        });
+    private void initializeAd() {
+        // Создание экземпляра adView
+        adView = new AdView(this);
+        adView.setAdUnitId(getString(R.string.admob_menu_activity));
+        adView.setAdSize(AdSize.SMART_BANNER);
 
-        myAutoComplete.addTextChangedListener(new MenuAutoCompleteTextChangedListener(this));
-        AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
-        myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
+        // Поиск разметки LinearLayout
+        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewMenuActivity);
 
-        initializeToolbar();
-        initializeNavigationDrawer();
+        // Добавление в разметку экземпляра adView
+        layout.addView(adView);
+
+        // Инициирование общего запроса
+        AdRequest request = new AdRequest.Builder().build();
+
+        // Загрузка adView с объявлением
+        adView.loadAd(request);
     }
 
     private void initializeNavigationDrawer() {

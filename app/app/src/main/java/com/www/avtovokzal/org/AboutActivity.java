@@ -28,7 +28,7 @@ public class AboutActivity extends AppCompatSettingsActivity {
     private AdView adView;
     private SharedPreferences settings;
     private Toolbar toolbar;
-    private Drawer drawerResult;
+    private Drawer drawerResult = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,34 +51,38 @@ public class AboutActivity extends AppCompatSettingsActivity {
             AdShowGone = true;
         }
 
-        // Реклама в приложении
-        if (!AdShowGone) {
-            // Создание экземпляра adView
-            adView = new AdView(this);
-            adView.setAdUnitId(getString(R.string.admob_menu_activity));
-            adView.setAdSize(AdSize.SMART_BANNER);
-
-            // Поиск разметки LinearLayout
-            LinearLayout layout = (LinearLayout)findViewById(R.id.adViewAboutActivity);
-
-            // Добавление в разметку экземпляра adView
-            layout.addView(adView);
-
-            // Инициирование общего запроса
-            AdRequest request = new AdRequest.Builder().build();
-
-            // Загрузка adView с объявлением
-            adView.loadAd(request);
-        }
-
         // Создаем кликабельные ссылки в TextView
         TextView tv1 = (TextView) findViewById(R.id.about_icons);
         tv1.setMovementMethod(LinkMovementMethod.getInstance());
         TextView tv2 = (TextView) findViewById(R.id.about_developer);
         tv2.setMovementMethod(LinkMovementMethod.getInstance());
 
+        // Реклама в приложении
+        if (!AdShowGone) {
+            initializeAd();
+        }
+
         initializeToolbar();
         initializeNavigationDrawer();
+    }
+
+    private void initializeAd() {
+        // Создание экземпляра adView
+        adView = new AdView(this);
+        adView.setAdUnitId(getString(R.string.admob_menu_activity));
+        adView.setAdSize(AdSize.SMART_BANNER);
+
+        // Поиск разметки LinearLayout
+        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewAboutActivity);
+
+        // Добавление в разметку экземпляра adView
+        layout.addView(adView);
+
+        // Инициирование общего запроса
+        AdRequest request = new AdRequest.Builder().build();
+
+        // Загрузка adView с объявлением
+        adView.loadAd(request);
     }
 
     private void initializeNavigationDrawer() {

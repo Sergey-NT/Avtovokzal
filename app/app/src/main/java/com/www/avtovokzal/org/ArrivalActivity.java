@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -55,8 +54,6 @@ import java.util.List;
 
 public class ArrivalActivity extends AppCompatSettingsActivity {
 
-    Menu myMenu;
-
     public CustomAutoCompleteView myAutoComplete;
     public ArrayAdapter<AutoCompleteObject> myAdapter;
     public DatabaseHandler databaseH;
@@ -66,7 +63,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
     private SharedPreferences settings;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
-    private Drawer drawerResult;
+    private Drawer drawerResult = null;
 
     private String code;
     private String newNameStation;
@@ -98,30 +95,12 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
 
         // Реклама в приложении
         if (!AdShowGone) {
-            // Создание экземпляра adView
-            adView = new AdView(this);
-            adView.setAdUnitId(getString(R.string.admob_main_activity));
-            adView.setAdSize(AdSize.SMART_BANNER);
-
-            // Поиск разметки LinearLayout
-            LinearLayout layout = (LinearLayout)findViewById(R.id.adViewArrivalActivity);
-
-            // Добавление в разметку экземпляра adView
-            layout.addView(adView);
-
-            // Инициирование общего запроса
-            AdRequest request = new AdRequest.Builder().build();
-
-            // Загрузка adView с объявлением
-            adView.loadAd(request);
+            initializeAd();
         }
 
         // Определяем элементы интерфейса
         listView = (ListView) findViewById(R.id.listViewArrival);
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.autoCompleteArrival);
-
-        // Проверка статуса сервера
-        getServerStatus();
 
         // Получаем переменные
         code = getIntent().getStringExtra("code");
@@ -143,8 +122,54 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
             loadArrivalResult(code);
         }
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewListener();
+        myAutoCompleteListener();
+        myAutoCompleteFocus();
 
+        myAutoComplete.addTextChangedListener(new ArrivalAutoCompleteTextChangedListener(this));
+        AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
+        myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
+
+        initializeToolbar();
+        initializeNavigationDrawer();
+    }
+
+    private void myAutoCompleteFocus() {
+        // При получении фокуса полем AutoComplete стираем ранее введенный текст
+        myAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean bool) {
+                if(bool) {
+                    myAutoComplete.setText("");
+                }
+            }
+        });
+    }
+
+    private void myAutoCompleteListener() {
+        myAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View agr1, int pos, long id) {
+                RelativeLayout rl = (RelativeLayout) agr1;
+                TextView tv = (TextView) rl.getChildAt(0);
+                myAutoComplete.setText(tv.getText().toString());
+
+                // Програмное скрытие клавиатуры
+                InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
+
+                code = tv.getTag().toString();
+
+                // Запрос и отображение результатов поиска
+                loadArrivalResult(code);
+
+                myAutoComplete.clearFocus();
+            }
+        });
+    }
+
+    private void listViewListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String number;
@@ -172,44 +197,25 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                 startActivity(intent);
             }
         });
+    }
 
-        myAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private void initializeAd() {
+        // Создание экземпляра adView
+        adView = new AdView(this);
+        adView.setAdUnitId(getString(R.string.admob_main_activity));
+        adView.setAdSize(AdSize.SMART_BANNER);
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View agr1, int pos, long id) {
-                RelativeLayout rl = (RelativeLayout) agr1;
-                TextView tv = (TextView) rl.getChildAt(0);
-                myAutoComplete.setText(tv.getText().toString());
+        // Поиск разметки LinearLayout
+        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewArrivalActivity);
 
-                // Програмное скрытие клавиатуры
-                InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
+        // Добавление в разметку экземпляра adView
+        layout.addView(adView);
 
-                code = tv.getTag().toString();
+        // Инициирование общего запроса
+        AdRequest request = new AdRequest.Builder().build();
 
-                // Запрос и отображение результатов поиска
-                loadArrivalResult(code);
-
-                myAutoComplete.clearFocus();
-            }
-        });
-
-        // При получении фокуса полем AutoComplete стираем ранее введенный текст
-        myAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean bool) {
-                if(bool) {
-                    myAutoComplete.setText("");
-                }
-            }
-        });
-
-        myAutoComplete.addTextChangedListener(new ArrivalAutoCompleteTextChangedListener(this));
-        AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
-        myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
-
-        initializeToolbar();
-        initializeNavigationDrawer();
+        // Загрузка adView с объявлением
+        adView.loadAd(request);
     }
 
     private void initializeNavigationDrawer() {
@@ -351,21 +357,10 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items, menu);
-        myMenu = menu;
         // Скрываем статус сервера
-        MenuItem itemLamp = myMenu.findItem(R.id.lamp);
+        MenuItem itemLamp = menu.findItem(R.id.lamp);
         itemLamp.setVisible(false);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.lamp:
-                Toast.makeText(getApplicationContext(), getString(R.string.main_status), Toast.LENGTH_LONG).show();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // Загрузка расписания прибытия
@@ -401,55 +396,6 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                     }  finally {
                         progressDialog = null;
                     }
-                    callErrorActivity();
-                }
-            });
-            // Установливаем TimeOut, Retry
-            strReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            // Добавляем запрос в очередь
-            AppController.getInstance().addToRequestQueue(strReq);
-        } else {
-            callErrorActivity();
-        }
-    }
-
-    // Проверка статуса сервера
-    private void getServerStatus(){
-        String url = "http://www.avtovokzal.org/php/app/status.php";
-
-        if (isOnline()) {
-            StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    if (response == null || response.length() == 0) {
-                        callErrorActivity();
-                        finish();
-                    }
-
-                    if(LOG_ON){Log.d(TAG, response);}
-
-                    assert response != null;
-                    response = response.trim();
-
-                    // Проверяем когда было последнее обновление расписания
-                    try {
-                        int delta = Integer.parseInt(response);
-
-                        if (delta > 900) {
-                            MenuItem item = myMenu.findItem(R.id.lamp);
-                            item.setVisible(true);
-                        }
-                    } catch (RuntimeException e) {
-                        e.printStackTrace();
-                        MenuItem item = myMenu.findItem(R.id.lamp);
-                        item.setVisible(true);
-                        Toast.makeText(getApplicationContext(), getString(R.string.main_status_error), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
                     callErrorActivity();
                 }
             });
