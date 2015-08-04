@@ -753,71 +753,77 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayDatePicker) {
-        String monthNumber;
-        String dayNumber;
+        if (dateNow != null) {
+            String monthNumber;
+            String dayNumber;
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyy", java.util.Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyy", java.util.Locale.getDefault());
 
-        Calendar calendarNow = Calendar.getInstance();
-        try {
-            calendarNow.setTime(sdf.parse(dateNow));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Calendar calendarNew = Calendar.getInstance();
-        try {
-            calendarNew.setTime(sdf.parse(dayDatePicker + "." + (month + 1) + "." + year));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        long diff = calendarNew.getTimeInMillis() - calendarNow.getTimeInMillis();
-        int days = (int)(diff / (24 * 60 * 60 * 1000));
-
-        day = 0;
-        day = day + days;
-
-        if (month < 10) {
-            monthNumber = "0" + (month + 1);
-        } else {
-            monthNumber = "" + (month + 1);
-        }
-
-        if (dayDatePicker < 10) {
-            dayNumber = "0" + dayDatePicker;
-        } else {
-            dayNumber = "" + dayDatePicker;
-        }
-
-        if (code != null && days >= 0 && days <= 9) {
-            loadScheduleResult(code, day, cancel, sell);
-            textView.setText(getString(R.string.main_schedule)+ " " + dayNumber + "." + monthNumber + "." + year);
+            Calendar calendarNow = Calendar.getInstance();
             try {
-                if (queryDialog != null && queryDialog.isShowing()) {
-                    queryDialog.dismiss();
-                    if(LOG_ON){Log.d(TAG, "Dialog.dismiss");}
-                }
-            } catch (IllegalArgumentException e) {
+                calendarNow.setTime(sdf.parse(dateNow));
+            } catch (ParseException e) {
                 e.printStackTrace();
-            }  finally {
-                queryDialog = null;
             }
-        } else if (days >= 0 && days <= 9) {
-            loadSchedule(day, cancel, sell);
-            textView.setText(getString(R.string.main_schedule)+ " " + dayNumber + "." + monthNumber + "." + year);
+
+            Calendar calendarNew = Calendar.getInstance();
             try {
-                if (queryDialog != null && queryDialog.isShowing()) {
-                    queryDialog.dismiss();
-                    if(LOG_ON){Log.d(TAG, "Dialog.dismiss");}
-                }
-            } catch (IllegalArgumentException e) {
+                calendarNew.setTime(sdf.parse(dayDatePicker + "." + (month + 1) + "." + year));
+            } catch (ParseException e) {
                 e.printStackTrace();
-            }  finally {
-                queryDialog = null;
             }
-        } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.main_invalid_date) , Toast.LENGTH_SHORT).show();
+
+            long diff = calendarNew.getTimeInMillis() - calendarNow.getTimeInMillis();
+            int days = (int) (diff / (24 * 60 * 60 * 1000));
+
+            day = 0;
+            day = day + days;
+
+            if (month < 10) {
+                monthNumber = "0" + (month + 1);
+            } else {
+                monthNumber = "" + (month + 1);
+            }
+
+            if (dayDatePicker < 10) {
+                dayNumber = "0" + dayDatePicker;
+            } else {
+                dayNumber = "" + dayDatePicker;
+            }
+
+            if (code != null && days >= 0 && days <= 9) {
+                loadScheduleResult(code, day, cancel, sell);
+                textView.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
+                try {
+                    if (queryDialog != null && queryDialog.isShowing()) {
+                        queryDialog.dismiss();
+                        if (LOG_ON) {
+                            Log.d(TAG, "Dialog.dismiss");
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } finally {
+                    queryDialog = null;
+                }
+            } else if (days >= 0 && days <= 9) {
+                loadSchedule(day, cancel, sell);
+                textView.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
+                try {
+                    if (queryDialog != null && queryDialog.isShowing()) {
+                        queryDialog.dismiss();
+                        if (LOG_ON) {
+                            Log.d(TAG, "Dialog.dismiss");
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } finally {
+                    queryDialog = null;
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.main_invalid_date), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
