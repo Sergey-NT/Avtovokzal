@@ -14,4 +14,5 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES_CANCEL = "cancel";
     public static final String APP_PREFERENCES_SELL = "sell";
     public static final String APP_PREFERENCES_LOAD = "load";
+    public static final String APP_PREFERENCES_DATE = "date";
 }

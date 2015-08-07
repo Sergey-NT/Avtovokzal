@@ -69,5 +69,10 @@
             android:configChanges="orientation|screenSize" >
         </activity>
 
+        <activity
+            android:name=".GgmActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+
     </application>
 </manifest>

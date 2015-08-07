@@ -6,6 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -345,6 +348,11 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         new PrimaryDrawerItem()
                                 .withName(R.string.app_subtitle_arrival)
                                 .withIcon(R.drawable.ic_vertical_align_bottom_black_18dp),
+                        new SectionDrawerItem()
+                                .withName(R.string.app_name_city_ggm),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_main)
+                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
                         new DividerDrawerItem(),
                         new PrimaryDrawerItem()
                                 .withName(R.string.menu_settings)
@@ -370,6 +378,11 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 drawerResult.closeDrawer();
                                 return true;
                             case 4:
+                                Intent intentGgm = new Intent(MainActivity.this, GgmActivity.class);
+                                startActivity(intentGgm);
+                                drawerResult.closeDrawer();
+                                return true;
+                            case 6:
                                 Intent intentMenu = new Intent(MainActivity.this, MenuActivity.class);
                                 intentMenu.putExtra("day", day);
                                 intentMenu.putExtra("activity", "MainActivity");
@@ -379,7 +392,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 startActivity(intentMenu);
                                 drawerResult.closeDrawer();
                                 return true;
-                            case  5:
+                            case 7:
                                 Intent intentAbout = new Intent(MainActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 drawerResult.closeDrawer();
@@ -661,6 +674,9 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         // Установка текущей даты
                         textView = (TextView) findViewById(R.id.header);
                         textView.setText(getString(R.string.main_schedule) + " " + dateNow);
+                        SharedPreferences.Editor editorDate = settings.edit();
+                        editorDate.putString(APP_PREFERENCES_DATE, dateNow);
+                        editorDate.apply();
 
                         // Проверяем когда было последнее обновление расписания
                         if (delta > 900) {

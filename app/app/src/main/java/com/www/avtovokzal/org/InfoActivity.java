@@ -184,6 +184,11 @@ public class InfoActivity extends AppCompatSettingsActivity {
                         new PrimaryDrawerItem()
                                 .withName(R.string.app_subtitle_arrival)
                                 .withIcon(R.drawable.ic_vertical_align_bottom_black_18dp),
+                        new SectionDrawerItem()
+                                .withName(R.string.app_name_city_ggm),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.app_subtitle_main)
+                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
                         new DividerDrawerItem(),
                         new PrimaryDrawerItem()
                                 .withName(R.string.menu_settings)
@@ -205,11 +210,17 @@ public class InfoActivity extends AppCompatSettingsActivity {
                                 finish();
                                 return true;
                             case 4:
+                                Intent intentGgm = new Intent(InfoActivity.this, GgmActivity.class);
+                                startActivity(intentGgm);
+                                drawerResult.closeDrawer();
+                                finish();
+                                return true;
+                            case 6:
                                 Intent intentMenu = new Intent(InfoActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 return true;
-                            case  5:
+                            case 7:
                                 Intent intentAbout = new Intent(InfoActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();

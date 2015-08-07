@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adViewGgmActivity"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1" >
+
+        <Button
+            android:id="@+id/header"
+            android:onClick="showDatePickerDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10sp"
+            android:layout_marginTop="5sp"
+            android:background="@color/primary"
+            android:textColor="@color/text_color_white"
+            android:textSize="17sp"
+            android:drawablePadding="5sp"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:drawableRight="@drawable/ic_calendar" />
+
+        <ListView
+            android:id="@+id/listViewGgm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:soundEffectsEnabled="true"
+            android:divider="@color/divider_color"
+            android:dividerHeight="1sp" />
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10sp"
+    android:id="@+id/listViewGgmItem" >
+
+    <TextView
+        android:id="@+id/textViewGgmTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="17sp"
+        android:textColor="@color/text_color"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewGgmNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/textViewGgmTime"
+        android:layout_toRightOf="@+id/textViewGgmTime"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="17sp"
+        android:textColor="@color/text_color"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewGgmName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/textViewGgmNumber"
+        android:layout_toRightOf="@+id/textViewGgmNumber"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textSize="17sp"
+        android:textColor="@color/text_color" />
+
+    <TextView
+        android:id="@+id/textViewGgmTimeArrivalDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewGgmName"
+        android:text="@string/main_time_arrival"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_hint" />
+
+    <TextView
+        android:id="@+id/textViewGgmTimeArrival"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewGgmName"
+        android:layout_toEndOf="@+id/textViewGgmTimeArrivalDesc"
+        android:layout_toRightOf="@+id/textViewGgmTimeArrivalDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="@color/text_color"/>
+
+    <TextView
+        android:id="@+id/textViewGgmCountBusDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewGgmTimeArrivalDesc"
+        android:text="@string/count_bus"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_hint" />
+
+    <TextView
+        android:id="@+id/textViewGgmCountBus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewGgmTimeArrivalDesc"
+        android:layout_toEndOf="@+id/textViewGgmCountBusDesc"
+        android:layout_toRightOf="@+id/textViewGgmCountBusDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="@color/text_color" />
+
+    <TextView
+        android:id="@+id/textGgmResultPriceDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewGgmCountBusDesc"
+        android:text="@string/price_bus"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_hint" />
+
+    <TextView
+        android:id="@+id/textViewGgmPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewGgmCountBusDesc"
+        android:layout_toEndOf="@+id/textGgmResultPriceDesc"
+        android:layout_toRightOf="@+id/textGgmResultPriceDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="@color/text_color" />
+</RelativeLayout>
