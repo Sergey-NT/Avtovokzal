@@ -34,8 +34,8 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.www.avtovokzal.org.Adapter.GgmObjectAdapter;
-import com.www.avtovokzal.org.Object.GgmObject;
+import com.www.avtovokzal.org.Adapter.EtrafficObjectAdapter;
+import com.www.avtovokzal.org.Object.EtrafficObject;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class GgmActivity extends AppCompatSettingsActivity implements DatePickerDialog.OnDateSetListener {
+public class EtrafficActivity extends AppCompatSettingsActivity implements DatePickerDialog.OnDateSetListener {
 
     private Drawer drawerResult = null;
     private Toolbar toolbar;
@@ -59,6 +59,7 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
     private ProgressDialog queryDialog;
     private AdView adView;
     private SharedPreferences settings;
+    private final static String TAG = "EtrafficActivity";
     private int day = 0;
 
     @Override
@@ -69,6 +70,7 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
         Button btnNextDay;
         boolean AdShowGone;
 
+        // Определяем элементы интерфейса
         listView = (ListView) findViewById(R.id.listViewGgm);
 
         // Добавляем футер к списку ListView
@@ -87,8 +89,6 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
             AdShowGone = true;
         }
 
-        Log.v("Date", dateNow);
-
         // Реклама в приложении
         if (!AdShowGone) {
             initializeAd();
@@ -96,14 +96,15 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
 
         initializeToolbar();
         initializeNavigationDrawer();
+
         parsingHTML task = new parsingHTML();
         task.execute(dateNow);
 
         // Отменяем преобразование текста кнопок в AllCaps програмно
         btnDate = (Button) findViewById(R.id.header);
         btnDate.setText(getString(R.string.main_schedule) + " " + dateNow);
-        btnNextDay = (Button) findViewById(R.id.buttonNextDay);
         btnDate.setTransformationMethod(null);
+        btnNextDay = (Button) findViewById(R.id.buttonNextDay);
         btnNextDay.setTransformationMethod(null);
     }
 
@@ -150,13 +151,13 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
                     public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
-                                Intent intentMain = new Intent(GgmActivity.this, MainActivity.class);
+                                Intent intentMain = new Intent(EtrafficActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 drawerResult.closeDrawer();
                                 finish();
                                 return true;
                             case 2:
-                                Intent intentArrival = new Intent(GgmActivity.this, ArrivalActivity.class);
+                                Intent intentArrival = new Intent(EtrafficActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 drawerResult.closeDrawer();
                                 finish();
@@ -165,13 +166,13 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
                                 drawerResult.closeDrawer();
                                 return true;
                             case 6:
-                                Intent intentMenu = new Intent(GgmActivity.this, MenuActivity.class);
+                                Intent intentMenu = new Intent(EtrafficActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 drawerResult.closeDrawer();
                                 finish();
                                 return true;
                             case 7:
-                                Intent intentAbout = new Intent(GgmActivity.this, AboutActivity.class);
+                                Intent intentAbout = new Intent(EtrafficActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 drawerResult.closeDrawer();
                                 finish();
@@ -212,12 +213,12 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
         adView.loadAd(request);
     }
 
-    private class parsingHTML extends AsyncTask<String, Void, List<GgmObject>> {
+    private class parsingHTML extends AsyncTask<String, Void, List<EtrafficObject>> {
         @Override
-        protected List<GgmObject> doInBackground(String... params) {
+        protected List<EtrafficObject> doInBackground(String... params) {
             String url = "http://www.e-traffic.ru/schedule/nijniy-tagil?station=1&date="+params[0]+"&page=1";
+            List<EtrafficObject> list = new ArrayList<>();
             Document doc;
-            List<GgmObject> list = new ArrayList<>();
             String time = null;
             String number = null;
             String name = null;
@@ -225,49 +226,55 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
             String countBus = null;
             String price = null;
 
-            try {
-                doc = Jsoup.connect(url).get();
-                Element table = doc.getElementsByTag("table").get(0);
-                Elements rows = table.select("tr:nth-child(2n+1)");
+            if(isOnline()) {
+                try {
+                    doc = Jsoup.connect(url).get();
+                    Element table = doc.getElementsByTag("table").get(0);
+                    Elements rows = table.select("tr:nth-child(2n+1)");
 
-                for (int i = 1; i < rows.size(); i++) {
-                    Element row = rows.get(i);
-                    Elements cols = row.select("td");
+                    for (int i = 1; i < rows.size(); i++) {
+                        Element row = rows.get(i);
+                        Elements cols = row.select("td");
 
-                    for (int y = 0; y < cols.size() - 1; y++) {
-                        Element col = cols.get(y);
-                        switch (y) {
-                            case 0:
-                                time = col.text();
-                                break;
-                            case 1:
-                                number = col.text();
-                                break;
-                            case 2:
-                                name = col.text();
-                                break;
-                            case 3:
-                                timeArrival = col.text();
-                                break;
-                            case 4:
-                                countBus = col.text().toLowerCase();
-                                break;
-                            case 5:
-                                price = col.text();
+                        for (int y = 0; y < cols.size() - 1; y++) {
+                            Element col = cols.get(y);
+                            switch (y) {
+                                case 0:
+                                    time = col.text();
+                                    break;
+                                case 1:
+                                    number = col.text();
+                                    break;
+                                case 2:
+                                    name = col.text();
+                                    break;
+                                case 3:
+                                    timeArrival = col.text();
+                                    break;
+                                case 4:
+                                    countBus = col.text().toLowerCase();
+                                    break;
+                                case 5:
+                                    price = col.text();
+                            }
                         }
+                        if (LOG_ON) {
+                            Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);
+                        }
+                        list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price));
                     }
-                    Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);
-                    list.add(new GgmObject(time, number, name, timeArrival, countBus, price));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                callErrorActivity();
             }
             return list;
         }
 
         @Override
         protected void onPreExecute() {
-            queryDialog = new ProgressDialog(GgmActivity.this);
+            queryDialog = new ProgressDialog(EtrafficActivity.this);
             queryDialog.setMessage(getString(R.string.main_load));
             queryDialog.setCancelable(false);
             queryDialog.show();
@@ -275,8 +282,8 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
         }
 
         @Override
-        protected void onPostExecute(List<GgmObject> list) {
-            final GgmObjectAdapter adapter = new GgmObjectAdapter(GgmActivity.this, list);
+        protected void onPostExecute(List<EtrafficObject> list) {
+            final EtrafficObjectAdapter adapter = new EtrafficObjectAdapter(EtrafficActivity.this, list);
             listView.setAdapter(adapter);
             super.onPostExecute(list);
 
@@ -319,7 +326,6 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
 
             day = 0;
             day = day + days;
-            Log.v("day onDateSet", "" +day);
 
             if (month < 10) {
                 monthNumber = "0" + (month + 1);
@@ -337,6 +343,19 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
                 parsingHTML task = new parsingHTML();
                 task.execute(dayNumber + "." + monthNumber + "." + year);
                 btnDate.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
+                // fix for Android 4.4.4
+                try {
+                    if (queryDialog != null && queryDialog.isShowing()) {
+                        queryDialog.dismiss();
+                        if (LOG_ON) {
+                            Log.d(TAG, "Dialog.dismiss");
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } finally {
+                    queryDialog = null;
+                }
             } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.main_invalid_date), Toast.LENGTH_SHORT).show();
             }
@@ -349,7 +368,7 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
         t.send(new HitBuilders.EventBuilder()
                 .setCategory(getString(R.string.analytics_category_button))
-                .setAction(getString(R.string.analytics_action_set_date))
+                .setAction(getString(R.string.analytics_action_set_date_etraffic))
                 .build());
 
         DialogFragment newFragment = new DatePickerFragmentGmm();
@@ -362,14 +381,12 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
         t.send(new HitBuilders.EventBuilder()
                 .setCategory(getString(R.string.analytics_category_button))
-                .setAction(getString(R.string.analytics_action_next_day))
+                .setAction(getString(R.string.analytics_action_next_day_etraffic))
                 .build());
 
         String dateNew;
 
         day = day + 1;
-
-        Log.v("day onClick", "" + day);
 
         if (day >= 0 && day <= 9) {
             dateNew = dateNow;
@@ -444,6 +461,7 @@ public class GgmActivity extends AppCompatSettingsActivity implements DatePicker
     // Вызов Error Activity
     private void callErrorActivity(){
         Intent intent = new Intent(getApplicationContext(), ErrorActivity.class);
+        intent.putExtra("activity", TAG);
         startActivity(intent);
         finish();
     }

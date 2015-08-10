@@ -70,7 +70,7 @@
         </activity>
 
         <activity
-            android:name=".GgmActivity"
+            android:name=".EtrafficActivity"
             android:configChanges="orientation|screenSize" >
         </activity>
 

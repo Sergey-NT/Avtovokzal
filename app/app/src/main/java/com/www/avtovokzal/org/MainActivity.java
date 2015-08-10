@@ -6,9 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -378,8 +375,8 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 drawerResult.closeDrawer();
                                 return true;
                             case 4:
-                                Intent intentGgm = new Intent(MainActivity.this, GgmActivity.class);
-                                startActivity(intentGgm);
+                                Intent intentEtraffic = new Intent(MainActivity.this, EtrafficActivity.class);
+                                startActivity(intentEtraffic);
                                 drawerResult.closeDrawer();
                                 return true;
                             case 6:
@@ -810,6 +807,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             if (code != null && days >= 0 && days <= 9) {
                 loadScheduleResult(code, day, cancel, sell);
                 textView.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
+                // fix for Android 4.4.4
                 try {
                     if (queryDialog != null && queryDialog.isShowing()) {
                         queryDialog.dismiss();
@@ -825,6 +823,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             } else if (days >= 0 && days <= 9) {
                 loadSchedule(day, cancel, sell);
                 textView.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
+                // fix for Android 4.4.4
                 try {
                     if (queryDialog != null && queryDialog.isShowing()) {
                         queryDialog.dismiss();

@@ -138,6 +138,12 @@ public class ErrorActivity extends AppCompatSettingsActivity {
                 finish();
                 break;
             }
+            case "EtrafficActivity": {
+                Intent intent = new Intent(getApplicationContext(), EtrafficActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            }
             default: {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);

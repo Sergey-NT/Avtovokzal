@@ -258,7 +258,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                                 drawerResult.closeDrawer();
                                 return true;
                             case 4:
-                                Intent intentGgm = new Intent(ArrivalActivity.this, GgmActivity.class);
+                                Intent intentGgm = new Intent(ArrivalActivity.this, EtrafficActivity.class);
                                 startActivity(intentGgm);
                                 drawerResult.closeDrawer();
                                 finish();

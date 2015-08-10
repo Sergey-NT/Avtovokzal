@@ -1,6 +1,6 @@
 package com.www.avtovokzal.org.Object;
 
-public class GgmObject {
+public class EtrafficObject {
 
     public String time;
     public String number;
@@ -9,7 +9,7 @@ public class GgmObject {
     public String countBus;
     public String price;
 
-    public GgmObject(String time, String number, String name, String timeArrival, String countBus, String price) {
+    public EtrafficObject(String time, String number, String name, String timeArrival, String countBus, String price) {
         this.time = time;
         this.number = number;
         this.name = name;

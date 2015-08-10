@@ -207,7 +207,7 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                                 finish();
                                 return true;
                             case 4:
-                                Intent intentGgm = new Intent(InfoArrivalActivity.this, GgmActivity.class);
+                                Intent intentGgm = new Intent(InfoArrivalActivity.this, EtrafficActivity.class);
                                 startActivity(intentGgm);
                                 drawerResult.closeDrawer();
                                 finish();

@@ -7,17 +7,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.www.avtovokzal.org.Object.GgmObject;
+import com.www.avtovokzal.org.Object.EtrafficObject;
 import com.www.avtovokzal.org.R;
 
 import java.util.List;
 
-public class GgmObjectAdapter extends BaseAdapter{
+public class EtrafficObjectAdapter extends BaseAdapter{
 
-    private List<GgmObject> list;
+    private List<EtrafficObject> list;
     private LayoutInflater layoutInflater;
 
-    public GgmObjectAdapter(Context context, List<GgmObject> list) {
+    public EtrafficObjectAdapter(Context context, List<EtrafficObject> list) {
         this.list = list;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -37,8 +37,8 @@ public class GgmObjectAdapter extends BaseAdapter{
         return i;
     }
 
-    private GgmObject getGgmObject(int i) {
-        return (GgmObject)getItem(i);
+    private EtrafficObject getEtrafficObject(int i) {
+        return (EtrafficObject)getItem(i);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class GgmObjectAdapter extends BaseAdapter{
             view = layoutInflater.inflate(R.layout.listview_item_ggm_row, viewGroup, false);
         }
 
-        GgmObject ggmObject = getGgmObject(i);
+        EtrafficObject etrafficObject = getEtrafficObject(i);
 
         TextView item0 = (TextView) view.findViewById(R.id.textViewGgmTime);
         TextView item1 = (TextView) view.findViewById(R.id.textViewGgmNumber);
@@ -57,12 +57,12 @@ public class GgmObjectAdapter extends BaseAdapter{
         TextView item4 = (TextView) view.findViewById(R.id.textViewGgmCountBus);
         TextView item5 = (TextView) view.findViewById(R.id.textViewGgmPrice);
 
-        item0.setText(ggmObject.getTime());
-        item1.setText(ggmObject.getNumber());
-        item2.setText(ggmObject.getName());
-        item3.setText(ggmObject.getTimeArrival());
-        item4.setText(ggmObject.getCountBus());
-        item5.setText(ggmObject.getPrice());
+        item0.setText(etrafficObject.getTime());
+        item1.setText(etrafficObject.getNumber());
+        item2.setText(etrafficObject.getName());
+        item3.setText(etrafficObject.getTimeArrival());
+        item4.setText(etrafficObject.getCountBus());
+        item5.setText(etrafficObject.getPrice());
 
         return view;
     }

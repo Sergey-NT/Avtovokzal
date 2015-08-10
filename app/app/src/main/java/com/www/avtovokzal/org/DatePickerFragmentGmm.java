@@ -18,6 +18,6 @@ public class DatePickerFragmentGmm extends DialogFragment {
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        return new DatePickerDialog(getActivity(), (GgmActivity)getActivity(), year, month, day);
+        return new DatePickerDialog(getActivity(), (EtrafficActivity)getActivity(), year, month, day);
     }
 }
