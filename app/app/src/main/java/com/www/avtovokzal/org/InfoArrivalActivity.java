@@ -49,15 +49,13 @@ import java.util.List;
 
 public class InfoArrivalActivity extends AppCompatSettingsActivity {
 
-    TextView textViewName;
-    TextView textViewTime;
-
-    private SharedPreferences settings;
-    private ListView listView;
     private AdView adView;
-    private ProgressDialog progressDialog;
-    private Toolbar toolbar;
     private Drawer drawerResult = null;
+    private ListView listView;
+    private ProgressDialog progressDialog;
+    private SharedPreferences settings;
+    private Toolbar toolbar;
+
 
     private String number;
     private String timePrib;
@@ -72,6 +70,8 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
         setContentView(R.layout.activity_info_arrival);
 
         boolean AdShowGone;
+        TextView textViewName;
+        TextView textViewTime;
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
@@ -200,27 +200,31 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                                 Intent intentMain = new Intent(InfoArrivalActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 2:
                                 Intent intentArrival = new Intent(InfoArrivalActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 4:
-                                Intent intentGgm = new Intent(InfoArrivalActivity.this, EtrafficActivity.class);
-                                startActivity(intentGgm);
-                                drawerResult.closeDrawer();
+                                Intent intentEtraffic = new Intent(InfoArrivalActivity.this, EtrafficActivity.class);
+                                startActivity(intentEtraffic);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 6:
                                 Intent intentMenu = new Intent(InfoArrivalActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 7:
                                 Intent intentAbout = new Intent(InfoArrivalActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                         }
                         return false;

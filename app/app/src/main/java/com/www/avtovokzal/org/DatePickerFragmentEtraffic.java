@@ -8,7 +8,7 @@ import android.support.v4.app.DialogFragment;
 
 import java.util.Calendar;
 
-public class DatePickerFragmentGmm extends DialogFragment {
+public class DatePickerFragmentEtraffic extends DialogFragment {
 
     @NonNull
     @Override

@@ -58,12 +58,12 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
     public ArrayAdapter<AutoCompleteObject> myAdapter;
     public DatabaseHandler databaseH;
 
-    private ListView listView;
     private AdView adView;
-    private SharedPreferences settings;
-    private ProgressDialog progressDialog;
-    private Toolbar toolbar;
     private Drawer drawerResult = null;
+    private ListView listView;
+    private ProgressDialog progressDialog;
+    private SharedPreferences settings;
+    private Toolbar toolbar;
 
     private String code;
     private String newNameStation;
@@ -252,26 +252,31 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                Intent intentMain = new Intent(ArrivalActivity.this, MainActivity.class);
+                                startActivity(intentMain);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 2:
                                 drawerResult.closeDrawer();
                                 return true;
                             case 4:
-                                Intent intentGgm = new Intent(ArrivalActivity.this, EtrafficActivity.class);
-                                startActivity(intentGgm);
-                                drawerResult.closeDrawer();
+                                Intent intentEtraffic = new Intent(ArrivalActivity.this, EtrafficActivity.class);
+                                startActivity(intentEtraffic);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 6:
                                 Intent intentMenu = new Intent(ArrivalActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 7:
                                 Intent intentAbout = new Intent(ArrivalActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                         }
                         return false;

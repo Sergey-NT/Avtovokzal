@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10sp"
+    android:id="@+id/listViewEtrafficItem" >
+
+    <TextView
+        android:id="@+id/textViewEtrafficTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="17sp"
+        android:textColor="@color/text_color"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewEtrafficNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/textViewEtrafficTime"
+        android:layout_toRightOf="@+id/textViewEtrafficTime"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="17sp"
+        android:textColor="@color/text_color"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewEtrafficName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/textViewEtrafficNumber"
+        android:layout_toRightOf="@+id/textViewEtrafficNumber"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textSize="17sp"
+        android:textColor="@color/text_color" />
+
+    <TextView
+        android:id="@+id/textViewEtrafficTimeArrivalDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewEtrafficName"
+        android:text="@string/main_time_arrival"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_hint" />
+
+    <TextView
+        android:id="@+id/textViewEtrafficTimeArrival"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewEtrafficName"
+        android:layout_toEndOf="@+id/textViewEtrafficTimeArrivalDesc"
+        android:layout_toRightOf="@+id/textViewEtrafficTimeArrivalDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="@color/text_color"/>
+
+    <TextView
+        android:id="@+id/textViewEtrafficCountBusDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewEtrafficTimeArrivalDesc"
+        android:text="@string/count_bus"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_hint" />
+
+    <TextView
+        android:id="@+id/textViewEtrafficCountBus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewEtrafficTimeArrivalDesc"
+        android:layout_toEndOf="@+id/textViewEtrafficCountBusDesc"
+        android:layout_toRightOf="@+id/textViewEtrafficCountBusDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="@color/text_color" />
+
+    <TextView
+        android:id="@+id/textViewEtrafficPriceDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewEtrafficCountBusDesc"
+        android:text="@string/price_bus"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_hint" />
+
+    <TextView
+        android:id="@+id/textViewEtrafficPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewEtrafficCountBusDesc"
+        android:layout_toEndOf="@+id/textViewEtrafficPriceDesc"
+        android:layout_toRightOf="@+id/textViewEtrafficPriceDesc"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:textSize="14sp"
+        android:textColor="@color/text_color" />
+
+</RelativeLayout>

@@ -26,9 +26,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 public class AboutActivity extends AppCompatSettingsActivity {
 
     private AdView adView;
+    private Drawer drawerResult = null;
     private SharedPreferences settings;
     private Toolbar toolbar;
-    private Drawer drawerResult = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,23 +119,28 @@ public class AboutActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                Intent intentMain = new Intent(AboutActivity.this, MainActivity.class);
+                                startActivity(intentMain);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 2:
                                 Intent intentArrival = new Intent(AboutActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 4:
-                                Intent intentGgm = new Intent(AboutActivity.this, EtrafficActivity.class);
-                                startActivity(intentGgm);
-                                drawerResult.closeDrawer();
+                                Intent intentEtraffic = new Intent(AboutActivity.this, EtrafficActivity.class);
+                                startActivity(intentEtraffic);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 6:
                                 Intent intentMenu = new Intent(AboutActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 7:
                                 drawerResult.closeDrawer();

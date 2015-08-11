@@ -47,11 +47,6 @@ import java.util.ArrayList;
 
 public class MenuActivity extends AppCompatSettingsActivity {
 
-    CheckBox checkBoxCancel;
-    CheckBox checkBoxSell;
-    CheckBox checkBoxLoad;
-    CheckBox checkBoxDefaultStation;
-    Button btnAdsDisable;
     IabHelper mHelper;
 
     public CustomAutoCompleteView myAutoComplete;
@@ -59,9 +54,11 @@ public class MenuActivity extends AppCompatSettingsActivity {
     public DatabaseHandler databaseH;
 
     private AdView adView;
+    private Button btnAdsDisable;
+    private CheckBox checkBoxDefaultStation;
+    private Drawer drawerResult = null;
     private SharedPreferences settings;
     private Toolbar toolbar;
-    private Drawer drawerResult = null;
 
     private String activity;
     private String code;
@@ -81,6 +78,9 @@ public class MenuActivity extends AppCompatSettingsActivity {
 
         boolean AdShowGone;
         boolean defaultStation;
+        CheckBox checkBoxCancel;
+        CheckBox checkBoxSell;
+        CheckBox checkBoxLoad;
         Button btnFeedback;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
 
@@ -305,18 +305,22 @@ public class MenuActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                Intent intentMain = new Intent(MenuActivity.this, MainActivity.class);
+                                startActivity(intentMain);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 2:
                                 Intent intentArrival = new Intent(MenuActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 4:
-                                Intent intentGgm = new Intent(MenuActivity.this, EtrafficActivity.class);
-                                startActivity(intentGgm);
-                                drawerResult.closeDrawer();
+                                Intent intentEtraffic = new Intent(MenuActivity.this, EtrafficActivity.class);
+                                startActivity(intentEtraffic);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 6:
                                 drawerResult.closeDrawer();
@@ -325,6 +329,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
                                 Intent intentAbout = new Intent(MenuActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                         }
                         return false;

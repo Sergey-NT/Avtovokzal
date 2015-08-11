@@ -3,103 +3,108 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10sp"
-    android:id="@+id/listViewGgmItem" >
+    android:id="@+id/listViewEtrafficItem" >
 
     <TextView
-        android:id="@+id/textViewGgmTime"
+        android:id="@+id/textViewEtrafficTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:textSize="17sp"
+        android:textSize="19sp"
         android:textColor="@color/text_color"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textViewGgmNumber"
+        android:id="@+id/textViewEtrafficNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/textViewGgmTime"
-        android:layout_toRightOf="@+id/textViewGgmTime"
+        android:layout_toEndOf="@+id/textViewEtrafficTime"
+        android:layout_toRightOf="@+id/textViewEtrafficTime"
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
-        android:textSize="17sp"
+        android:textSize="19sp"
         android:textColor="@color/text_color"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textViewGgmName"
+        android:id="@+id/textViewEtrafficName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/textViewGgmNumber"
-        android:layout_toRightOf="@+id/textViewGgmNumber"
+        android:layout_toEndOf="@+id/textViewEtrafficNumber"
+        android:layout_toRightOf="@+id/textViewEtrafficNumber"
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:singleLine="true"
         android:ellipsize="end"
         android:lines="1"
-        android:textSize="17sp"
+        android:textSize="19sp"
         android:textColor="@color/text_color" />
 
     <TextView
-        android:id="@+id/textViewGgmTimeArrivalDesc"
+        android:id="@+id/textViewEtrafficTimeArrivalDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewGgmName"
+        android:layout_below="@+id/textViewEtrafficName"
         android:text="@string/main_time_arrival"
         android:textSize="14sp"
         android:textColor="@color/text_color_hint" />
 
     <TextView
-        android:id="@+id/textViewGgmTimeArrival"
+        android:id="@+id/textViewEtrafficTimeArrival"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewGgmName"
-        android:layout_toEndOf="@+id/textViewGgmTimeArrivalDesc"
-        android:layout_toRightOf="@+id/textViewGgmTimeArrivalDesc"
+        android:layout_below="@+id/textViewEtrafficName"
+        android:layout_toEndOf="@+id/textViewEtrafficTimeArrivalDesc"
+        android:layout_toRightOf="@+id/textViewEtrafficTimeArrivalDesc"
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
         android:textColor="@color/text_color"/>
 
     <TextView
-        android:id="@+id/textViewGgmCountBusDesc"
+        android:id="@+id/textViewEtrafficCountBusDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewGgmTimeArrivalDesc"
+        android:layout_below="@+id/textViewEtrafficTimeArrivalDesc"
         android:text="@string/count_bus"
         android:textSize="14sp"
         android:textColor="@color/text_color_hint" />
 
     <TextView
-        android:id="@+id/textViewGgmCountBus"
+        android:id="@+id/textViewEtrafficCountBus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewGgmTimeArrivalDesc"
-        android:layout_toEndOf="@+id/textViewGgmCountBusDesc"
-        android:layout_toRightOf="@+id/textViewGgmCountBusDesc"
+        android:layout_below="@+id/textViewEtrafficTimeArrivalDesc"
+        android:layout_toEndOf="@+id/textViewEtrafficCountBusDesc"
+        android:layout_toRightOf="@+id/textViewEtrafficCountBusDesc"
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
         android:textColor="@color/text_color" />
 
     <TextView
-        android:id="@+id/textGgmResultPriceDesc"
+        android:id="@+id/textViewEtrafficPriceDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewGgmCountBusDesc"
+        android:layout_below="@+id/textViewEtrafficTimeArrivalDesc"
+        android:layout_toEndOf="@+id/textViewEtrafficCountBus"
+        android:layout_toRightOf="@+id/textViewEtrafficCountBus"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
         android:text="@string/price_bus"
         android:textSize="14sp"
         android:textColor="@color/text_color_hint" />
 
     <TextView
-        android:id="@+id/textViewGgmPrice"
+        android:id="@+id/textViewEtrafficPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewGgmCountBusDesc"
-        android:layout_toEndOf="@+id/textGgmResultPriceDesc"
-        android:layout_toRightOf="@+id/textGgmResultPriceDesc"
+        android:layout_below="@+id/textViewEtrafficTimeArrivalDesc"
+        android:layout_toEndOf="@+id/textViewEtrafficPriceDesc"
+        android:layout_toRightOf="@+id/textViewEtrafficPriceDesc"
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:textSize="14sp"
         android:textColor="@color/text_color" />
+
 </RelativeLayout>

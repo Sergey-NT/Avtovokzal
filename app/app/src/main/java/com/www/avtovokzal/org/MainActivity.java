@@ -76,14 +76,15 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     public ArrayAdapter<AutoCompleteObject> myAdapter;
     public DatabaseHandler databaseH;
 
-    private ListView listView;
-    private TextView textView;
     private AdView adView;
-    private InterstitialAd interstitial;
-    private SharedPreferences settings;
-    private ProgressDialog queryDialog;
-    private Toolbar toolbar;
     private Drawer drawerResult = null;
+    private InterstitialAd interstitial;
+    private ListView listView;
+    private Menu myMenu;
+    private ProgressDialog queryDialog;
+    private TextView textView;
+    private Toolbar toolbar;
+    private SharedPreferences settings;
 
     private String code;
     private String dateNow;
@@ -102,7 +103,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     public static final String APP_PREFERENCES_MD5 = "md5";
     public static final String APP_PREFERENCES_MD5_CHECK = "checkMD5";
 
-    Menu myMenu;
     IabHelper mHelper;
 
     @Override
@@ -372,12 +372,12 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                     intentArrival.putExtra("newNameStation", nameStation);
                                 }
                                 startActivity(intentArrival);
-                                drawerResult.closeDrawer();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 4:
                                 Intent intentEtraffic = new Intent(MainActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
-                                drawerResult.closeDrawer();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 6:
                                 Intent intentMenu = new Intent(MainActivity.this, MenuActivity.class);
@@ -387,12 +387,12 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                     intentMenu.putExtra("code", code);
                                 }
                                 startActivity(intentMenu);
-                                drawerResult.closeDrawer();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 7:
                                 Intent intentAbout = new Intent(MainActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
-                                drawerResult.closeDrawer();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                         }
                         return false;

@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -51,27 +52,29 @@ import java.util.List;
 
 public class EtrafficActivity extends AppCompatSettingsActivity implements DatePickerDialog.OnDateSetListener {
 
-    private Drawer drawerResult = null;
-    private Toolbar toolbar;
-    private ListView listView;
-    private String dateNow;
-    private Button btnDate;
-    private ProgressDialog queryDialog;
     private AdView adView;
+    private Button btnDate;
+    private Drawer drawerResult = null;
+    private ListView listView;
+    private ProgressDialog queryDialog;
     private SharedPreferences settings;
-    private final static String TAG = "EtrafficActivity";
+    private Toolbar toolbar;
+
+    private String dateNow;
     private int day = 0;
+
+    private final static String TAG = "EtrafficActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ggm);
+        setContentView(R.layout.activity_etraffic);
 
         Button btnNextDay;
         boolean AdShowGone;
 
         // Определяем элементы интерфейса
-        listView = (ListView) findViewById(R.id.listViewGgm);
+        listView = (ListView) findViewById(R.id.listViewEtraffic);
 
         // Добавляем футер к списку ListView
         LayoutInflater inflater = getLayoutInflater();
@@ -153,14 +156,14 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                             case 1:
                                 Intent intentMain = new Intent(EtrafficActivity.this, MainActivity.class);
                                 startActivity(intentMain);
-                                drawerResult.closeDrawer();
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 2:
                                 Intent intentArrival = new Intent(EtrafficActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
-                                drawerResult.closeDrawer();
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 4:
                                 drawerResult.closeDrawer();
@@ -168,14 +171,14 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                             case 6:
                                 Intent intentMenu = new Intent(EtrafficActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
-                                drawerResult.closeDrawer();
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                             case 7:
                                 Intent intentAbout = new Intent(EtrafficActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
-                                drawerResult.closeDrawer();
                                 finish();
+                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
                                 return true;
                         }
                         return false;
@@ -201,7 +204,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         adView.setAdSize(AdSize.SMART_BANNER);
 
         // Поиск разметки LinearLayout
-        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewGgmActivity);
+        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewEtrafficActivity);
 
         // Добавление в разметку экземпляра adView
         layout.addView(adView);
@@ -229,39 +232,65 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
             if(isOnline()) {
                 try {
                     doc = Jsoup.connect(url).get();
-                    Element table = doc.getElementsByTag("table").get(0);
-                    Elements rows = table.select("tr:nth-child(2n+1)");
+                    Element table = doc.getElementsByTag("table").first();
+                    if (table == null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TextView textView = (TextView) findViewById(R.id.noItems);
+                                textView.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    } else {
+                        Elements rows = table.select("tr:nth-child(2n+1)");
 
-                    for (int i = 1; i < rows.size(); i++) {
-                        Element row = rows.get(i);
-                        Elements cols = row.select("td");
+                        if (rows.size() == 0) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    TextView textView = (TextView) findViewById(R.id.noItems);
+                                    textView.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    TextView textView = (TextView) findViewById(R.id.noItems);
+                                    textView.setVisibility(View.GONE);
+                                }
+                            });
 
-                        for (int y = 0; y < cols.size() - 1; y++) {
-                            Element col = cols.get(y);
-                            switch (y) {
-                                case 0:
-                                    time = col.text();
-                                    break;
-                                case 1:
-                                    number = col.text();
-                                    break;
-                                case 2:
-                                    name = col.text();
-                                    break;
-                                case 3:
-                                    timeArrival = col.text();
-                                    break;
-                                case 4:
-                                    countBus = col.text().toLowerCase();
-                                    break;
-                                case 5:
-                                    price = col.text();
+                            for (int i = 1; i < rows.size(); i++) {
+                                Element row = rows.get(i);
+                                Elements cols = row.select("td");
+
+                                for (int y = 0; y < cols.size() - 1; y++) {
+                                    Element col = cols.get(y);
+                                    switch (y) {
+                                        case 0:
+                                            time = col.text();
+                                            break;
+                                        case 1:
+                                            number = col.text();
+                                            break;
+                                        case 2:
+                                            name = col.text();
+                                            break;
+                                        case 3:
+                                            timeArrival = col.text();
+                                            break;
+                                        case 4:
+                                            countBus = col.text().toLowerCase();
+                                            break;
+                                        case 5:
+                                            price = col.text();
+                                    }
+                                }
+                                if (LOG_ON) {Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);}
+                                list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price));
                             }
                         }
-                        if (LOG_ON) {
-                            Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);
-                        }
-                        list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -371,7 +400,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                 .setAction(getString(R.string.analytics_action_set_date_etraffic))
                 .build());
 
-        DialogFragment newFragment = new DatePickerFragmentGmm();
+        DialogFragment newFragment = new DatePickerFragmentEtraffic();
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
