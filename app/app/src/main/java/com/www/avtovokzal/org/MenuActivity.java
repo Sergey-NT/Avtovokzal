@@ -308,19 +308,19 @@ public class MenuActivity extends AppCompatSettingsActivity {
                                 Intent intentMain = new Intent(MenuActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
                                 Intent intentArrival = new Intent(MenuActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
                                 Intent intentEtraffic = new Intent(MenuActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
                                 drawerResult.closeDrawer();
@@ -329,7 +329,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
                                 Intent intentAbout = new Intent(MenuActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                         }
                         return false;

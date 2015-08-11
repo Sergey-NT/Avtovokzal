@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -157,13 +155,13 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                                 Intent intentMain = new Intent(EtrafficActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
                                 Intent intentArrival = new Intent(EtrafficActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
                                 drawerResult.closeDrawer();
@@ -172,13 +170,13 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                                 Intent intentMenu = new Intent(EtrafficActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 7:
                                 Intent intentAbout = new Intent(EtrafficActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                         }
                         return false;
@@ -493,12 +491,5 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         intent.putExtra("activity", TAG);
         startActivity(intent);
         finish();
-    }
-
-    // Проверка подключения к сети интернет
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

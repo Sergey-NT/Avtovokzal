@@ -6,8 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -366,20 +364,23 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 drawerResult.closeDrawer();
                                 return true;
                             case 2:
+                                drawerResult.closeDrawer();
                                 Intent intentArrival = new Intent(MainActivity.this, ArrivalActivity.class);
                                 if (code != null) {
                                     intentArrival.putExtra("code", code);
                                     intentArrival.putExtra("newNameStation", nameStation);
                                 }
                                 startActivity(intentArrival);
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
+                                drawerResult.closeDrawer();
                                 Intent intentEtraffic = new Intent(MainActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
+                                drawerResult.closeDrawer();
                                 Intent intentMenu = new Intent(MainActivity.this, MenuActivity.class);
                                 intentMenu.putExtra("day", day);
                                 intentMenu.putExtra("activity", "MainActivity");
@@ -387,12 +388,13 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                     intentMenu.putExtra("code", code);
                                 }
                                 startActivity(intentMenu);
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 7:
+                                drawerResult.closeDrawer();
                                 Intent intentAbout = new Intent(MainActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                         }
                         return false;
@@ -755,13 +757,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         } else {
             Toast.makeText(getApplicationContext(), getString(R.string.main_invalid_date) , Toast.LENGTH_SHORT).show();
         }
-    }
-
-    // Проверка есть ли сетевое подключение
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.www.avtovokzal.org;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 
 public class AppCompatSettingsActivity extends AppCompatActivity {
@@ -15,4 +18,11 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES_SELL = "sell";
     public static final String APP_PREFERENCES_LOAD = "load";
     public static final String APP_PREFERENCES_DATE = "date";
+
+    // Проверка подключения к сети интернет
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 }

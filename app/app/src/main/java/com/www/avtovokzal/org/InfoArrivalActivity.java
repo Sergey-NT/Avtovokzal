@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -200,31 +198,31 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                                 Intent intentMain = new Intent(InfoArrivalActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
                                 Intent intentArrival = new Intent(InfoArrivalActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
                                 Intent intentEtraffic = new Intent(InfoArrivalActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
                                 Intent intentMenu = new Intent(InfoArrivalActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 7:
                                 Intent intentAbout = new Intent(InfoArrivalActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                         }
                         return false;
@@ -366,13 +364,6 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
         intent.putExtra("timeFromStation", timeFromStation);
         startActivity(intent);
         finish();
-    }
-
-    // Проверка подключения к сети интернет
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     // Получаем параметры из файла настроек

@@ -122,25 +122,25 @@ public class AboutActivity extends AppCompatSettingsActivity {
                                 Intent intentMain = new Intent(AboutActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
                                 Intent intentArrival = new Intent(AboutActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
                                 Intent intentEtraffic = new Intent(AboutActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
                                 Intent intentMenu = new Intent(AboutActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
-                                overridePendingTransition(R.animator.slide_out_left, R.animator.slide_in_right);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 7:
                                 drawerResult.closeDrawer();
