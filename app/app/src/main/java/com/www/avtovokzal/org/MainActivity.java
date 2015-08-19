@@ -40,6 +40,8 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -119,30 +121,42 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
         t.enableAdvertisingIdCollection(true);
 
-        // Создание helper, передавая ему наш контекст и открытый ключ для проверки подписи
-        mHelper = new IabHelper(this, base64EncodedPublicKey);
-
-        // Включаем логирование в debug режиме (перед публикацией поставить false)
-        mHelper.enableDebugLogging(false);
-
-        // Инициализируем. Запрос асинхронен будет вызван, когда инициализация завершится
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    if(LOG_ON) {Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);}
-                    return;
-                }
-                if (mHelper == null) return;
-                // Проверка уже купленного.
-                mHelper.queryInventoryAsync(mGotInventoryListener);
-            }
-        });
-
         // Переменная отвечает за работу с настройками
         settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         // Проверка отключения рекламы
         AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
+
+        // Check for Google Play Services
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        if (status == ConnectionResult.SUCCESS && !AdShowGone) {
+            // Создание helper, передавая ему наш контекст и открытый ключ для проверки подписи
+            mHelper = new IabHelper(this, base64EncodedPublicKey);
+
+            // Включаем логирование в debug режиме (перед публикацией поставить false)
+            mHelper.enableDebugLogging(false);
+
+            // Инициализируем. Запрос асинхронен будет вызван, когда инициализация завершится
+            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+                public void onIabSetupFinished(IabResult result) {
+                    if (!result.isSuccess()) {
+                        if (LOG_ON) {
+                            Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);
+                        }
+                        return;
+                    }
+                    if (mHelper == null) return;
+                    // Проверка уже купленного.
+                    mHelper.queryInventoryAsync(mGotInventoryListener);
+                }
+            });
+        } else if (status != ConnectionResult.SUCCESS) {
+            // Google Analytics
+            t.send(new HitBuilders.EventBuilder()
+                    .setCategory(getString(R.string.analytics_category_google))
+                    .setAction(getString(R.string.analytics_action_google_result))
+                    .build());
+        }
 
         if (DEVELOPER) {
             AdShowGone = true;

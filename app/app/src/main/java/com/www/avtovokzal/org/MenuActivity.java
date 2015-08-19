@@ -29,6 +29,8 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -109,26 +111,35 @@ public class MenuActivity extends AppCompatSettingsActivity {
         // Проверка отключения рекламы
         AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
 
-        // Создание Helper, передавая ему наш контекст и открытый ключ для проверки подписи
-        mHelper = new IabHelper(this, base64EncodedPublicKey);
+        // Check for Google Play Services
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        if (status == ConnectionResult.SUCCESS && !AdShowGone) {
+            // Создание Helper, передавая ему наш контекст и открытый ключ для проверки подписи
+            mHelper = new IabHelper(this, base64EncodedPublicKey);
 
-        // Включаем логирование в debug режиме (перед публикацией поставить false)
-        mHelper.enableDebugLogging(false);
+            // Включаем логирование в debug режиме (перед публикацией поставить false)
+            mHelper.enableDebugLogging(false);
 
-        // Инициализируем. Запрос асинхронен будет вызван, когда инициализация завершится
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    if(LOG_ON) {Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);}
-                    return;
+            // Инициализируем. Запрос асинхронен будет вызван, когда инициализация завершится
+            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+                public void onIabSetupFinished(IabResult result) {
+                    if (!result.isSuccess()) {
+                        if (LOG_ON) {
+                            Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);
+                        }
+                        return;
+                    }
+                    if (mHelper == null) return;
+                    // Проверка уже купленного, запрос цены.
+                    ArrayList<String> skuList = new ArrayList<>();
+                    skuList.add(SKU_ADS_DISABLE);
+                    mHelper.queryInventoryAsync(true, skuList, mGotInventoryListener);
                 }
-                if (mHelper == null) return;
-                // Проверка уже купленного, запрос цены.
-                ArrayList<String> skuList = new ArrayList<>();
-                skuList.add(SKU_ADS_DISABLE);
-                mHelper.queryInventoryAsync(true, skuList, mGotInventoryListener);
-            }
-        });
+            });
+        } else if (status != ConnectionResult.SUCCESS) {
+            btnAdsDisable.setVisibility(View.GONE);
+            btnFeedback.setVisibility(View.GONE);
+        }
 
         if (DEVELOPER) {
             AdShowGone = true;
