@@ -211,11 +211,4 @@ public class AboutActivity extends AppCompatSettingsActivity {
         }
         super.onDestroy();
     }
-
-    // Получаем параметры из файла настроек
-    private boolean getSettingsParams(String params) {
-        boolean checkBoxValue;
-        checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
-        return checkBoxValue;
-    }
 }

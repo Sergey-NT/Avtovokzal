@@ -478,13 +478,6 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         super.onDestroy();
     }
 
-    // Получаем параметры из файла настроек
-    private boolean getSettingsParams(String params) {
-        boolean checkBoxValue;
-        checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
-        return checkBoxValue;
-    }
-
     // Вызов Error Activity
     private void callErrorActivity(){
         Intent intent = new Intent(getApplicationContext(), ErrorActivity.class);

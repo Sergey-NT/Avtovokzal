@@ -433,13 +433,6 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
         finish();
     }
 
-    // Получаем параметры из файла настроек
-    private boolean getSettingsParams(String params) {
-        boolean checkBoxValue;
-        checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
-        return checkBoxValue;
-    }
-
     private class processingLoadArrivalResult extends AsyncTask<String, Void, List<ArrivalObjectResult>> {
         @Override
         protected List<ArrivalObjectResult> doInBackground(String... response) {

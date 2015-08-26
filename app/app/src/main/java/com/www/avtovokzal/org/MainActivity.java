@@ -101,7 +101,9 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
 
     public static final String APP_PREFERENCES_MD5 = "md5";
+    public static final String APP_PREFERENCES_MD5_EKB = "md5_ekb";
     public static final String APP_PREFERENCES_MD5_CHECK = "checkMD5";
+    public static final String APP_PREFERENCES_MD5_EKB_CHECK = "checkMD5_ekb";
 
     IabHelper mHelper;
 
@@ -112,6 +114,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
         boolean defaultStation;
         boolean checkMD5;
+        boolean checkMD5ekb;
         Button btnDate;
         Button btnNextDay;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
@@ -169,12 +172,31 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
         loadSystemInfo();
 
+
+        if (!databaseH.checkIfExistsRowTable("stations")) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(APP_PREFERENCES_MD5_CHECK, false);
+            editor.apply();
+        }
+        if (!databaseH.checkIfExistsRowTable("stations_ekb")) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(APP_PREFERENCES_MD5_EKB_CHECK, false);
+            editor.apply();
+        }
+
         // Проверка есть ли изменения в списке остановок
-        checkMD5 = settings.contains(APP_PREFERENCES_MD5_CHECK) && settings.getBoolean(APP_PREFERENCES_MD5_CHECK, false);
+        checkMD5 = settings.getBoolean(APP_PREFERENCES_MD5_CHECK, false);
+        checkMD5ekb = settings.getBoolean(APP_PREFERENCES_MD5_EKB_CHECK, false);
+
+        if(LOG_ON) Log.v("Check MD5 Ekb", " " + checkMD5ekb);
 
         if(!checkMD5){
             if(LOG_ON) Log.v("checkMD5", "Load Station To DB");
             loadStationToDB();
+        }
+
+        if(!checkMD5ekb) {
+            loadStationEkbToDB();
         }
 
         // Определяем элементы интерфейса
@@ -565,6 +587,37 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         }
     }
 
+    private void loadStationEkbToDB() {
+        String url = "http://www.avtovokzal.org/php/app/station_ekb.php";
+
+        if (isOnline()) {
+            StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if (response == null) {
+                        callErrorActivity();
+                        finish();
+                    }
+
+                    processingLoadStationEkbToDB task = new processingLoadStationEkbToDB();
+                    task.execute(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
+                    callErrorActivity();
+                }
+            });
+            // Установливаем TimeOut, Retry
+            strReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            // Добавляем запрос в очередь
+            AppController.getInstance().addToRequestQueue(strReq);
+        } else {
+            callErrorActivity();
+        }
+    }
+
     // Загрузка расписания автобусов
     private void loadSchedule (Object... params) {
         String url = "http://www.avtovokzal.org/php/app/main.php?day="+params[0]+"&cancel="+params[1]+"&sell="+params[2];
@@ -657,13 +710,14 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
     // Запрос даты, хеша остановок, времени обновления
     private void loadSystemInfo() {
-        String url = "http://www.avtovokzal.org/php/app/system.php";
+        String url = "http://www.avtovokzal.org/php/app/system_1.3.5.php";
 
         if (isOnline()) {
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     String md5hashFromSettings;
+                    String md5hashEkbFromSettings;
 
                     if (response == null) {
                         callErrorActivity();
@@ -683,6 +737,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         dateNow = oneObject.getString("date");
                         int delta = oneObject.getInt("delta");
                         String md5hash = oneObject.getString("md5");
+                        String md5hashEkb = oneObject.getString("md5_ekb");
 
                         // Установка текущей даты
                         textView = (TextView) findViewById(R.id.header);
@@ -698,10 +753,26 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         }
 
                         // Проверка требуется ли обновлять список остановок
-                        if (settings.contains(APP_PREFERENCES_MD5)) {
-                            md5hashFromSettings = settings.getString(APP_PREFERENCES_MD5, null);
+                        md5hashFromSettings = settings.getString(APP_PREFERENCES_MD5, "");
+                        md5hashEkbFromSettings = settings.getString(APP_PREFERENCES_MD5_EKB, "");
+
+                        if (LOG_ON) {
+                            Log.v("MD5 from Settings Ekb", md5hashEkbFromSettings + " " + md5hashEkb.equals(md5hashEkbFromSettings));
+                            Log.v("MD5 Ekb", md5hashEkb);
+                            Log.v("MD5 from Settings", md5hashFromSettings + " " + md5hash.equals(md5hashFromSettings));
+                            Log.v("MD5", md5hash);
+                        }
+
+                        if (md5hashEkb.equals(md5hashEkbFromSettings)) {
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putBoolean(APP_PREFERENCES_MD5_EKB_CHECK, true);
+                            editor.apply();
                         } else {
-                            md5hashFromSettings = "";
+                            // Сохраняем значение нового md5 хэша остановок в настройках
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putBoolean(APP_PREFERENCES_MD5_EKB_CHECK, false);
+                            editor.putString(APP_PREFERENCES_MD5_EKB, md5hashEkb);
+                            editor.apply();
                         }
 
                         if (md5hash.equals(md5hashFromSettings)) {
@@ -875,13 +946,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         startActivity(intent);
     }
 
-    // Получаем параметры из файла настроек
-    private boolean getSettingsParams(String params) {
-        boolean checkBoxValue;
-        checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
-        return checkBoxValue;
-    }
-
     // Listener для востановителя покупок.
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
@@ -985,6 +1049,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         @Override
         protected Void doInBackground(String... response) {
             JSONObject dataJsonQbj;
+            String tableName = "stations";
 
             if(LOG_ON){Log.d(TAG, response[0]);}
 
@@ -999,7 +1064,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                     String noteStation = oneObject.getString("note_station");
                     long codeStation = oneObject.getLong("id_station");
                     long sumStation = oneObject.getLong("sum_station");
-                    databaseH.create(new AutoCompleteObject((nameStation + " " + noteStation), sumStation, codeStation));
+                    databaseH.create(new AutoCompleteObject((nameStation + " " + noteStation), sumStation, codeStation), tableName);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -1012,6 +1077,33 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             super.onPostExecute(aVoid);
             // Включаем возможность ввода после загрузки остановок в базу данных
             myAutoComplete.setEnabled(true);
+        }
+    }
+
+    private class processingLoadStationEkbToDB extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... response) {
+            JSONObject dataJsonQbj;
+            String tableName = "stations_ekb";
+
+            if(LOG_ON){Log.d(TAG, response[0]);}
+
+            try {
+                dataJsonQbj = new JSONObject(response[0]);
+                JSONArray rasp = dataJsonQbj.getJSONArray("station");
+
+                for (int i = 0; i < rasp.length(); i++) {
+                    JSONObject oneObject = rasp.getJSONObject(i);
+
+                    String nameStation = oneObject.getString("name_station");
+                    long codeStation = oneObject.getLong("id_station");
+                    long sumStation = oneObject.getLong("sum_station");
+                    databaseH.create(new AutoCompleteObject(nameStation, sumStation, codeStation), tableName);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 

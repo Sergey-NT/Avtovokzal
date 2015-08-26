@@ -30,12 +30,13 @@ public class MenuAutoCompleteTextChangedListener implements TextWatcher {
     public void onTextChanged(CharSequence userInput, int start, int before, int count) {
         try {
             if(userInput.length() > 0) {
+                String tableName = "stations";
 
                 if (LOG_ON) Log.v("Input: ", "User input: " + userInput);
 
                 MenuActivity menuActivity = ((MenuActivity) context);
                 menuActivity.myAdapter.notifyDataSetChanged();
-                AutoCompleteObject[] myObj = menuActivity.databaseH.read(userInput.toString());
+                AutoCompleteObject[] myObj = menuActivity.databaseH.read(userInput.toString(), tableName);
 
                 // обновление адапрета
                 menuActivity.myAdapter = new AutocompleteCustomArrayAdapter(menuActivity, R.layout.listview_dropdown_item, myObj);

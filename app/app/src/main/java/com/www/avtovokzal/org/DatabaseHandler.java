@@ -12,12 +12,13 @@ import com.www.avtovokzal.org.Object.AutoCompleteObject;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Версия базы данных
-    private static final int DATABASE_VERSION = 4;
-    private final static boolean LOG_ON = false;
+    private static final int DATABASE_VERSION = 5;
+    private final static boolean LOG_ON = true;
     // Имя базы данных
     protected static final String DATABASE_NAME = "Avtovokzal";
     // Имена таблицы и полей в базе данных
-    public String tableName = "stations";
+    private String tableNameNT = "stations";
+    private String tableNameEkb = "stations_ekb";
     public String fieldObjectId = "id";
     public String fieldObjectName = "name";
     public String fieldObjectSum = "sum";
@@ -32,8 +33,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = "";
+        String sqlEkb = "";
 
-        sql += "CREATE TABLE " + tableName;
+        sql += "CREATE TABLE IF NOT EXISTS " + tableNameNT;
         sql += " ( ";
         sql += fieldObjectId + " INTEGER PRIMARY KEY AUTOINCREMENT, ";
         sql += fieldObjectName + " TEXT, ";
@@ -42,24 +44,58 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         sql += " ) ";
 
         db.execSQL(sql);
+
+        sqlEkb += "CREATE TABLE IF NOT EXISTS " + tableNameEkb;
+        sqlEkb += " ( ";
+        sqlEkb += fieldObjectId + " INTEGER PRIMARY KEY AUTOINCREMENT, ";
+        sqlEkb += fieldObjectName + " TEXT, ";
+        sqlEkb += fieldObjectSum + " INTEGER, ";
+        sqlEkb += fieldObjectCode + " INTEGER";
+        sqlEkb += " ) ";
+
+        db.execSQL(sqlEkb);
     }
 
     // При обновлении базы данных произойдет удаление текущих таблиц и создание новых
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "DROP TABLE IF EXISTS " + tableName;
-
+        String sql = "DROP TABLE IF EXISTS " + tableNameNT;
         db.execSQL(sql);
+
+        String sqlEkb = "DROP TABLE IF EXISTS " + tableNameEkb;
+        db.execSQL(sqlEkb);
 
         onCreate(db);
     }
 
+    public boolean checkIfExistsRowTable(String tableName) {
+        boolean recordExists = false;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT Count(*) FROM " + tableName, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            if (cursor.getInt(0) > 0) {
+                Log.v("Count row", " " + cursor.getInt(0));
+                recordExists = true;
+            }
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
+
+        Log.v("Check Row Table", " " + recordExists);
+        return recordExists;
+    }
+
     // Создание новой записи
     // @param myObj содержит данных которые будут добавлены в строку таблицы
-    public boolean create(AutoCompleteObject myObj) {
+    public boolean create(AutoCompleteObject myObj, String tableName) {
         boolean createSuccessful = false;
 
-        if(!checkIfExists(myObj.objectName)) {
+        if(!checkIfExists(myObj.objectName, tableName)) {
             SQLiteDatabase db = this.getWritableDatabase();
 
             ContentValues values = new ContentValues();
@@ -80,7 +116,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Проверка существует ли запись
-    public boolean checkIfExists(String objectName) {
+    public boolean checkIfExists(String objectName, String tableName) {
         boolean recordExists = false;
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -100,7 +136,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Чтение строки из поискового запроса
-    public AutoCompleteObject[] read(String searchTerm) {
+    public AutoCompleteObject[] read(String searchTerm, String tableName) {
         String sql = "";
         sql += "SELECT " + fieldObjectName + ", " + fieldObjectSum + ", " + fieldObjectCode + " FROM " + tableName;
         sql += " WHERE " + fieldObjectName + " LIKE '%" + searchTerm + "%' OR " + fieldObjectName + " LIKE '%" + Character.toUpperCase(searchTerm.charAt(0)) + searchTerm.substring(1) + "%'";

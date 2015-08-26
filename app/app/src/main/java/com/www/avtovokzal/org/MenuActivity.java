@@ -566,13 +566,6 @@ public class MenuActivity extends AppCompatSettingsActivity {
         }
     }
 
-    // Получаем параметры из файла настроек
-    private boolean getSettingsParams(String params) {
-        boolean checkBoxValue;
-        checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
-        return checkBoxValue;
-    }
-
     private CharSequence spanWithRoubleTypeface(String priceHint) {
         final Typeface roubleSupportedTypeface = Typeface.createFromAsset(this.getAssets(), "fonts/rouble2.ttf");
 

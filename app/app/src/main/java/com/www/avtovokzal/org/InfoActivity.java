@@ -369,13 +369,6 @@ public class InfoActivity extends AppCompatSettingsActivity {
         finish();
     }
 
-    // Получаем параметры из файла настроек
-    private boolean getSettingsParams(String params) {
-        boolean checkBoxValue;
-        checkBoxValue = settings.contains(params) && settings.getBoolean(params, false);
-        return checkBoxValue;
-    }
-
     private class processingLoadRouteInfo extends AsyncTask<String, Void, List<RouteObjectInfo>>{
         @Override
         protected List<RouteObjectInfo> doInBackground(String... response) {

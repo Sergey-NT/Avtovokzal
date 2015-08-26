@@ -1,6 +1,7 @@
 package com.www.avtovokzal.org;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,17 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES_SELL = "sell";
     public static final String APP_PREFERENCES_LOAD = "load";
     public static final String APP_PREFERENCES_DATE = "date";
+
+    // Получаем параметры из файла настроек
+    public boolean getSettingsParams(String params) {
+        boolean checkValue;
+        SharedPreferences settings;
+
+        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        checkValue = settings.getBoolean(params, false);
+
+        return checkValue;
+    }
 
     // Проверка подключения к сети интернет
     public boolean isOnline() {
