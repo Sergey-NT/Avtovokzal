@@ -12,7 +12,7 @@ import com.www.avtovokzal.org.Object.AutoCompleteObject;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Версия базы данных
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     private final static boolean LOG_ON = true;
     // Имя базы данных
     protected static final String DATABASE_NAME = "Avtovokzal";
@@ -24,12 +24,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public String fieldObjectSum = "sum";
     public String fieldObjectCode = "code";
 
-    // Конструктор
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Создание таблицы
+    // Создание таблиц
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = "";
@@ -43,8 +42,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         sql += fieldObjectCode + " INTEGER";
         sql += " ) ";
 
-        db.execSQL(sql);
-
         sqlEkb += "CREATE TABLE IF NOT EXISTS " + tableNameEkb;
         sqlEkb += " ( ";
         sqlEkb += fieldObjectId + " INTEGER PRIMARY KEY AUTOINCREMENT, ";
@@ -53,7 +50,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         sqlEkb += fieldObjectCode + " INTEGER";
         sqlEkb += " ) ";
 
+        db.execSQL(sql);
         db.execSQL(sqlEkb);
+
+        if (LOG_ON) Log.v("Database", "Таблицы созданы");
     }
 
     // При обновлении базы данных произойдет удаление текущих таблиц и создание новых
@@ -66,6 +66,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(sqlEkb);
 
         onCreate(db);
+
+        if (LOG_ON) Log.v("Database", "Таблицы обновлены");
+    }
+
+    public void removeAll (String tableName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(tableName, null, null);
+        db.close();
+
+        if (LOG_ON) Log.v("Database", "Таблица очищена");
     }
 
     public boolean checkIfExistsRowTable(String tableName) {
@@ -77,7 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.moveToFirst();
             if (cursor.getInt(0) > 0) {
-                Log.v("Count row", " " + cursor.getInt(0));
+                if (LOG_ON) Log.v("Count row", " " + cursor.getInt(0));
                 recordExists = true;
             }
         }
@@ -86,53 +96,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         db.close();
 
-        Log.v("Check Row Table", " " + recordExists);
+        if (LOG_ON) Log.v("Check Row Table", tableName + " " + recordExists);
         return recordExists;
     }
 
     // Создание новой записи
     // @param myObj содержит данных которые будут добавлены в строку таблицы
-    public boolean create(AutoCompleteObject myObj, String tableName) {
-        boolean createSuccessful = false;
-
-        if(!checkIfExists(myObj.objectName, tableName)) {
-            SQLiteDatabase db = this.getWritableDatabase();
-
-            ContentValues values = new ContentValues();
-            values.put(fieldObjectName, myObj.objectName);
-            values.put(fieldObjectSum, myObj.objectSum);
-            values.put(fieldObjectCode, myObj.objectCode);
-            createSuccessful = db.insert(tableName, null, values) > 0;
-
-            db.close();
-
-            if(createSuccessful){
-                if (LOG_ON) Log.v("Station", myObj.objectName + " created.");
-                if (LOG_ON) Log.v("Station", myObj.objectSum + " created.");
-                if (LOG_ON) Log.v("Station", myObj.objectCode + " created");
-            }
-        }
-        return createSuccessful;
-    }
-
-    // Проверка существует ли запись
-    public boolean checkIfExists(String objectName, String tableName) {
-        boolean recordExists = false;
-
+    public void create(AutoCompleteObject myObj, String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT " + fieldObjectId + " FROM " + tableName + " WHERE " + fieldObjectName + " = ?", new String[] {objectName});
 
-        if(cursor != null) {
-            if(cursor.getCount() > 0) {
-                recordExists = true;
-            }
-        }
-        if (cursor != null) {
-            cursor.close();
-        }
+        ContentValues values = new ContentValues();
+        values.put(fieldObjectName, myObj.objectName);
+        values.put(fieldObjectSum, myObj.objectSum);
+        values.put(fieldObjectCode, myObj.objectCode);
+        db.insert(tableName, null, values);
+
         db.close();
 
-        return recordExists;
+        if (LOG_ON) {
+            Log.v("Station", myObj.objectName + " created.");
+            Log.v("Station", myObj.objectSum + " created.");
+            Log.v("Station", myObj.objectCode + " created");
+        }
     }
 
     // Чтение строки из поискового запроса
@@ -160,9 +145,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 long objectSum = cursor.getLong(cursor.getColumnIndex(fieldObjectSum));
                 long objectCode = cursor.getLong(cursor.getColumnIndex(fieldObjectCode));
 
-                if (LOG_ON) {Log.v("Result", "objectName: " + objectName);}
-                if (LOG_ON) {Log.v("Result", "objectSum: " + objectSum);}
-                if (LOG_ON) {Log.v("Result", "objectCode: " + objectCode);}
+                if (LOG_ON) {
+                    Log.v("Result", "objectName: " + objectName);
+                    Log.v("Result", "objectSum: " + objectSum);
+                    Log.v("Result", "objectCode: " + objectCode);
+                }
 
                 AutoCompleteObject myObject = new AutoCompleteObject(objectName, objectSum, objectCode);
                 ObjectItemData[x] = myObject;

@@ -74,5 +74,10 @@
             android:configChanges="orientation|screenSize" >
         </activity>
 
+        <activity
+            android:name=".EtrafficMainActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+
     </application>
 </manifest>

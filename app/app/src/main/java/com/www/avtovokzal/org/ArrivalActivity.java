@@ -222,29 +222,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                 .withToolbar(toolbar)
                 .withDisplayBelowToolbar(true)
                 .withActionBarDrawerToggleAnimated(true)
-                .addDrawerItems(
-                        new SectionDrawerItem()
-                                .withName(R.string.app_name_city),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.app_subtitle_main)
-                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.app_subtitle_arrival)
-                                .withIdentifier(1)
-                                .withIcon(R.drawable.ic_vertical_align_bottom_black_18dp),
-                        new SectionDrawerItem()
-                                .withName(R.string.app_name_city_ggm),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.app_subtitle_main)
-                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
-                        new DividerDrawerItem(),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.menu_settings)
-                                .withIcon(R.drawable.ic_settings_black_18dp),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.menu_about)
-                                .withIcon(R.drawable.ic_info_outline_black_18dp)
-                )
+                .addDrawerItems(getDrawerItems())
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
@@ -265,12 +243,18 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
+                                Intent intentEtrafficMain = new Intent(ArrivalActivity.this, EtrafficMainActivity.class);
+                                startActivity(intentEtrafficMain);
+                                finish();
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
+                                return true;
+                            case 8:
                                 Intent intentMenu = new Intent(ArrivalActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
-                            case 7:
+                            case 9:
                                 Intent intentAbout = new Intent(ArrivalActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -281,7 +265,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                     }
                 })
                 .build();
-        drawerResult.setSelectionByIdentifier(1);
+        drawerResult.setSelectionByIdentifier(2);
     }
 
     private void initializeToolbar() {

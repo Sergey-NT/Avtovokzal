@@ -44,9 +44,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
 import com.www.avtovokzal.org.Adapter.RouteObjectResultAdapter;
@@ -172,7 +169,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
         loadSystemInfo();
 
-
+        // Проверка есть ли строки в таблицах
         if (!databaseH.checkIfExistsRowTable("stations")) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(APP_PREFERENCES_MD5_CHECK, false);
@@ -369,29 +366,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 .withToolbar(toolbar)
                 .withDisplayBelowToolbar(true)
                 .withActionBarDrawerToggleAnimated(true)
-                .addDrawerItems(
-                        new SectionDrawerItem()
-                                .withName(R.string.app_name_city),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.app_subtitle_main)
-                                .withIdentifier(1)
-                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.app_subtitle_arrival)
-                                .withIcon(R.drawable.ic_vertical_align_bottom_black_18dp),
-                        new SectionDrawerItem()
-                                .withName(R.string.app_name_city_ggm),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.app_subtitle_main)
-                                .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
-                        new DividerDrawerItem(),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.menu_settings)
-                                .withIcon(R.drawable.ic_settings_black_18dp),
-                        new PrimaryDrawerItem()
-                                .withName(R.string.menu_about)
-                                .withIcon(R.drawable.ic_info_outline_black_18dp)
-                )
+                .addDrawerItems(getDrawerItems())
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
@@ -417,6 +392,12 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 return true;
                             case 6:
                                 drawerResult.closeDrawer();
+                                Intent intentEtrafficMain = new Intent(MainActivity.this, EtrafficMainActivity.class);
+                                startActivity(intentEtrafficMain);
+                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
+                                return true;
+                            case 8:
+                                drawerResult.closeDrawer();
                                 Intent intentMenu = new Intent(MainActivity.this, MenuActivity.class);
                                 intentMenu.putExtra("day", day);
                                 intentMenu.putExtra("activity", "MainActivity");
@@ -426,7 +407,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 startActivity(intentMenu);
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
-                            case 7:
+                            case 9:
                                 drawerResult.closeDrawer();
                                 Intent intentAbout = new Intent(MainActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
@@ -763,28 +744,20 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                             Log.v("MD5", md5hash);
                         }
 
-                        if (md5hashEkb.equals(md5hashEkbFromSettings)) {
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putBoolean(APP_PREFERENCES_MD5_EKB_CHECK, true);
-                            editor.apply();
-                        } else {
-                            // Сохраняем значение нового md5 хэша остановок в настройках
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putBoolean(APP_PREFERENCES_MD5_EKB_CHECK, false);
-                            editor.putString(APP_PREFERENCES_MD5_EKB, md5hashEkb);
-                            editor.apply();
-                        }
-
-                        if (md5hash.equals(md5hashFromSettings)) {
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putBoolean(APP_PREFERENCES_MD5_CHECK, true);
-                            editor.apply();
-                        } else {
-                            // Сохраняем значение нового md5 хэша остановок в настройках
+                        // Сохраняем значение нового md5 хэша остановок в настройках
+                        if (!md5hash.equals(md5hashFromSettings)) {
                             SharedPreferences.Editor editor = settings.edit();
                             editor.putBoolean(APP_PREFERENCES_MD5_CHECK, false);
                             editor.putString(APP_PREFERENCES_MD5, md5hash);
                             editor.apply();
+                            if (LOG_ON) Log.v("Settings", "Station false");
+                        }
+                        if (!md5hashEkb.equals(md5hashEkbFromSettings)) {
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putBoolean(APP_PREFERENCES_MD5_EKB_CHECK, false);
+                            editor.putString(APP_PREFERENCES_MD5_EKB, md5hashEkb);
+                            editor.apply();
+                            if (LOG_ON) Log.v("Settings", "Station_ekb false");
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -1057,6 +1030,8 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 dataJsonQbj = new JSONObject(response[0]);
                 JSONArray rasp = dataJsonQbj.getJSONArray("station");
 
+                databaseH.removeAll(tableName);
+
                 for (int i = 0; i < rasp.length(); i++) {
                     JSONObject oneObject = rasp.getJSONObject(i);
 
@@ -1066,6 +1041,11 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                     long sumStation = oneObject.getLong("sum_station");
                     databaseH.create(new AutoCompleteObject((nameStation + " " + noteStation), sumStation, codeStation), tableName);
                 }
+
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(APP_PREFERENCES_MD5_CHECK, true);
+                editor.apply();
+                if (LOG_ON) Log.v("Settings", "Station true");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -1092,6 +1072,8 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 dataJsonQbj = new JSONObject(response[0]);
                 JSONArray rasp = dataJsonQbj.getJSONArray("station");
 
+                databaseH.removeAll(tableName);
+
                 for (int i = 0; i < rasp.length(); i++) {
                     JSONObject oneObject = rasp.getJSONObject(i);
 
@@ -1100,6 +1082,11 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                     long sumStation = oneObject.getLong("sum_station");
                     databaseH.create(new AutoCompleteObject(nameStation, sumStation, codeStation), tableName);
                 }
+
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(APP_PREFERENCES_MD5_EKB_CHECK, true);
+                editor.apply();
+                if (LOG_ON) Log.v("Settings", "Station true");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

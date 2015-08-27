@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adViewEtrafficMainActivity"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1" >
+
+        <com.www.avtovokzal.org.CustomAutoCompleteView
+            android:id="@+id/autoCompleteEtraffic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="5sp"
+            android:layout_marginStart="5sp"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
+            android:layout_marginEnd="5sp"
+            android:nextFocusUp="@id/autoCompleteEtraffic"
+            android:nextFocusLeft="@id/autoCompleteEtraffic"
+            android:drawableLeft="@drawable/ic_search_black_24dp"
+            android:drawableStart="@drawable/ic_search_black_24dp"
+            android:drawablePadding="5sp"
+            android:inputType="textNoSuggestions"
+            android:hint="@string/hint_main"
+            android:textColorHint="@color/text_color_hint"
+            android:completionThreshold="1"
+            android:textColor="@color/text_color"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/noItems"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_items"
+            android:textSize="17sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginBottom="25sp"
+            android:textColor="@color/text_color"
+            android:gravity="center"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</LinearLayout>

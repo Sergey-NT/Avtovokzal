@@ -2,6 +2,7 @@
     <string name="app_name">Автовокзал</string>
     <string name="app_name_city">Нижний Тагил. Автовокзал</string>
     <string name="app_name_city_ggm">Нижний Тагил. ГГМ</string>
+    <string name="app_name_city_ekb">Екатеринбург. Северный автовокзал</string>
     <string name="app_subtitle_main">Отправление автобусов</string>
     <string name="app_subtitle_arrival">Прибытие автобусов</string>
     <string name="app_subtitle_info">Остановочные пункты</string>
