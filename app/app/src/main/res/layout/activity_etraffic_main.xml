@@ -3,7 +3,9 @@
     android:id="@+id/adViewEtrafficMainActivity"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <include
         android:id="@+id/toolbar"
@@ -16,7 +18,7 @@
         android:layout_weight="1" >
 
         <com.www.avtovokzal.org.CustomAutoCompleteView
-            android:id="@+id/autoCompleteEtraffic"
+            android:id="@+id/autoCompleteEtrafficMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"
@@ -25,8 +27,8 @@
             android:layout_marginLeft="5sp"
             android:layout_marginRight="5sp"
             android:layout_marginEnd="5sp"
-            android:nextFocusUp="@id/autoCompleteEtraffic"
-            android:nextFocusLeft="@id/autoCompleteEtraffic"
+            android:nextFocusUp="@id/autoCompleteEtrafficMain"
+            android:nextFocusLeft="@id/autoCompleteEtrafficMain"
             android:drawableLeft="@drawable/ic_search_black_24dp"
             android:drawableStart="@drawable/ic_search_black_24dp"
             android:drawablePadding="5sp"
@@ -36,6 +38,21 @@
             android:completionThreshold="1"
             android:textColor="@color/text_color"
             android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/header"
+            android:onClick="showDatePickerDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10sp"
+            android:layout_marginTop="3sp"
+            android:background="@color/primary"
+            android:textColor="@color/text_color_white"
+            android:textSize="17sp"
+            android:drawablePadding="5sp"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:drawableRight="@drawable/ic_calendar" />
 
         <TextView
             android:id="@+id/noItems"
@@ -48,6 +65,14 @@
             android:textColor="@color/text_color"
             android:gravity="center"
             android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/listViewEtrafficMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:soundEffectsEnabled="true"
+            android:divider="@color/divider_color"
+            android:dividerHeight="1sp" />
 
     </LinearLayout>
 </LinearLayout>

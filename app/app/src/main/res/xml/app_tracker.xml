@@ -18,4 +18,5 @@
     <screenName name="com.www.avtovokzal.org.AboutActivity">About Activity</screenName>
     <screenName name="com.www.avtovokzal.org.InfoArrivalActivity">Info Arrival Activity</screenName>
     <screenName name="com.www.avtovokzal.org.EtrafficActivity">Etraffic Activity</screenName>
+    <screenName name="com.www.avtovokzal.org.EtrafficMainActivity">Etraffic Main Activity</screenName>
 </resources>
