@@ -33,9 +33,6 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.ArrivalObjectResultAdapter;
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
@@ -60,7 +57,6 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
     private Drawer drawerResult = null;
     private ListView listView;
     private ProgressDialog progressDialog;
-    private SharedPreferences settings;
     private Toolbar toolbar;
 
     private String code;
@@ -75,6 +71,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
 
         boolean AdShowGone;
         boolean defaultStation;
+        SharedPreferences settings;
         databaseH = new DatabaseHandler(ArrivalActivity.this);
 
         // Google Analytics

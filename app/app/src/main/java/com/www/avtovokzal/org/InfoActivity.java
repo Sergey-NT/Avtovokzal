@@ -32,9 +32,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.RouteObjectInfoAdapter;
 import com.www.avtovokzal.org.Object.RouteObjectInfo;
@@ -53,7 +50,6 @@ public class InfoActivity extends AppCompatSettingsActivity {
     private Drawer drawerResult = null;
     private ListView listView;
     private ProgressDialog progressDialog;
-    private SharedPreferences settings;
     private Toolbar toolbar;
 
     private String number;
@@ -69,8 +65,9 @@ public class InfoActivity extends AppCompatSettingsActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
-        boolean AdShowGone;
         TextView textView;
+        SharedPreferences settings;
+        boolean AdShowGone;
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);

@@ -31,9 +31,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.RouteObjectInfoArrivalAdapter;
 import com.www.avtovokzal.org.Object.RouteObjectInfoArrival;
@@ -51,7 +48,6 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
     private Drawer drawerResult = null;
     private ListView listView;
     private ProgressDialog progressDialog;
-    private SharedPreferences settings;
     private Toolbar toolbar;
 
 
@@ -70,6 +66,7 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
         boolean AdShowGone;
         TextView textViewName;
         TextView textViewTime;
+        SharedPreferences settings;
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);

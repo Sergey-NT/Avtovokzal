@@ -18,16 +18,12 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 public class AboutActivity extends AppCompatSettingsActivity {
 
     private AdView adView;
     private Drawer drawerResult = null;
-    private SharedPreferences settings;
     private Toolbar toolbar;
 
     @Override
@@ -36,6 +32,7 @@ public class AboutActivity extends AppCompatSettingsActivity {
         setContentView(R.layout.activity_about);
 
         boolean AdShowGone;
+        SharedPreferences settings;
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);

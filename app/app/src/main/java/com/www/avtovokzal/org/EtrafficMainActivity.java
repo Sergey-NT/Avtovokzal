@@ -27,6 +27,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -67,7 +73,6 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
     private ListView listView;
     private ProgressDialog queryDialog;
     private Toolbar toolbar;
-    private SharedPreferences settings;
     private EtrafficObjectAdapter adapter;
 
     private int day = 0;
@@ -87,6 +92,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         setContentView(R.layout.activity_etraffic_main);
 
         Button btnNextDay;
+        SharedPreferences settings;
         boolean AdShowGone;
 
         databaseH = new DatabaseHandler(EtrafficMainActivity.this);
@@ -252,10 +258,10 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
                 code = tv.getTag().toString();
 
-                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_SHORT).show();
-
                 parsingHTML task = new parsingHTML();
                 task.execute(code, dateNow, "1");
+
+                sendIdToDb(code);
 
                 myAutoComplete.clearFocus();
             }
@@ -303,8 +309,10 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             }
 
             if (days >= 0 && days <= 9) {
-                parsingHTML task = new parsingHTML();
-                task.execute(dayNumber + "." + monthNumber + "." + year);
+                if (code != null) {
+                    parsingHTML task = new parsingHTML();
+                    task.execute(code, dayNumber + "." + monthNumber + "." + year, "1");
+                }
                 btnDate.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
                 // fix for Android 4.4.4
                 try {
@@ -384,9 +392,11 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             String timeArrival = null;
             String countBus = null;
             String price = null;
+            int count = 0;
 
             if (!codeSettings.equals(params[0]) || !dateNowSettings.equals(params[1])) {
-                adapter = null;
+                list.clear();
+                countRows = 0;
                 codeSettings = params[0];
                 dateNowSettings = params[1];
             }
@@ -406,7 +416,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                     } else {
                         Elements rows = table.select("tr:nth-child(2n+1)");
 
-                        if (rows.size() == 0) {
+                        if (rows.size() == 0 && params[2].equals("1")) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -451,9 +461,10 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                                 }
                                 if (LOG_ON) {Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);}
                                 list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price));
-                                countRows = i;
-                                if (LOG_ON) Log.v("Count rows:", ""+countRows);
+                                count = i;
                             }
+                            countRows = count;
+                            if (LOG_ON) Log.v("Count rows:", ""+countRows);
                         }
                     }
                 } catch (IOException e) {
@@ -476,16 +487,12 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
         @Override
         protected void onPostExecute(List<EtrafficObject> list) {
-            adapter = new EtrafficObjectAdapter(EtrafficMainActivity.this, list);
-//            if (listView.getAdapter() == null)
-//                listView.setAdapter(adapter);
-//            else{
-//                adapter.notifyDataSetChanged();
-//            }
-            listView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            super.onPostExecute(list);
-
+            if (listView.getAdapter() == null) {
+                adapter = new EtrafficObjectAdapter(EtrafficMainActivity.this, list);
+                listView.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
             try {
                 if (queryDialog != null && queryDialog.isShowing()) {
                     queryDialog.dismiss();
@@ -495,6 +502,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             }  finally {
                 queryDialog = null;
             }
+            super.onPostExecute(list);
         }
     }
 
@@ -584,5 +592,35 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         intent.putExtra("activity", TAG);
         startActivity(intent);
         finish();
+    }
+
+    private void sendIdToDb(String id) {
+        String url = "http://www.avtovokzal.org/php/app/result_ekb.php?id="+id;
+
+        if (isOnline()) {
+            StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if (response == null) {
+                        callErrorActivity();
+                        finish();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if(LOG_ON) {
+                        VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    }
+                    callErrorActivity();
+                }
+            });
+            // Установливаем TimeOut, Retry
+            strReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            // Добавляем запрос в очередь
+            AppController.getInstance().addToRequestQueue(strReq);
+        } else {
+            callErrorActivity();
+        }
     }
 }

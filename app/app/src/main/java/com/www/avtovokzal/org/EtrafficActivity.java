@@ -52,7 +52,6 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
     private Drawer drawerResult = null;
     private ListView listView;
     private ProgressDialog queryDialog;
-    private SharedPreferences settings;
     private Toolbar toolbar;
 
     private String dateNow;
@@ -66,6 +65,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         setContentView(R.layout.activity_etraffic);
 
         Button btnNextDay;
+        SharedPreferences settings;
         boolean AdShowGone;
 
         // Определяем элементы интерфейса
