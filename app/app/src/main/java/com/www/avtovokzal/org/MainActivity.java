@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     public DatabaseHandler databaseH;
 
     private AdView adView;
+    private Button btnNextDay;
     private Drawer drawerResult = null;
     private InterstitialAd interstitial;
     private ListView listView;
@@ -113,7 +114,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         boolean checkMD5;
         boolean checkMD5ekb;
         Button btnDate;
-        Button btnNextDay;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
         databaseH = new DatabaseHandler(MainActivity.this);
 
@@ -364,12 +364,12 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         drawerResult = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withDisplayBelowToolbar(true)
+                .withDisplayBelowStatusBar(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .addDrawerItems(getDrawerItems())
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
+                    public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
                                 drawerResult.closeDrawer();
@@ -418,7 +418,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                     }
                 })
                 .build();
-        drawerResult.setSelectionByIdentifier(1);
+        drawerResult.setSelection(1);
     }
 
     @Override
@@ -461,7 +461,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         if (adView != null && getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
             adView.setVisibility(View.GONE);
         }
-        drawerResult.setSelectionByIdentifier(1);
+        drawerResult.setSelection(1);
     }
 
     @Override
@@ -548,6 +548,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                     }
                     // Отключаем вожможность ввода до загрузки остановок в базу данных
                     myAutoComplete.setEnabled(false);
+                    btnNextDay.setEnabled(false);
 
                     processingLoadStationToDB task = new processingLoadStationToDB();
                     task.execute(response);
@@ -1057,6 +1058,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             super.onPostExecute(aVoid);
             // Включаем возможность ввода после загрузки остановок в базу данных
             myAutoComplete.setEnabled(true);
+            btnNextDay.setEnabled(true);
         }
     }
 

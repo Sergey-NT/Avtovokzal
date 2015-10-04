@@ -67,6 +67,7 @@ public class EtrafficObjectAdapter extends BaseAdapter{
         CharSequence spannedPriceBus = spanWithRoubleTypeface(priceBus);
 
         item0.setText(etrafficObject.getTime());
+        item0.setTag(etrafficObject.getUrlToBuy());
         item1.setText(etrafficObject.getNumber());
         item2.setText(etrafficObject.getName());
         item3.setText(etrafficObject.getTimeArrival());

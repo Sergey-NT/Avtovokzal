@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -119,12 +118,12 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         drawerResult = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withDisplayBelowToolbar(true)
+                .withDisplayBelowStatusBar(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .addDrawerItems(getDrawerItems())
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
+                    public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
                                 Intent intentMain = new Intent(EtrafficActivity.this, MainActivity.class);
@@ -164,7 +163,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                     }
                 })
                 .build();
-        drawerResult.setSelectionByIdentifier(3);
+        drawerResult.setSelection(3);
     }
 
     @Override
@@ -267,7 +266,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                                     }
                                 }
                                 if (LOG_ON) {Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);}
-                                list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price));
+                                list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price, ""));
                             }
                         }
                     }

@@ -140,6 +140,21 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         btnDate.setTransformationMethod(null);
         btnNextDay = (Button) findViewById(R.id.buttonNextDay);
         btnNextDay.setTransformationMethod(null);
+
+        listView.setLongClickable(true);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> arg0, View view, int pos, long id) {
+                String url;
+
+                RelativeLayout rl = (RelativeLayout) view;
+                TextView textViewUrl = (TextView) rl.getChildAt(0);
+
+                url = textViewUrl.getTag().toString();
+
+                if (LOG_ON) Log.v("Position", "" + url);
+                return false;
+            }
+        });
     }
 
     private void initializeToolbar() {
@@ -155,12 +170,12 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         drawerResult = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withDisplayBelowToolbar(true)
+                .withDisplayBelowStatusBar(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .addDrawerItems(getDrawerItems())
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
+                    public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
                                 Intent intentMain = new Intent(EtrafficMainActivity.this, MainActivity.class);
@@ -200,7 +215,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                     }
                 })
                 .build();
-        drawerResult.setSelectionByIdentifier(4);
+        drawerResult.setSelection(4);
     }
 
     private void initializeAd() {
@@ -312,6 +327,8 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 if (code != null) {
                     parsingHTML task = new parsingHTML();
                     task.execute(code, dayNumber + "." + monthNumber + "." + year, "1");
+                } else {
+                    dateNow = dayNumber + "." + monthNumber + "." + year;
                 }
                 btnDate.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
                 // fix for Android 4.4.4
@@ -339,7 +356,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
         t.send(new HitBuilders.EventBuilder()
                 .setCategory(getString(R.string.analytics_category_button))
-                .setAction(getString(R.string.analytics_action_set_date_etraffic))
+                .setAction(getString(R.string.analytics_action_set_date_etraffic_main))
                 .build());
 
         DialogFragment newFragment = new DatePickerFragmentEtrafficMain();
@@ -352,7 +369,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
         t.send(new HitBuilders.EventBuilder()
                 .setCategory(getString(R.string.analytics_category_button))
-                .setAction(getString(R.string.analytics_action_next_day_etraffic))
+                .setAction(getString(R.string.analytics_action_next_day_etraffic_main))
                 .build());
 
         String dateNew;
@@ -392,6 +409,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             String timeArrival = null;
             String countBus = null;
             String price = null;
+            String urlToBuy = "";
             int count = 0;
 
             if (!codeSettings.equals(params[0]) || !dateNowSettings.equals(params[1])) {
@@ -437,7 +455,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                                 Element row = rows.get(i);
                                 Elements cols = row.select("td");
 
-                                for (int y = 0; y < cols.size() - 1; y++) {
+                                for (int y = 0; y < cols.size(); y++) {
                                     Element col = cols.get(y);
                                     switch (y) {
                                         case 0:
@@ -457,10 +475,14 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                                             break;
                                         case 5:
                                             price = col.text();
+                                            break;
+                                        case 6:
+                                            urlToBuy = col.select("a[href]").attr("abs:href");
+                                            break;
                                     }
                                 }
                                 if (LOG_ON) {Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);}
-                                list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price));
+                                list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price, urlToBuy));
                                 count = i;
                             }
                             countRows = count;

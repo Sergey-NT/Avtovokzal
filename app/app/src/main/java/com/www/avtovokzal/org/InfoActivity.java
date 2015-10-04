@@ -166,12 +166,12 @@ public class InfoActivity extends AppCompatSettingsActivity {
         drawerResult = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withDisplayBelowToolbar(true)
+                .withDisplayBelowStatusBar(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .addDrawerItems(getDrawerItems())
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    public boolean onItemClick(AdapterView<?> adapterView, View view, int position, long l, IDrawerItem iDrawerItem) {
+                    public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
                                 Intent intentMain = new Intent(InfoActivity.this, MainActivity.class);

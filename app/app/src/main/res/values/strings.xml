@@ -62,8 +62,10 @@
     <string name="analytics_category_google">Google</string>
     <string name="analytics_action_next_day">Следующий день</string>
     <string name="analytics_action_next_day_etraffic">Следующий день. ГГМ</string>
+    <string name="analytics_action_next_day_etraffic_main">Следующий день. Екатеринбург САВ</string>
     <string name="analytics_action_set_date">Выбор даты</string>
     <string name="analytics_action_set_date_etraffic">Выбор даты: ГГМ</string>
+    <string name="analytics_action_set_date_etraffic_main">Выбор даты: Екатеринбург САВ</string>
     <string name="analytics_action_ads_disable">Отключение рекламы</string>
     <string name="analytics_action_feedback">Оставить отзыв</string>
     <string name="analytics_action_refresh">Повторное подключение</string>
