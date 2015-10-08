@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         boolean checkMD5ekb;
         Button btnDate;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
-        databaseH = new DatabaseHandler(MainActivity.this);
+        databaseH = DatabaseHandler.getInstance(getApplicationContext());
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
@@ -692,7 +692,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
     // Запрос даты, хеша остановок, времени обновления
     private void loadSystemInfo() {
-        String url = "http://www.avtovokzal.org/php/app/system_1.3.5.php";
+        String url = "http://www.avtovokzal.org/php/app/system_1.3.5_v1.php";
 
         if (isOnline()) {
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -717,7 +717,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         JSONObject oneObject = system.getJSONObject(0);
 
                         dateNow = oneObject.getString("date");
-                        int delta = oneObject.getInt("delta");
+                        boolean update = oneObject.getBoolean("update");
                         String md5hash = oneObject.getString("md5");
                         String md5hashEkb = oneObject.getString("md5_ekb");
 
@@ -729,7 +729,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         editorDate.apply();
 
                         // Проверяем когда было последнее обновление расписания
-                        if (delta > 900) {
+                        if (!update) {
                             MenuItem item = myMenu.findItem(R.id.lamp);
                             item.setVisible(true);
                         }
@@ -846,7 +846,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             day = 0;
             day = day + days;
 
-            if (month < 10) {
+            if (month < 9) {
                 monthNumber = "0" + (month + 1);
             } else {
                 monthNumber = "" + (month + 1);

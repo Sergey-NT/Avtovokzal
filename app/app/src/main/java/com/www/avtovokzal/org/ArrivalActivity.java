@@ -72,7 +72,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
         boolean AdShowGone;
         boolean defaultStation;
         SharedPreferences settings;
-        databaseH = new DatabaseHandler(ArrivalActivity.this);
+        databaseH = DatabaseHandler.getInstance(getApplicationContext());
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);

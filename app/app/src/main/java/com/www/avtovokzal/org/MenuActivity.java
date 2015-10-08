@@ -87,7 +87,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
         t.enableAdvertisingIdCollection(true);
 
-        databaseH = new DatabaseHandler(MenuActivity.this);
+        databaseH = DatabaseHandler.getInstance(getApplicationContext());
 
         // Определяем элементы интерфейса
         btnAdsDisable = (Button) findViewById(R.id.btnAdsDisable);

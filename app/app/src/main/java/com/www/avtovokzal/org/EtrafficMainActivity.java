@@ -95,7 +95,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         SharedPreferences settings;
         boolean AdShowGone;
 
-        databaseH = new DatabaseHandler(EtrafficMainActivity.this);
+        databaseH = DatabaseHandler.getInstance(getApplicationContext());
         list = new ArrayList<>();
 
         // Определяем элементы интерфейса
@@ -311,7 +311,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             day = 0;
             day = day + days;
 
-            if (month < 10) {
+            if (month < 9) {
                 monthNumber = "0" + (month + 1);
             } else {
                 monthNumber = "" + (month + 1);
@@ -509,7 +509,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
         @Override
         protected void onPostExecute(List<EtrafficObject> list) {
-            if (listView.getAdapter() == null) {
+            if (listView.getAdapter() == null || !dateNow.equals(dateNowSettings)) {
                 adapter = new EtrafficObjectAdapter(EtrafficMainActivity.this, list);
                 listView.setAdapter(adapter);
             } else {

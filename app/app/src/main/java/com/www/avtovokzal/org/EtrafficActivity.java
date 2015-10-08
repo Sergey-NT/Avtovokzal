@@ -334,7 +334,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
             day = 0;
             day = day + days;
 
-            if (month < 10) {
+            if (month < 9) {
                 monthNumber = "0" + (month + 1);
             } else {
                 monthNumber = "" + (month + 1);

@@ -11,6 +11,8 @@ import com.www.avtovokzal.org.Object.AutoCompleteObject;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
+    private static DatabaseHandler sInstance;
+
     // Версия базы данных
     private static final int DATABASE_VERSION = 6;
     private final static boolean LOG_ON = true;
@@ -24,7 +26,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public String fieldObjectSum = "sum";
     public String fieldObjectCode = "code";
 
-    public DatabaseHandler(Context context) {
+    public static synchronized DatabaseHandler getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new DatabaseHandler(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    private DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -73,7 +82,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void removeAll (String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(tableName, null, null);
-        db.close();
+//        db.close();
 
         if (LOG_ON) Log.v("Database", "Таблица очищена");
     }
@@ -94,7 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.close();
         }
-        db.close();
+//        db.close();
 
         if (LOG_ON) Log.v("Check Row Table", tableName + " " + recordExists);
         return recordExists;
@@ -111,7 +120,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(fieldObjectCode, myObj.objectCode);
         db.insert(tableName, null, values);
 
-        db.close();
+//        db.close();
 
         if (LOG_ON) {
             Log.v("Station", myObj.objectName + " created.");
@@ -157,7 +166,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+//        db.close();
 
         return ObjectItemData;
     }
