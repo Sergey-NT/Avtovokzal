@@ -77,10 +77,16 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
     private int day = 0;
     private int countRows = 0;
+    private int previousTotal = 0;
+    private int currentPage = 1;
 
-    private String dateNow;
+    private boolean rest = true;
+    private boolean loading = true;
+
+    private String date;
     private String code;
-    private String dateNowSettings = "";
+    private String dateSettings = "";
+    private String dateSystem = "";
     private String codeSettings = "";
     private String nameStation;
 
@@ -109,7 +115,8 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
         // Переменная отвечает за работу с настройками
         settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        dateNow = settings.getString(APP_PREFERENCES_DATE, null);
+        dateSystem = settings.getString(APP_PREFERENCES_DATE, null);
+        date = dateSystem;
 
         // Проверка отключения рекламы
         AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
@@ -136,7 +143,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
         // Отменяем преобразование текста кнопок в AllCaps програмно
         btnDate = (Button) findViewById(R.id.header);
-        btnDate.setText(getString(R.string.main_schedule) + " " + dateNow);
+        btnDate.setText(getString(R.string.main_schedule) + " " + date);
         btnDate.setTransformationMethod(null);
         btnNextDay = (Button) findViewById(R.id.buttonNextDay);
         btnNextDay.setTransformationMethod(null);
@@ -274,7 +281,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 code = tv.getTag().toString();
 
                 parsingHTML task = new parsingHTML();
-                task.execute(code, dateNow, "1");
+                task.execute(code, date, "1");
 
                 sendIdToDb(code);
 
@@ -285,7 +292,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayDatePicker) {
-        if (dateNow != null) {
+        if (date != null) {
             String monthNumber;
             String dayNumber;
 
@@ -293,7 +300,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
             Calendar calendarNow = Calendar.getInstance();
             try {
-                calendarNow.setTime(sdf.parse(dateNow));
+                calendarNow.setTime(sdf.parse(dateSystem));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -323,14 +330,15 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 dayNumber = "" + dayDatePicker;
             }
 
+            date = dayNumber + "." + monthNumber + "." + year;
+
             if (days >= 0 && days <= 9) {
                 if (code != null) {
                     parsingHTML task = new parsingHTML();
-                    task.execute(code, dayNumber + "." + monthNumber + "." + year, "1");
-                } else {
-                    dateNow = dayNumber + "." + monthNumber + "." + year;
+                    task.execute(code, date, "1");
+                    loading = true;
                 }
-                btnDate.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
+                btnDate.setText(getString(R.string.main_schedule) + " " + date);
                 // fix for Android 4.4.4
                 try {
                     if (queryDialog != null && queryDialog.isShowing()) {
@@ -372,27 +380,24 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 .setAction(getString(R.string.analytics_action_next_day_etraffic_main))
                 .build());
 
-        String dateNew;
-
         day = day + 1;
 
         if (day >= 0 && day <= 9) {
-            dateNew = dateNow;
-
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyy", java.util.Locale.getDefault());
             Calendar c = Calendar.getInstance();
             try {
-                c.setTime(sdf.parse(dateNew));
+                c.setTime(sdf.parse(date));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             c.add(Calendar.DATE, day);
-            dateNew = sdf.format(c.getTime());
+            date = sdf.format(c.getTime());
 
-            btnDate.setText(getString(R.string.main_schedule) + " " + dateNew);
+            btnDate.setText(getString(R.string.main_schedule) + " " + date);
 
             parsingHTML task = new parsingHTML();
-            task.execute(code, dateNew, "1");
+            task.execute(code, date, "1");
+            loading = true;
         } else {
             Toast.makeText(getApplicationContext(), getString(R.string.main_invalid_date) , Toast.LENGTH_SHORT).show();
         }
@@ -412,11 +417,18 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             String urlToBuy = "";
             int count = 0;
 
-            if (!codeSettings.equals(params[0]) || !dateNowSettings.equals(params[1])) {
+            if (dateSettings.equals(params[1])) {
+                rest = false;
+            }
+
+            if (!codeSettings.equals(params[0]) || !dateSettings.equals(params[1])) {
                 list.clear();
+                rest = true;
                 countRows = 0;
+                previousTotal = 0;
+                currentPage = 1;
                 codeSettings = params[0];
-                dateNowSettings = params[1];
+                dateSettings = params[1];
             }
 
             if(isOnline()) {
@@ -509,7 +521,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
         @Override
         protected void onPostExecute(List<EtrafficObject> list) {
-            if (listView.getAdapter() == null || !dateNow.equals(dateNowSettings)) {
+            if (listView.getAdapter() == null || rest) {
                 adapter = new EtrafficObjectAdapter(EtrafficMainActivity.this, list);
                 listView.setAdapter(adapter);
             } else {
@@ -531,9 +543,6 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
     public class EndlessScrollListener implements AbsListView.OnScrollListener {
 
         private int visibleThreshold = 5;
-        private int currentPage = 1;
-        private int previousTotal = 0;
-        private boolean loading = true;
 
         public EndlessScrollListener() {
         }
@@ -548,7 +557,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 }
             }
             if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && countRows == 20) {
-                new parsingHTML().execute(code, dateNow, ""+currentPage);
+                new parsingHTML().execute(code, date, ""+currentPage);
                 loading = true;
                 try {
                     if (queryDialog != null && queryDialog.isShowing()) {
