@@ -27,6 +27,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -48,6 +49,7 @@ public class InfoActivity extends AppCompatSettingsActivity {
 
     private AdView adView;
     private Drawer drawerResult = null;
+    private InterstitialAd interstitial;
     private ListView listView;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
@@ -57,6 +59,7 @@ public class InfoActivity extends AppCompatSettingsActivity {
     private String numberToView;
     private String name;
     private int day;
+    private boolean AdShowGone;
 
     private final static String TAG = "InfoActivity";
 
@@ -67,7 +70,6 @@ public class InfoActivity extends AppCompatSettingsActivity {
 
         TextView textView;
         SharedPreferences settings;
-        boolean AdShowGone;
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
@@ -99,7 +101,8 @@ public class InfoActivity extends AppCompatSettingsActivity {
         name = getIntent().getStringExtra("name");
         day = getIntent().getIntExtra("day", 0);
 
-        textView.setText(time + " " + numberToView + " " + name);
+        String string = time + " " + numberToView + " " + name;
+        textView.setText(string);
 
         // Загружаем информацию об остановках на маршруте
         try {
@@ -126,6 +129,8 @@ public class InfoActivity extends AppCompatSettingsActivity {
                 String codeName = textViewCodeStation.getText().toString();
                 String noteStation = textViewNoteStation.getText().toString();
 
+                setCountOnePlus();
+
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("code", codeStation);
                 intent.putExtra("newNameStation", codeName + " " + noteStation);
@@ -144,6 +149,17 @@ public class InfoActivity extends AppCompatSettingsActivity {
     }
 
     private void initializeAd() {
+        // Создание межстраничного объявления
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
+
+        // Создание запроса объявления.
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
+
+        // Запуск загрузки межстраничного объявления
+        interstitial.loadAd(adRequest);
         // Создание экземпляра adView
         adView = new AdView(this);
         adView.setAdUnitId(getString(R.string.admob_info_activity));
@@ -156,7 +172,9 @@ public class InfoActivity extends AppCompatSettingsActivity {
         layout.addView(adView);
 
         // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder().build();
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
 
         // Загрузка adView с объявлением
         adView.loadAd(request);
@@ -174,35 +192,41 @@ public class InfoActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                setCountOnePlus();
                                 Intent intentMain = new Intent(InfoActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
                                 return true;
                             case 2:
+                                setCountOnePlus();
                                 Intent intentArrival = new Intent(InfoActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
+                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(InfoActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
+                                setCountOnePlus();
                                 Intent intentEtrafficMain = new Intent(InfoActivity.this, EtrafficMainActivity.class);
                                 startActivity(intentEtrafficMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 8:
+                                setCountOnePlus();
                                 Intent intentMenu = new Intent(InfoActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 9:
+                                setCountOnePlus();
                                 Intent intentAbout = new Intent(InfoActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -271,6 +295,18 @@ public class InfoActivity extends AppCompatSettingsActivity {
         if (adView != null) {
             adView.destroy();
         }
+        int count;
+        count = getCountAD();
+        if (count % 5 == 0) {
+            if (!AdShowGone) {
+                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+                    if (interstitial.isLoaded()) {
+                        setCountOnePlus();
+                        interstitial.show();
+                    }
+                }
+            }
+        }
         try {
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
@@ -316,7 +352,7 @@ public class InfoActivity extends AppCompatSettingsActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     try {
                         if (progressDialog != null && progressDialog.isShowing()) {
                             progressDialog.dismiss();
@@ -357,7 +393,7 @@ public class InfoActivity extends AppCompatSettingsActivity {
             JSONObject dataJsonQbj;
             List<RouteObjectInfo> list = new ArrayList<>();
 
-            if(LOG_ON){Log.d(TAG, response[0]);}
+            if(LOG_ON) Log.v(TAG, response[0]);
 
             try {
                 dataJsonQbj = new JSONObject(response[0]);

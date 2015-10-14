@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
@@ -23,14 +24,16 @@ public class AboutActivity extends AppCompatSettingsActivity {
 
     private AdView adView;
     private Drawer drawerResult = null;
+    private InterstitialAd interstitial;
     private Toolbar toolbar;
+
+    private boolean AdShowGone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        boolean AdShowGone;
         SharedPreferences settings;
 
         // Google Analytics
@@ -63,6 +66,17 @@ public class AboutActivity extends AppCompatSettingsActivity {
     }
 
     private void initializeAd() {
+        // Создание межстраничного объявления
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
+
+        // Создание запроса объявления.
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
+
+        // Запуск загрузки межстраничного объявления
+        interstitial.loadAd(adRequest);
         // Создание экземпляра adView
         adView = new AdView(this);
         adView.setAdUnitId(getString(R.string.admob_menu_activity));
@@ -75,7 +89,9 @@ public class AboutActivity extends AppCompatSettingsActivity {
         layout.addView(adView);
 
         // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder().build();
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
 
         // Загрузка adView с объявлением
         adView.loadAd(request);
@@ -93,30 +109,35 @@ public class AboutActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                setCountOnePlus();
                                 Intent intentMain = new Intent(AboutActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
+                                setCountOnePlus();
                                 Intent intentArrival = new Intent(AboutActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
+                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(AboutActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
+                                setCountOnePlus();
                                 Intent intentEtrafficMain = new Intent(AboutActivity.this, EtrafficMainActivity.class);
                                 startActivity(intentEtrafficMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 8:
+                                setCountOnePlus();
                                 Intent intentMenu = new Intent(AboutActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
@@ -188,6 +209,18 @@ public class AboutActivity extends AppCompatSettingsActivity {
     protected void onDestroy() {
         if (adView != null) {
             adView.destroy();
+        }
+        int count;
+        count = getCountAD();
+        if (count % 5 == 0) {
+            if (!AdShowGone) {
+                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+                    if (interstitial.isLoaded()) {
+                        setCountOnePlus();
+                        interstitial.show();
+                    }
+                }
+            }
         }
         super.onDestroy();
     }

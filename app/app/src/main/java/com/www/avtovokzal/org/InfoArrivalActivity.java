@@ -26,6 +26,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -46,6 +47,7 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
 
     private AdView adView;
     private Drawer drawerResult = null;
+    private InterstitialAd interstitial;
     private ListView listView;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
@@ -56,6 +58,8 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
     private String timeFromStation;
     private String name;
 
+    private boolean AdShowGone;
+
     private final static String TAG = "InfoArrivalActivity";
 
     @Override
@@ -63,7 +67,6 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_arrival);
 
-        boolean AdShowGone;
         TextView textViewName;
         TextView textViewTime;
         SharedPreferences settings;
@@ -98,8 +101,10 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
         timePrib = getIntent().getStringExtra("timePrib");
         timeFromStation = getIntent().getStringExtra("timeFromStation");
 
-        textViewName.setText(number + " " + name);
-        textViewTime.setText(getString(R.string.arrival_time) + " " + timePrib);
+        String string = number + " " + name;
+        textViewName.setText(string);
+        string = getString(R.string.arrival_time) + " " + timePrib;
+        textViewTime.setText(string);
 
         // Загружаем информацию об остановках на маршруте
         loadRouteInfoArrival(number, timePrib, timeFromStation);
@@ -122,6 +127,8 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                 String nameStation = textViewNameStation.getText().toString();
                 String noteStation = textViewNoteStation.getText().toString();
 
+                setCountOnePlus();
+
                 Intent intent = new Intent(getApplicationContext(), ArrivalActivity.class);
                 intent.putExtra("newNameStation", nameStation + " " + noteStation);
                 intent.putExtra("code", codeStation);
@@ -141,6 +148,17 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
     }
 
     private void initializeAd() {
+        // Создание межстраничного объявления
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
+
+        // Создание запроса объявления.
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
+
+        // Запуск загрузки межстраничного объявления
+        interstitial.loadAd(adRequest);
         // Создание экземпляра adView
         adView = new AdView(this);
         adView.setAdUnitId(getString(R.string.admob_info_activity));
@@ -153,7 +171,9 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
         layout.addView(adView);
 
         // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder().build();
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
 
         // Загрузка adView с объявлением
         adView.loadAd(request);
@@ -171,36 +191,42 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                setCountOnePlus();
                                 Intent intentMain = new Intent(InfoArrivalActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
+                                setCountOnePlus();
                                 Intent intentArrival = new Intent(InfoArrivalActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
+                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(InfoArrivalActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
+                                setCountOnePlus();
                                 Intent intentEtrafficMain = new Intent(InfoArrivalActivity.this, EtrafficMainActivity.class);
                                 startActivity(intentEtrafficMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 8:
+                                setCountOnePlus();
                                 Intent intentMenu = new Intent(InfoArrivalActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 9:
+                                setCountOnePlus();
                                 Intent intentAbout = new Intent(InfoArrivalActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -268,6 +294,18 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
     protected void onDestroy() {
         if (adView != null) {
             adView.destroy();
+        }
+        int count;
+        count = getCountAD();
+        if (count % 5 == 0) {
+            if (!AdShowGone) {
+                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+                    if (interstitial.isLoaded()) {
+                        setCountOnePlus();
+                        interstitial.show();
+                    }
+                }
+            }
         }
         try {
             if (progressDialog != null && progressDialog.isShowing()) {

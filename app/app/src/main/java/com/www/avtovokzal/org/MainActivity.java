@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     private Drawer drawerResult = null;
     private InterstitialAd interstitial;
     private ListView listView;
-    private Menu myMenu;
+    private Menu toolbarMenu;
     private ProgressDialog queryDialog;
     private TextView textView;
     private Toolbar toolbar;
@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     private boolean load;
     private boolean sell;
     private boolean AdShowGone;
+    private boolean update;
 
     private static final String TAG = "MainActivity";
     private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
@@ -132,7 +133,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         if (status == ConnectionResult.SUCCESS && !AdShowGone) {
             // Создание helper, передавая ему наш контекст и открытый ключ для проверки подписи
             mHelper = new IabHelper(this, base64EncodedPublicKey);
-
             // Включаем логирование в debug режиме (перед публикацией поставить false)
             mHelper.enableDebugLogging(false);
 
@@ -140,9 +140,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
                 public void onIabSetupFinished(IabResult result) {
                     if (!result.isSuccess()) {
-                        if (LOG_ON) {
-                            Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);
-                        }
+                        if (LOG_ON) Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);
                         return;
                     }
                     if (mHelper == null) return;
@@ -292,6 +290,8 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 numberToView = textViewNumber.getText().toString();
                 name = textViewName.getText().toString();
 
+                setCountOnePlus();
+
                 Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
 
                 intent.putExtra("number", number);
@@ -311,7 +311,9 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         interstitial.setAdUnitId(getString(R.string.admob_interstitial));
 
         // Создание запроса объявления.
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
 
         // Запуск загрузки межстраничного объявления
         interstitial.loadAd(adRequest);
@@ -328,7 +330,9 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         layout.addView(adView);
 
         // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder().build();
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
 
         // Загрузка adView с объявлением
         adView.loadAd(request);
@@ -340,6 +344,13 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        setCountOnePlus();
+                        // Google Analytics
+                        Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+                        t.send(new HitBuilders.EventBuilder()
+                                .setCategory(getString(R.string.analytics_category_button))
+                                .setAction(getString(R.string.analytics_action_fab))
+                                .build());
                         Intent intentArrival = new Intent(MainActivity.this, ArrivalActivity.class);
                         if (code != null) {
                             intentArrival.putExtra("code", code);
@@ -376,6 +387,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 return true;
                             case 2:
                                 drawerResult.closeDrawer();
+                                setCountOnePlus();
                                 Intent intentArrival = new Intent(MainActivity.this, ArrivalActivity.class);
                                 if (code != null) {
                                     intentArrival.putExtra("code", code);
@@ -386,18 +398,21 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 return true;
                             case 4:
                                 drawerResult.closeDrawer();
+                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(MainActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
                                 drawerResult.closeDrawer();
+                                setCountOnePlus();
                                 Intent intentEtrafficMain = new Intent(MainActivity.this, EtrafficMainActivity.class);
                                 startActivity(intentEtrafficMain);
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 8:
                                 drawerResult.closeDrawer();
+                                setCountOnePlus();
                                 Intent intentMenu = new Intent(MainActivity.this, MenuActivity.class);
                                 intentMenu.putExtra("day", day);
                                 intentMenu.putExtra("activity", "MainActivity");
@@ -409,6 +424,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                                 return true;
                             case 9:
                                 drawerResult.closeDrawer();
+                                setCountOnePlus();
                                 Intent intentAbout = new Intent(MainActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
@@ -458,6 +474,18 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         if (adView != null) {
             adView.resume();
         }
+        int count;
+        count = getCountAD();
+        if (count % 5 == 0) {
+            if (!AdShowGone) {
+                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+                    if (interstitial.isLoaded()) {
+                        setCountOnePlus();
+                        interstitial.show();
+                    }
+                }
+            }
+        }
         if (adView != null && getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
             adView.setVisibility(View.GONE);
         }
@@ -466,13 +494,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
     @Override
     protected void onDestroy() {
-        if (!AdShowGone) {
-            if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
-                if (interstitial.isLoaded()) {
-                    interstitial.show();
-                }
-            }
-        }
         if (adView != null) {
             adView.destroy();
         }
@@ -516,10 +537,9 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        toolbarMenu = menu;
         getMenuInflater().inflate(R.menu.menu_items, menu);
-        myMenu = menu;
-        // Скрываем статус сервера
-        MenuItem item = myMenu.findItem(R.id.lamp);
+        MenuItem item = toolbarMenu.findItem(R.id.lamp);
         item.setVisible(false);
         return true;
     }
@@ -556,7 +576,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     callErrorActivity();
                 }
             });
@@ -587,7 +607,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     callErrorActivity();
                 }
             });
@@ -623,7 +643,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     try {
                         if (queryDialog != null && queryDialog.isShowing()) {
                             queryDialog.dismiss();
@@ -668,7 +688,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     try {
                         if (queryDialog != null && queryDialog.isShowing()) {
                             queryDialog.dismiss();
@@ -717,22 +737,23 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         JSONObject oneObject = system.getJSONObject(0);
 
                         dateNow = oneObject.getString("date");
-                        boolean update = oneObject.getBoolean("update");
+                        update = oneObject.getBoolean("update");
                         String md5hash = oneObject.getString("md5");
                         String md5hashEkb = oneObject.getString("md5_ekb");
 
+                        // Показывааем статус сервера
+                        if (!update && toolbarMenu != null) {
+                            MenuItem item = toolbarMenu.findItem(R.id.lamp);
+                            item.setVisible(true);
+                        }
+
                         // Установка текущей даты
                         textView = (TextView) findViewById(R.id.header);
-                        textView.setText(getString(R.string.main_schedule) + " " + dateNow);
+                        String string = getString(R.string.main_schedule) + " " + dateNow;
+                        textView.setText(string);
                         SharedPreferences.Editor editorDate = settings.edit();
                         editorDate.putString(APP_PREFERENCES_DATE, dateNow);
                         editorDate.apply();
-
-                        // Проверяем когда было последнее обновление расписания
-                        if (!update) {
-                            MenuItem item = myMenu.findItem(R.id.lamp);
-                            item.setVisible(true);
-                        }
 
                         // Проверка требуется ли обновлять список остановок
                         md5hashFromSettings = settings.getString(APP_PREFERENCES_MD5, "");
@@ -767,7 +788,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     callErrorActivity();
                 }
             });
@@ -806,7 +827,8 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             c.add(Calendar.DATE, day);
             dateNew = sdf.format(c.getTime());
 
-            textView.setText(getString(R.string.main_schedule) + " " + dateNew);
+            String string = getString(R.string.main_schedule) + " " + dateNew;
+            textView.setText(string);
 
             if (code != null) {
                 loadScheduleResult(code, day, cancel, sell);
@@ -860,14 +882,13 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
             if (code != null && days >= 0 && days <= 9) {
                 loadScheduleResult(code, day, cancel, sell);
-                textView.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
+                String string = getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year;
+                textView.setText(string);
                 // fix for Android 4.4.4
                 try {
                     if (queryDialog != null && queryDialog.isShowing()) {
                         queryDialog.dismiss();
-                        if (LOG_ON) {
-                            Log.d(TAG, "Dialog.dismiss");
-                        }
+                        if (LOG_ON) Log.v(TAG, "Dialog.dismiss");
                     }
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
@@ -876,14 +897,13 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 }
             } else if (days >= 0 && days <= 9) {
                 loadSchedule(day, cancel, sell);
-                textView.setText(getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year);
+                String string = getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year;
+                textView.setText(string);
                 // fix for Android 4.4.4
                 try {
                     if (queryDialog != null && queryDialog.isShowing()) {
                         queryDialog.dismiss();
-                        if (LOG_ON) {
-                            Log.d(TAG, "Dialog.dismiss");
-                        }
+                        if (LOG_ON) Log.d(TAG, "Dialog.dismiss");
                     }
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
@@ -926,7 +946,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             if (mHelper == null) return;
 
             if (result.isFailure()) {
-                if(LOG_ON) {Log.v(TAG, "Failed to query inventory: " + result);}
+                if(LOG_ON) Log.v(TAG, "Failed to query inventory: " + result);
                 return;
             }
 
@@ -1009,7 +1029,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             try {
                 if (queryDialog != null && queryDialog.isShowing()) {
                     queryDialog.dismiss();
-                    if(LOG_ON){Log.d(TAG, "Dialog.dismiss");}
+                    if(LOG_ON) Log.v(TAG, "Dialog.dismiss");
                 }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
@@ -1025,7 +1045,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             JSONObject dataJsonQbj;
             String tableName = "stations";
 
-            if(LOG_ON){Log.d(TAG, response[0]);}
+            if(LOG_ON) Log.v(TAG, response[0]);
 
             try {
                 dataJsonQbj = new JSONObject(response[0]);
@@ -1068,7 +1088,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             JSONObject dataJsonQbj;
             String tableName = "stations_ekb";
 
-            if(LOG_ON){Log.d(TAG, response[0]);}
+            if(LOG_ON) Log.v(TAG, response[0]);
 
             try {
                 dataJsonQbj = new JSONObject(response[0]);
@@ -1102,7 +1122,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             JSONObject dataJsonQbj;
             List<RouteObjectResult> list = new ArrayList<>();
 
-            if(LOG_ON){Log.d(TAG, response[0]);}
+            if(LOG_ON) Log.v(TAG, response[0]);
 
             try {
                 dataJsonQbj = new JSONObject(response[0]);

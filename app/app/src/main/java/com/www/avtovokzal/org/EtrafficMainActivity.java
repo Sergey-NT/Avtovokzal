@@ -36,6 +36,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -70,6 +71,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
     private AdView adView;
     private Button btnDate;
     private Drawer drawerResult = null;
+    private InterstitialAd interstitial;
     private ListView listView;
     private ProgressDialog queryDialog;
     private Toolbar toolbar;
@@ -82,6 +84,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
     private boolean rest = true;
     private boolean loading = true;
+    private boolean AdShowGone;
 
     private String date;
     private String code;
@@ -99,7 +102,6 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
         Button btnNextDay;
         SharedPreferences settings;
-        boolean AdShowGone;
 
         databaseH = DatabaseHandler.getInstance(getApplicationContext());
         list = new ArrayList<>();
@@ -143,7 +145,8 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
         // Отменяем преобразование текста кнопок в AllCaps програмно
         btnDate = (Button) findViewById(R.id.header);
-        btnDate.setText(getString(R.string.main_schedule) + " " + date);
+        String string = getString(R.string.main_schedule) + " " + date;
+        btnDate.setText(string);
         btnDate.setTransformationMethod(null);
         btnNextDay = (Button) findViewById(R.id.buttonNextDay);
         btnNextDay.setTransformationMethod(null);
@@ -185,18 +188,21 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                setCountOnePlus();
                                 Intent intentMain = new Intent(EtrafficMainActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
+                                setCountOnePlus();
                                 Intent intentArrival = new Intent(EtrafficMainActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
+                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(EtrafficMainActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
@@ -206,12 +212,14 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                                 drawerResult.closeDrawer();
                                 return true;
                             case 8:
+                                setCountOnePlus();
                                 Intent intentMenu = new Intent(EtrafficMainActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 9:
+                                setCountOnePlus();
                                 Intent intentAbout = new Intent(EtrafficMainActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -226,6 +234,17 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
     }
 
     private void initializeAd() {
+        // Создание межстраничного объявления
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
+
+        // Создание запроса объявления.
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
+
+        // Запуск загрузки межстраничного объявления
+        interstitial.loadAd(adRequest);
         // Создание экземпляра adView
         adView = new AdView(this);
         adView.setAdUnitId(getString(R.string.admob_main_activity));
@@ -238,7 +257,9 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         layout.addView(adView);
 
         // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder().build();
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
 
         // Загрузка adView с объявлением
         adView.loadAd(request);
@@ -338,14 +359,13 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                     task.execute(code, date, "1");
                     loading = true;
                 }
-                btnDate.setText(getString(R.string.main_schedule) + " " + date);
+                String string = getString(R.string.main_schedule) + " " + date;
+                btnDate.setText(string);
                 // fix for Android 4.4.4
                 try {
                     if (queryDialog != null && queryDialog.isShowing()) {
                         queryDialog.dismiss();
-                        if (LOG_ON) {
-                            Log.d(TAG, "Dialog.dismiss");
-                        }
+                        if (LOG_ON) Log.d(TAG, "Dialog.dismiss");
                     }
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
@@ -386,14 +406,15 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyy", java.util.Locale.getDefault());
             Calendar c = Calendar.getInstance();
             try {
-                c.setTime(sdf.parse(date));
+                c.setTime(sdf.parse(dateSystem));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             c.add(Calendar.DATE, day);
             date = sdf.format(c.getTime());
 
-            btnDate.setText(getString(R.string.main_schedule) + " " + date);
+            String string = getString(R.string.main_schedule) + " " + date;
+            btnDate.setText(string);
 
             parsingHTML task = new parsingHTML();
             task.execute(code, date, "1");
@@ -493,7 +514,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                                             break;
                                     }
                                 }
-                                if (LOG_ON) {Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);}
+                                if (LOG_ON) Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);
                                 list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price, urlToBuy));
                                 count = i;
                             }
@@ -614,6 +635,18 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         if (adView != null) {
             adView.destroy();
         }
+        int count;
+        count = getCountAD();
+        if (count % 5 == 0) {
+            if (!AdShowGone) {
+                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+                    if (interstitial.isLoaded()) {
+                        setCountOnePlus();
+                        interstitial.show();
+                    }
+                }
+            }
+        }
         super.onDestroy();
     }
 
@@ -640,9 +673,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {
-                        VolleyLog.d(TAG, "Error: " + error.getMessage());
-                    }
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     callErrorActivity();
                 }
             });

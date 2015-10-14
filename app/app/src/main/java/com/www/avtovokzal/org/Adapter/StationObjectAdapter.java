@@ -1,6 +1,7 @@
 package com.www.avtovokzal.org.Adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,9 +58,9 @@ public class StationObjectAdapter extends BaseAdapter {
         TextView item6 = (TextView) view.findViewById(R.id.textViewMainCancel);
 
         if (stationsObject.getFreeBus().equals("нет данных") || stationsObject.getFreeBus().equals("мест нет")) {
-            item5.setTextColor(myContext.getResources().getColor(R.color.text_color_hint));
+            item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color_hint));
         } else {
-            item5.setTextColor(myContext.getResources().getColor(R.color.text_color));
+            item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color));
         }
 
         if (stationsObject.getCancelBus() == 1){
@@ -70,7 +71,7 @@ public class StationObjectAdapter extends BaseAdapter {
             item4.setVisibility(View.GONE);
             item5.setVisibility(View.GONE);
             item6.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.listViewMainItem).setBackgroundColor(myContext.getResources().getColor(R.color.divider_color));
+            view.findViewById(R.id.listViewMainItem).setBackgroundColor(ContextCompat.getColor(myContext, R.color.divider_color));
         } else {
             view.findViewById(R.id.textViewMainNameBusDesc).setVisibility(View.VISIBLE);
             view.findViewById(R.id.textViewMainCountBusDesc).setVisibility(View.VISIBLE);
@@ -79,7 +80,7 @@ public class StationObjectAdapter extends BaseAdapter {
             item4.setVisibility(View.VISIBLE);
             item5.setVisibility(View.VISIBLE);
             item6.setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.listViewMainItem).setBackgroundColor(myContext.getResources().getColor(R.color.background));
+            view.findViewById(R.id.listViewMainItem).setBackgroundColor(ContextCompat.getColor(myContext, R.color.background));
         }
 
         item0.setText(stationsObject.getTimeOtpr());

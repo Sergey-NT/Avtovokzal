@@ -75,4 +75,5 @@
     <string name="analytics_action_checkbox_cancel">Опция отключена</string>
     <string name="analytics_action_checkbox_ok">Опция включена</string>
     <string name="analytics_action_google_result">Google Play Services недоступен</string>
+    <string name="analytics_action_fab">Floating Action Button</string>
 </resources>

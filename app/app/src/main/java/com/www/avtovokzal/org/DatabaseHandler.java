@@ -15,7 +15,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Версия базы данных
     private static final int DATABASE_VERSION = 6;
-    private final static boolean LOG_ON = true;
+    private final static boolean LOG_ON = false;
     // Имя базы данных
     protected static final String DATABASE_NAME = "Avtovokzal";
     // Имена таблицы и полей в базе данных
@@ -82,7 +82,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void removeAll (String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(tableName, null, null);
-//        db.close();
 
         if (LOG_ON) Log.v("Database", "Таблица очищена");
     }
@@ -103,7 +102,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.close();
         }
-//        db.close();
 
         if (LOG_ON) Log.v("Check Row Table", tableName + " " + recordExists);
         return recordExists;
@@ -119,8 +117,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(fieldObjectSum, myObj.objectSum);
         values.put(fieldObjectCode, myObj.objectCode);
         db.insert(tableName, null, values);
-
-//        db.close();
 
         if (LOG_ON) {
             Log.v("Station", myObj.objectName + " created.");
@@ -166,7 +162,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
-//        db.close();
 
         return ObjectItemData;
     }

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -56,6 +57,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
     private Button btnAdsDisable;
     private CheckBox checkBoxDefaultStation;
     private Drawer drawerResult = null;
+    private InterstitialAd interstitial;
     private SharedPreferences settings;
     private Toolbar toolbar;
 
@@ -65,6 +67,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
     private boolean cancel;
     private boolean sell;
     private boolean load;
+    private boolean AdShowGone;
 
     private static final String TAG = "MenuActivity";
     private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
@@ -75,7 +78,6 @@ public class MenuActivity extends AppCompatSettingsActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_layout);
 
-        boolean AdShowGone;
         boolean defaultStation;
         CheckBox checkBoxCancel;
         CheckBox checkBoxSell;
@@ -121,9 +123,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
             mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
                 public void onIabSetupFinished(IabResult result) {
                     if (!result.isSuccess()) {
-                        if (LOG_ON) {
-                            Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);
-                        }
+                        if (LOG_ON) Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);
                         return;
                     }
                     if (mHelper == null) return;
@@ -261,6 +261,17 @@ public class MenuActivity extends AppCompatSettingsActivity {
     }
 
     private void initializeAd() {
+        // Создание межстраничного объявления
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
+
+        // Создание запроса объявления.
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
+
+        // Запуск загрузки межстраничного объявления
+        interstitial.loadAd(adRequest);
         // Создание экземпляра adView
         adView = new AdView(this);
         adView.setAdUnitId(getString(R.string.admob_menu_activity));
@@ -273,7 +284,9 @@ public class MenuActivity extends AppCompatSettingsActivity {
         layout.addView(adView);
 
         // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder().build();
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
 
         // Загрузка adView с объявлением
         adView.loadAd(request);
@@ -291,24 +304,28 @@ public class MenuActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                setCountOnePlus();
                                 Intent intentMain = new Intent(MenuActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
+                                setCountOnePlus();
                                 Intent intentArrival = new Intent(MenuActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
+                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(MenuActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
+                                setCountOnePlus();
                                 Intent intentEtrafficMain = new Intent(MenuActivity.this, EtrafficMainActivity.class);
                                 startActivity(intentEtrafficMain);
                                 finish();
@@ -318,6 +335,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
                                 drawerResult.closeDrawer();
                                 return true;
                             case 9:
+                                setCountOnePlus();
                                 Intent intentAbout = new Intent(MenuActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -355,7 +373,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
             if (mHelper == null) return;
 
             if (result.isFailure()) {
-                if(LOG_ON) {Log.v(TAG, "Failed to query inventory: " + result);}
+                if(LOG_ON) Log.v(TAG, "Failed to query inventory: " + result);
                 return;
             }
 
@@ -388,11 +406,11 @@ public class MenuActivity extends AppCompatSettingsActivity {
             if (mHelper == null) return;
 
             if (result.isFailure()) {
-                if(LOG_ON) {Log.v(TAG, "Error purchasing: " + result);}
+                if(LOG_ON) Log.v(TAG, "Error purchasing: " + result);
                 return;
             }
             if (!verifyDeveloperPayload(purchase)) {
-                if(LOG_ON) {Log.v(TAG,"Error purchasing. Authenticity verification failed.");}
+                if(LOG_ON) Log.v(TAG,"Error purchasing. Authenticity verification failed.");
                 return;
             }
 
@@ -426,7 +444,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
         else {
-            if(LOG_ON){Log.v(TAG, "onActivityResult handled by IABUtil.");}
+            if(LOG_ON) Log.v(TAG, "onActivityResult handled by IABUtil.");
         }
     }
 
@@ -486,7 +504,18 @@ public class MenuActivity extends AppCompatSettingsActivity {
         if (adView != null) {
             adView.destroy();
         }
-
+        int count;
+        count = getCountAD();
+        if (count % 5 == 0) {
+            if (!AdShowGone) {
+                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+                    if (interstitial.isLoaded()) {
+                        setCountOnePlus();
+                        interstitial.show();
+                    }
+                }
+            }
+        }
         if (mHelper != null) {
             mHelper.dispose();
             mHelper = null;

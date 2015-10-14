@@ -49,7 +49,7 @@ public class ErrorActivity extends AppCompatSettingsActivity {
         sell = getIntent().getBooleanExtra("sell", false);
         newNameStation = getIntent().getStringExtra("newNameStation");
 
-        if (LOG_ON) {Log.v("Params", "newNameStation: " + newNameStation + "Number: " + number + " Time: " + time + " TimePrib: " + timePrib + " TimeFromStation: " + timeFromStation + " Activity: " + activity + " Number: " + numberToView + " Name: " + name + " Day: " + day + " Code: " + code + " Cancel: " + cancel + " Sell: " + sell);}
+        if (LOG_ON) Log.v("Params", "newNameStation: " + newNameStation + "Number: " + number + " Time: " + time + " TimePrib: " + timePrib + " TimeFromStation: " + timeFromStation + " Activity: " + activity + " Number: " + numberToView + " Name: " + name + " Day: " + day + " Code: " + code + " Cancel: " + cancel + " Sell: " + sell);
 
         initializeToolbar();
     }

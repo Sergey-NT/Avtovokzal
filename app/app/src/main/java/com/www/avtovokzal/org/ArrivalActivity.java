@@ -29,6 +29,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
@@ -55,9 +56,12 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
 
     private AdView adView;
     private Drawer drawerResult = null;
+    private InterstitialAd interstitial;
     private ListView listView;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
+
+    private boolean AdShowGone;
 
     private String code;
     private String newNameStation;
@@ -69,7 +73,6 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_arrival);
 
-        boolean AdShowGone;
         boolean defaultStation;
         SharedPreferences settings;
         databaseH = DatabaseHandler.getInstance(getApplicationContext());
@@ -182,6 +185,8 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                 timePrib = textViewTimePrib.getText().toString();
                 timeFromStation = textViewTimePrib.getTag().toString();
 
+                setCountOnePlus();
+
                 Intent intent = new Intent(getApplicationContext(), InfoArrivalActivity.class);
 
                 intent.putExtra("number", number);
@@ -195,6 +200,17 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
     }
 
     private void initializeAd() {
+        // Создание межстраничного объявления
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
+
+        // Создание запроса объявления.
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
+
+        // Запуск загрузки межстраничного объявления
+        interstitial.loadAd(adRequest);
         // Создание экземпляра adView
         adView = new AdView(this);
         adView.setAdUnitId(getString(R.string.admob_main_activity));
@@ -207,7 +223,9 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
         layout.addView(adView);
 
         // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder().build();
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .build();
 
         // Загрузка adView с объявлением
         adView.loadAd(request);
@@ -225,6 +243,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
+                                setCountOnePlus();
                                 Intent intentMain = new Intent(ArrivalActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
@@ -234,24 +253,28 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                                 drawerResult.closeDrawer();
                                 return true;
                             case 4:
+                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(ArrivalActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
+                                setCountOnePlus();
                                 Intent intentEtrafficMain = new Intent(ArrivalActivity.this, EtrafficMainActivity.class);
                                 startActivity(intentEtrafficMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 8:
+                                setCountOnePlus();
                                 Intent intentMenu = new Intent(ArrivalActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 9:
+                                setCountOnePlus();
                                 Intent intentAbout = new Intent(ArrivalActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -337,6 +360,18 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
         if (adView != null) {
             adView.destroy();
         }
+        int count;
+        count = getCountAD();
+        if (count % 5 == 0) {
+            if (!AdShowGone) {
+                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+                    if (interstitial.isLoaded()) {
+                        setCountOnePlus();
+                        interstitial.show();
+                    }
+                }
+            }
+        }
         try {
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
@@ -381,7 +416,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {VolleyLog.d(TAG, "Error: " + error.getMessage());}
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     try {
                         if (progressDialog != null && progressDialog.isShowing()) {
                             progressDialog.dismiss();
@@ -420,7 +455,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
             JSONObject dataJsonQbj;
             List<ArrivalObjectResult> list = new ArrayList<>();
 
-            if(LOG_ON){Log.d(TAG, response[0]);}
+            if(LOG_ON)Log.v(TAG, response[0]);
 
             try {
                 dataJsonQbj = new JSONObject(response[0]);

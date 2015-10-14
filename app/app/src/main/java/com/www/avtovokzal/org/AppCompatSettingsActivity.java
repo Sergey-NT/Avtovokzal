@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -14,8 +15,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 public class AppCompatSettingsActivity extends AppCompatActivity {
 
-    public static final boolean DEVELOPER = true;
-    public static final boolean LOG_ON = true;
+    public static final boolean DEVELOPER = false;
+    public static final boolean LOG_ON = false;
+    public static final String APP_PREFERENCES_COUNT_AD = "countAd";
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
     public static final String APP_PREFERENCES_DEFAULT = "default";
@@ -26,15 +28,32 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES_LOAD = "load";
     public static final String APP_PREFERENCES_DATE = "date";
 
+    SharedPreferences settings;
+
     // Получаем параметры из файла настроек
     public boolean getSettingsParams(String params) {
         boolean checkValue;
-        SharedPreferences settings;
-
         settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         checkValue = settings.getBoolean(params, false);
-
         return checkValue;
+    }
+
+    public int getCountAD() {
+        int count;
+        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        count = settings.getInt(APP_PREFERENCES_COUNT_AD, 0);
+        if(LOG_ON) Log.v("Count", ""+count);
+        return count;
+    }
+
+    public void setCountOnePlus() {
+        int count;
+        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        count = settings.getInt(APP_PREFERENCES_COUNT_AD, 0);
+        count++;
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(APP_PREFERENCES_COUNT_AD, count);
+        editor.apply();
     }
 
     // Проверка подключения к сети интернет
