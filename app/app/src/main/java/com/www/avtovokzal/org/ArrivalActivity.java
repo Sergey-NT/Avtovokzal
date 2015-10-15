@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,10 +25,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
@@ -54,9 +49,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
     public ArrayAdapter<AutoCompleteObject> myAdapter;
     public DatabaseHandler databaseH;
 
-    private AdView adView;
     private Drawer drawerResult = null;
-    private InterstitialAd interstitial;
     private ListView listView;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
@@ -93,7 +86,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
 
         // Реклама в приложении
         if (!AdShowGone) {
-            initializeAd();
+            initializeAd(R.id.adViewArrivalActivity);
         }
 
         // Определяем элементы интерфейса
@@ -197,38 +190,6 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    private void initializeAd() {
-        // Создание межстраничного объявления
-        interstitial = new InterstitialAd(this);
-        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
-
-        // Создание запроса объявления.
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
-                .build();
-
-        // Запуск загрузки межстраничного объявления
-        interstitial.loadAd(adRequest);
-        // Создание экземпляра adView
-        adView = new AdView(this);
-        adView.setAdUnitId(getString(R.string.admob_main_activity));
-        adView.setAdSize(AdSize.SMART_BANNER);
-
-        // Поиск разметки LinearLayout
-        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewArrivalActivity);
-
-        // Добавление в разметку экземпляра adView
-        layout.addView(adView);
-
-        // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
-                .build();
-
-        // Загрузка adView с объявлением
-        adView.loadAd(request);
     }
 
     private void initializeNavigationDrawer() {

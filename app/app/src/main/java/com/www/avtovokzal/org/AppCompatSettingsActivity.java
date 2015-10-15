@@ -7,7 +7,12 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.LinearLayout;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
@@ -27,6 +32,9 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES_SELL = "sell";
     public static final String APP_PREFERENCES_LOAD = "load";
     public static final String APP_PREFERENCES_DATE = "date";
+
+    public AdView adView;
+    public InterstitialAd interstitial;
 
     SharedPreferences settings;
 
@@ -96,5 +104,40 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
                         .withName(R.string.menu_about)
                         .withIdentifier(6)
                         .withIcon(R.drawable.ic_info_outline_black_18dp)};
+    }
+
+    public void initializeAd(int layoutId) {
+        // Создание межстраничного объявления
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
+
+        // Создание запроса объявления.
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .addTestDevice("4A47A797D4302A0BEC716C29A53C4881")
+                .build();
+
+        // Запуск загрузки межстраничного объявления
+        interstitial.loadAd(adRequest);
+
+        // Создание экземпляра adView
+        adView = new AdView(this);
+        adView.setAdUnitId(getString(R.string.admob_activity));
+        adView.setAdSize(AdSize.SMART_BANNER);
+
+        // Поиск разметки LinearLayout
+        LinearLayout layout = (LinearLayout)findViewById(layoutId);
+
+        // Добавление в разметку экземпляра adView
+        layout.addView(adView);
+
+        // Инициирование общего запроса
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
+                .addTestDevice("4A47A797D4302A0BEC716C29A53C4881")
+                .build();
+
+        // Загрузка adView с объявлением
+        adView.loadAd(request);
     }
 }

@@ -43,9 +43,7 @@
     <string name="main_load">Пожалуйста, подождите…</string>
     <string name="main_invalid_date">Расписание доступно на 10 дней вперед</string>
     <string name="main_status">Информация долго не обновлялась, мы работаем над решением этой проблемы</string>
-    <string name="admob_main_activity">ca-app-pub-3253485608797245/6313884709</string>
-    <string name="admob_info_activity">ca-app-pub-3253485608797245/2243611906</string>
-    <string name="admob_menu_activity">ca-app-pub-3253485608797245/3720345104</string>
+    <string name="admob_activity">ca-app-pub-3253485608797245/6313884709</string>
     <string name="admob_interstitial">ca-app-pub-3253485608797245/9783238303</string>
     <string name="about_developer">Разработчик приложения: <a href="http://vk.com/id5170658" title="Сергей Ухарский">Сергей Ухарский</a></string>
     <string name="about_version">Версия приложения: 1.3.5</string>

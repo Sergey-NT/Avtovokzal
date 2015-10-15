@@ -15,15 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -47,10 +42,8 @@ import java.util.List;
 
 public class EtrafficActivity extends AppCompatSettingsActivity implements DatePickerDialog.OnDateSetListener {
 
-    private AdView adView;
     private Button btnDate;
     private Drawer drawerResult = null;
-    private InterstitialAd interstitial;
     private ListView listView;
     private ProgressDialog queryDialog;
     private Toolbar toolbar;
@@ -91,7 +84,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
 
         // Реклама в приложении
         if (!AdShowGone) {
-            initializeAd();
+            initializeAd(R.id.adViewEtrafficActivity);
         }
 
         initializeToolbar();
@@ -182,38 +175,6 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         } else {
             super.onBackPressed();
         }
-    }
-
-    private void initializeAd() {
-        // Создание межстраничного объявления
-        interstitial = new InterstitialAd(this);
-        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
-
-        // Создание запроса объявления.
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
-                .build();
-
-        // Запуск загрузки межстраничного объявления
-        interstitial.loadAd(adRequest);
-        // Создание экземпляра adView
-        adView = new AdView(this);
-        adView.setAdUnitId(getString(R.string.admob_main_activity));
-        adView.setAdSize(AdSize.SMART_BANNER);
-
-        // Поиск разметки LinearLayout
-        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewEtrafficActivity);
-
-        // Добавление в разметку экземпляра adView
-        layout.addView(adView);
-
-        // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
-                .build();
-
-        // Загрузка adView с объявлением
-        adView.loadAd(request);
     }
 
     private class parsingHTML extends AsyncTask<String, Void, List<EtrafficObject>> {

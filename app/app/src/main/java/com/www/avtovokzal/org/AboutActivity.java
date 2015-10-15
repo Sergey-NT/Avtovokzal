@@ -7,13 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
@@ -22,9 +17,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 public class AboutActivity extends AppCompatSettingsActivity {
 
-    private AdView adView;
     private Drawer drawerResult = null;
-    private InterstitialAd interstitial;
     private Toolbar toolbar;
 
     private boolean AdShowGone;
@@ -58,43 +51,11 @@ public class AboutActivity extends AppCompatSettingsActivity {
 
         // Реклама в приложении
         if (!AdShowGone) {
-            initializeAd();
+            initializeAd(R.id.adViewAboutActivity);
         }
 
         initializeToolbar();
         initializeNavigationDrawer();
-    }
-
-    private void initializeAd() {
-        // Создание межстраничного объявления
-        interstitial = new InterstitialAd(this);
-        interstitial.setAdUnitId(getString(R.string.admob_interstitial));
-
-        // Создание запроса объявления.
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
-                .build();
-
-        // Запуск загрузки межстраничного объявления
-        interstitial.loadAd(adRequest);
-        // Создание экземпляра adView
-        adView = new AdView(this);
-        adView.setAdUnitId(getString(R.string.admob_menu_activity));
-        adView.setAdSize(AdSize.SMART_BANNER);
-
-        // Поиск разметки LinearLayout
-        LinearLayout layout = (LinearLayout)findViewById(R.id.adViewAboutActivity);
-
-        // Добавление в разметку экземпляра adView
-        layout.addView(adView);
-
-        // Инициирование общего запроса
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
-                .build();
-
-        // Загрузка adView с объявлением
-        adView.loadAd(request);
     }
 
     private void initializeNavigationDrawer() {
