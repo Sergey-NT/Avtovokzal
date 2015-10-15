@@ -5,5 +5,5 @@
     <!-- Частота автоматической отправки данных (в секундах). -->
     <integer name="ga_dispatchPeriod">30</integer>
     <!-- Если задано значение true, будет включен холостой режим работы. -->
-    <bool name="ga_dryRun">true</bool>
+    <bool name="ga_dryRun">false</bool>
 </resources>
