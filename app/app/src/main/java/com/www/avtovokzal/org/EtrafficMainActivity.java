@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,21 +144,6 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         btnDate.setTransformationMethod(null);
         btnNextDay = (Button) findViewById(R.id.buttonNextDay);
         btnNextDay.setTransformationMethod(null);
-
-        listView.setLongClickable(true);
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            public boolean onItemLongClick(AdapterView<?> arg0, View view, int pos, long id) {
-                String url;
-
-                RelativeLayout rl = (RelativeLayout) view;
-                TextView textViewUrl = (TextView) rl.getChildAt(0);
-
-                url = textViewUrl.getTag().toString();
-
-                if (LOG_ON) Log.v("Position", "" + url);
-                return false;
-            }
-        });
     }
 
     private void initializeToolbar() {
@@ -268,6 +254,33 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 sendIdToDb(code);
 
                 myAutoComplete.clearFocus();
+            }
+        });
+
+        myAutoComplete.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    int count = myAdapter.getCount();
+                    if (count > 0) {
+                        AutoCompleteObject object = myAdapter.getItem(0);
+                        myAutoComplete.setText(object.toString());
+
+                        code = object.getObjectCode();
+
+                        // Програмное скрытие клавиатуры
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
+
+                        parsingHTML task = new parsingHTML();
+                        task.execute(code, date, "1");
+
+                        sendIdToDb(code);
+
+                        myAutoComplete.clearFocus();
+                    }
+                }
+                return false;
             }
         });
     }

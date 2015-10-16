@@ -16,6 +16,10 @@ public class AutoCompleteObject {
         return objectName;
     }
 
+    public String getObjectCode() {
+        return String.valueOf(objectCode);
+    }
+
     @Override
     public String toString() {
         return getObjectName();

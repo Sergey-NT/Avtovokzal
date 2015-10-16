@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -251,6 +252,44 @@ public class MenuActivity extends AppCompatSettingsActivity {
                 myAutoComplete.clearFocus();
             }
         });
+
+        myAutoComplete.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    int count = myAdapter.getCount();
+                    if (count > 0) {
+                        AutoCompleteObject object = myAdapter.getItem(0);
+                        myAutoComplete.setText(object.toString());
+
+                        // Програмное скрытие клавиатуры
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
+
+                        code = object.getObjectCode();
+
+                        checkBoxDefaultStation.setChecked(true);
+
+                        // Запись названия и кода остановки в файл настроек
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putBoolean(APP_PREFERENCES_DEFAULT, true);
+                        editor.putString(APP_PREFERENCES_STATION_NAME, object.toString());
+                        editor.putString(APP_PREFERENCES_STATION_CODE, code);
+                        editor.apply();
+
+                        // Google Analytics
+                        Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+                        t.send(new HitBuilders.EventBuilder()
+                                .setCategory(getString(R.string.analytics_category_dropdown))
+                                .setAction(getString(R.string.analytics_action_dropdown_menu))
+                                .build());
+
+                        checkBoxDefaultStation.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void initializeNavigationDrawer() {
@@ -319,15 +358,6 @@ public class MenuActivity extends AppCompatSettingsActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawerResult != null && drawerResult.isDrawerOpen()) {
-            drawerResult.closeDrawer();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     // Listener для востановителя покупок.
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
@@ -346,8 +376,8 @@ public class MenuActivity extends AppCompatSettingsActivity {
 
             if (inventory.getSkuDetails(SKU_ADS_DISABLE) != null) {
                 String price = inventory.getSkuDetails(SKU_ADS_DISABLE).getPrice();
-                String replacePrice = price.replace("руб.", "\u20BD");
-                btnAdsDisableText = getString(R.string.button_ads_disable) + " " + replacePrice;
+                price = price.replace("руб.", "\u20BD");
+                btnAdsDisableText = getString(R.string.button_ads_disable) + " " + price;
                 CharSequence spannedBtnAdsDisableText = spanWithRoubleTypeface(btnAdsDisableText);
                 btnAdsDisable.setText(spannedBtnAdsDisableText);
             } else {

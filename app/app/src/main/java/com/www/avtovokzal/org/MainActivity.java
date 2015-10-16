@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -262,6 +263,31 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 loadScheduleResult(code, day, cancel, sell);
 
                 myAutoComplete.clearFocus();
+            }
+        });
+
+        myAutoComplete.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    int count = myAdapter.getCount();
+                    if (count > 0) {
+                        AutoCompleteObject object = myAdapter.getItem(0);
+                        myAutoComplete.setText(object.toString());
+
+                        code = object.getObjectCode();
+
+                        // Програмное скрытие клавиатуры
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
+
+                        // Запрос и отображение результатов поиска
+                        loadScheduleResult(code, day, cancel, sell);
+
+                        myAutoComplete.clearFocus();
+                    }
+                }
+                return false;
             }
         });
     }

@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -35,6 +37,8 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
 
     public AdView adView;
     public InterstitialAd interstitial;
+
+    private static final String TAG = "AppCompatSettings";
 
     SharedPreferences settings;
 
@@ -139,5 +143,27 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
 
         // Загрузка adView с объявлением
         adView.loadAd(request);
+
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdOpened() {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(APP_PREFERENCES_ADS_SHOW, true);
+                editor.apply();
+                Log.v(TAG, "Ad disable");
+                super.onAdOpened();
+            }
+        });
+
+        interstitial.setAdListener(new AdListener() {
+            @Override
+            public void onAdLeftApplication() {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(APP_PREFERENCES_ADS_SHOW, true);
+                editor.apply();
+                Log.v(TAG, "Ad disable");
+                super.onAdLeftApplication();
+            }
+        });
     }
 }
