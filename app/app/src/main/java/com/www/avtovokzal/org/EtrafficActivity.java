@@ -4,11 +4,9 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,11 +44,9 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
     private Drawer drawerResult = null;
     private ListView listView;
     private ProgressDialog queryDialog;
-    private Toolbar toolbar;
 
     private String dateNow;
     private int day = 0;
-
     private boolean AdShowGone;
 
     private final static String TAG = "EtrafficActivity";
@@ -61,7 +57,6 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         setContentView(R.layout.activity_etraffic);
 
         Button btnNextDay;
-        SharedPreferences settings;
 
         // Определяем элементы интерфейса
         listView = (ListView) findViewById(R.id.listViewEtraffic);
@@ -87,7 +82,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
             initializeAd(R.id.adViewEtrafficActivity);
         }
 
-        initializeToolbar();
+        initializeToolbar(R.string.app_name_city_ggm, R.string.app_subtitle_main);
         initializeNavigationDrawer();
 
         parsingHTML task = new parsingHTML();
@@ -100,15 +95,6 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         btnDate.setTransformationMethod(null);
         btnNextDay = (Button) findViewById(R.id.buttonNextDay);
         btnNextDay.setTransformationMethod(null);
-    }
-
-    private void initializeToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.app_name_city_ggm);
-            toolbar.setSubtitle(R.string.app_subtitle_main);
-            setSupportActionBar(toolbar);
-        }
     }
 
     private void initializeNavigationDrawer() {
@@ -403,14 +389,12 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
     @Override
     protected void onStart() {
         super.onStart();
-        // Google Analytics
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // Google Analytics
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 

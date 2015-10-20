@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Log;
@@ -43,8 +42,6 @@ import java.util.ArrayList;
 
 public class MenuActivity extends AppCompatSettingsActivity {
 
-    IabHelper mHelper;
-
     public CustomAutoCompleteView myAutoComplete;
     public ArrayAdapter<AutoCompleteObject> myAdapter;
     public DatabaseHandler databaseH;
@@ -52,8 +49,6 @@ public class MenuActivity extends AppCompatSettingsActivity {
     private Button btnAdsDisable;
     private CheckBox checkBoxDefaultStation;
     private Drawer drawerResult = null;
-    private SharedPreferences settings;
-    private Toolbar toolbar;
 
     private String activity;
     private String code;
@@ -66,6 +61,8 @@ public class MenuActivity extends AppCompatSettingsActivity {
     private static final String TAG = "MenuActivity";
     private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
     private static final int RC_REQUEST = 10001;
+
+    IabHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,7 +199,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
         AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
         myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
 
-        initializeToolbar();
+        initializeToolbar(R.string.app_name, R.string.menu_settings);
         initializeNavigationDrawer();
     }
 
@@ -211,7 +208,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
         myAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean bool) {
-                if(bool) {
+                if (bool) {
                     myAutoComplete.setText("");
                 }
             }
@@ -349,15 +346,6 @@ public class MenuActivity extends AppCompatSettingsActivity {
         drawerResult.setSelection(5);
     }
 
-    private void initializeToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.app_name);
-            toolbar.setSubtitle(R.string.menu_settings);
-            setSupportActionBar(toolbar);
-        }
-    }
-
     // Listener для востановителя покупок.
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
@@ -387,6 +375,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
 
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(APP_PREFERENCES_ADS_SHOW, (purchase != null && verifyDeveloperPayload(purchase)));
+            editor.putString(APP_PREFERENCES_AD_DATE, null);
             editor.apply();
         }
     };
@@ -411,6 +400,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
                 // Сохраняем в настройках
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putBoolean(APP_PREFERENCES_ADS_SHOW, true);
+                editor.putString(APP_PREFERENCES_AD_DATE, null);
                 editor.apply();
 
                 // Убираем ракламу, кнопку оплаты
@@ -442,14 +432,12 @@ public class MenuActivity extends AppCompatSettingsActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Google Analytics
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // Google Analytics
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
@@ -471,7 +459,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
 
     @Override
     protected void onDestroy() {
-        // Если перешли в MenuActivity из MainActivity
+        // Если перешли из MainActivity
         if (activity != null) {
             boolean checkBoxCancelValue = getSettingsParams(APP_PREFERENCES_CANCEL);
             boolean checkBoxSellValue = getSettingsParams(APP_PREFERENCES_SELL);
@@ -491,7 +479,6 @@ public class MenuActivity extends AppCompatSettingsActivity {
                 startActivity(intent);
             }
         }
-
         if (adView != null) {
             adView.destroy();
         }
@@ -544,7 +531,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
         boolean checkBoxValue;
         // Получаем значение из настроек
         checkBoxValue = getSettingsParams(params);
-        if(checkBoxValue) {
+        if (checkBoxValue) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(params, false);
             editor.apply();

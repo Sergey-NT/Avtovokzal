@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -75,8 +74,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     private Menu toolbarMenu;
     private ProgressDialog queryDialog;
     private TextView textView;
-    private Toolbar toolbar;
-    private SharedPreferences settings;
 
     private String code;
     private String dateNow;
@@ -161,7 +158,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
         loadSystemInfo();
 
-        // Проверка есть ли строки в таблицах
+        // Проверка есть ли строки в таблицах остановок
         if (!databaseH.checkIfExistsRowTable("stations")) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(APP_PREFERENCES_MD5_CHECK, false);
@@ -227,9 +224,10 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         btnDate.setTransformationMethod(null);
         btnNextDay.setTransformationMethod(null);
 
-        initializeToolbar();
+        initializeToolbar(R.string.app_name_city, R.string.app_subtitle_main);
         initializeNavigationDrawer();
         initializeFloatingActionButton();
+        checkAdSettings();
     }
 
     private void myAutoCompleteFocus() {
@@ -348,15 +346,6 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         );
     }
 
-    private void initializeToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.app_name_city);
-            toolbar.setSubtitle(R.string.app_subtitle_main);
-            setSupportActionBar(toolbar);
-        }
-    }
-
     private void initializeNavigationDrawer() {
         drawerResult = new DrawerBuilder()
                 .withActivity(this)
@@ -423,6 +412,36 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         drawerResult.setSelection(1);
     }
 
+    private void checkAdSettings () {
+        if (settings.contains(APP_PREFERENCES_AD_DATE)) {
+            String dateSettings = settings.getString(APP_PREFERENCES_AD_DATE, null);
+            if (dateSettings != null) {
+                if (dateSettings.length() > 3) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault());
+                    Calendar calendar = Calendar.getInstance();
+                    Calendar calendarSettings = Calendar.getInstance();
+                    try {
+                        calendarSettings.setTime(sdf.parse(dateSettings));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long diff = calendar.getTimeInMillis() - calendarSettings.getTimeInMillis();
+                    int countDays = (int) (diff / (24 * 60 * 60 * 1000));
+                    if(LOG_ON) Log.v(TAG, String.valueOf(countDays));
+                    if (countDays > 6) {
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString(APP_PREFERENCES_AD_DATE, null);
+                        editor.putBoolean(APP_PREFERENCES_ADS_SHOW, false);
+                        editor.apply();
+                        if (adView == null) {
+                            initializeAd(R.id.adViewMainActivity);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (drawerResult != null && drawerResult.isDrawerOpen()) {
@@ -435,14 +454,12 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     @Override
     protected void onStart() {
         super.onStart();
-        // Google Analytics
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // Google Analytics
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
@@ -941,6 +958,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean(APP_PREFERENCES_ADS_SHOW, (purchase != null && verifyDeveloperPayload(purchase)));
+            editor.putString(APP_PREFERENCES_AD_DATE, null);
             editor.apply();
 
             // Отключаем рекламу если покупка была совершена ранее

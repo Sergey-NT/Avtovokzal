@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.LinearLayout;
 
@@ -19,6 +19,9 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class AppCompatSettingsActivity extends AppCompatActivity {
 
@@ -34,13 +37,14 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES_SELL = "sell";
     public static final String APP_PREFERENCES_LOAD = "load";
     public static final String APP_PREFERENCES_DATE = "date";
+    public static final String APP_PREFERENCES_AD_DATE = "date_ad_click";
 
     public AdView adView;
     public InterstitialAd interstitial;
+    public SharedPreferences settings;
+    public Toolbar toolbar;
 
     private static final String TAG = "AppCompatSettings";
-
-    SharedPreferences settings;
 
     // Получаем параметры из файла настроек
     public boolean getSettingsParams(String params) {
@@ -147,10 +151,8 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
         adView.setAdListener(new AdListener() {
             @Override
             public void onAdOpened() {
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putBoolean(APP_PREFERENCES_ADS_SHOW, true);
-                editor.apply();
-                Log.v(TAG, "Ad disable");
+                onClickAd();
+                if (LOG_ON) Log.v(TAG, "Ad opened");
                 super.onAdOpened();
             }
         });
@@ -158,12 +160,31 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
         interstitial.setAdListener(new AdListener() {
             @Override
             public void onAdLeftApplication() {
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putBoolean(APP_PREFERENCES_ADS_SHOW, true);
-                editor.apply();
-                Log.v(TAG, "Ad disable");
+                onClickAd();
+                if (LOG_ON) Log.v(TAG, "Left application");
                 super.onAdLeftApplication();
             }
         });
+    }
+
+    public void initializeToolbar(int title, int subtitle) {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+            toolbar.setSubtitle(subtitle);
+            setSupportActionBar(toolbar);
+        }
+    }
+
+    private void onClickAd () {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        String date = sdf.format(calendar.getTime());
+        if (LOG_ON) Log.v(TAG, date);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(APP_PREFERENCES_AD_DATE, date);
+        editor.putBoolean(APP_PREFERENCES_ADS_SHOW, true);
+        editor.apply();
     }
 }

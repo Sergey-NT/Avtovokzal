@@ -2,9 +2,7 @@ package com.www.avtovokzal.org;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
@@ -18,7 +16,6 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 public class AboutActivity extends AppCompatSettingsActivity {
 
     private Drawer drawerResult = null;
-    private Toolbar toolbar;
 
     private boolean AdShowGone;
 
@@ -26,8 +23,6 @@ public class AboutActivity extends AppCompatSettingsActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-
-        SharedPreferences settings;
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
@@ -54,7 +49,7 @@ public class AboutActivity extends AppCompatSettingsActivity {
             initializeAd(R.id.adViewAboutActivity);
         }
 
-        initializeToolbar();
+        initializeToolbar(R.string.app_name, R.string.menu_about);
         initializeNavigationDrawer();
     }
 
@@ -115,15 +110,6 @@ public class AboutActivity extends AppCompatSettingsActivity {
         drawerResult.setSelection(6);
     }
 
-    private void initializeToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.app_name);
-            toolbar.setSubtitle(R.string.menu_about);
-            setSupportActionBar(toolbar);
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if (drawerResult != null && drawerResult.isDrawerOpen()) {
@@ -136,14 +122,12 @@ public class AboutActivity extends AppCompatSettingsActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Google Analytics
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // Google Analytics
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
