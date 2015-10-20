@@ -89,11 +89,10 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
     private static final String TAG = "MainActivity";
     private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
-
-    public static final String APP_PREFERENCES_MD5 = "md5";
-    public static final String APP_PREFERENCES_MD5_EKB = "md5_ekb";
-    public static final String APP_PREFERENCES_MD5_CHECK = "checkMD5";
-    public static final String APP_PREFERENCES_MD5_EKB_CHECK = "checkMD5_ekb";
+    private static final String APP_PREFERENCES_MD5 = "md5";
+    private static final String APP_PREFERENCES_MD5_EKB = "md5_ekb";
+    private static final String APP_PREFERENCES_MD5_CHECK = "checkMD5";
+    private static final String APP_PREFERENCES_MD5_EKB_CHECK = "checkMD5_ekb";
 
     IabHelper mHelper;
 
@@ -820,7 +819,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         if (day >= 0 && day <= 9) {
             dateNew = dateNow;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyy", java.util.Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault());
             Calendar c = Calendar.getInstance();
             try {
                 c.setTime(sdf.parse(dateNew));
@@ -849,7 +848,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             String monthNumber;
             String dayNumber;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyy", java.util.Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault());
 
             Calendar calendarNow = Calendar.getInstance();
             try {
@@ -941,6 +940,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         intent.putExtra("cancel", cancel);
         intent.putExtra("sell", sell);
         startActivity(intent);
+        finish();
     }
 
     // Listener для востановителя покупок.

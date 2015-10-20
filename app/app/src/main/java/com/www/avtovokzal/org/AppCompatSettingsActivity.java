@@ -27,7 +27,6 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
 
     public static final boolean DEVELOPER = false;
     public static final boolean LOG_ON = false;
-    public static final String APP_PREFERENCES_COUNT_AD = "countAd";
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_ADS_SHOW = "adsDisable";
     public static final String APP_PREFERENCES_DEFAULT = "default";
@@ -45,6 +44,7 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
     public Toolbar toolbar;
 
     private static final String TAG = "AppCompatSettings";
+    private static final String APP_PREFERENCES_COUNT_AD = "countAd";
 
     // Получаем параметры из файла настроек
     public boolean getSettingsParams(String params) {

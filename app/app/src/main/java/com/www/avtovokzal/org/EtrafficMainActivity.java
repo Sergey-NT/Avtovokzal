@@ -277,7 +277,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             String monthNumber;
             String dayNumber;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyy", java.util.Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault());
 
             Calendar calendarNow = Calendar.getInstance();
             try {
@@ -363,7 +363,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         day = day + 1;
 
         if (day >= 0 && day <= 9) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyy", java.util.Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault());
             Calendar c = Calendar.getInstance();
             try {
                 c.setTime(sdf.parse(dateSystem));
