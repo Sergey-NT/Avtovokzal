@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,7 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     private Menu toolbarMenu;
     private ProgressDialog queryDialog;
     private TextView textView;
+    private FloatingActionButton fab;
 
     private String code;
     private String dateNow;
@@ -187,6 +192,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         // Определяем элементы интерфейса
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.autoCompleteMain);
         listView = (ListView) findViewById(R.id.listViewMain);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
         // Добавляем футер к списку ListView
         LayoutInflater inflater = getLayoutInflater();
@@ -319,11 +325,30 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 startActivity(intent);
             }
         });
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int def = totalItemCount - (firstVisibleItem + visibleItemCount);
+                if (totalItemCount > 0 && def < 3 && fab.getVisibility() == View.VISIBLE) {
+                    Animation fadeOutAnimation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
+                    fab.setAnimation(fadeOutAnimation);
+                    fab.setVisibility(View.GONE);
+                } else if (totalItemCount > 0 && def > 3 && fab.getVisibility() != View.VISIBLE) {
+                    Animation fadeInAnimation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+                    fab.setAnimation(fadeInAnimation);
+                    fab.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void initializeFloatingActionButton() {
         // Floating Action Button
-        findViewById(R.id.fab).setOnClickListener(
+        fab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
