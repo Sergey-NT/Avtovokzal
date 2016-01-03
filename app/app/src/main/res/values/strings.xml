@@ -11,7 +11,7 @@
     <string name="free_bus">Кол-во свободных мест:</string>
     <string name="price_bus">Стоимость проезда:</string>
     <string name="baggage_bus">Стоимость провоза багажа:</string>
-    <string name="cancel_bus">Рейс не состоится</string>
+    <string name="cancel_bus">Рейс отменен</string>
     <string name="schedule_bus">Дни следования:</string>
     <string name="hint_main">Пункт назначения</string>
     <string name="hint_arrival">Пункт отправления</string>
@@ -33,6 +33,7 @@
     <string name="menu_status">Статус</string>
     <string name="menu_ads_disable_toast">Оплата за отключение показа рекламы прошла успешно</string>
     <string name="menu_station">Если Вы регулярно просматриваете расписание до одной и той же остановки, то можно эту остановку установить, как остановку по умолчанию. При запуске программы расписание сразу же будет загружаться до выбранного пункта назначения.</string>
+    <string name="checkbox_all">В результатах поиска показывать все рейсы</string>
     <string name="checkbox_cancel">Скрывать рейсы, которые не состоятся</string>
     <string name="checkbox_cancel_load">Не загружать расписание при запуске программы</string>
     <string name="checkbox_sell">Скрывать рейсы с отсутствием свободных мест (кроме транзитных рейсов)</string>
@@ -46,7 +47,7 @@
     <string name="admob_activity">ca-app-pub-3253485608797245/6313884709</string>
     <string name="admob_interstitial">ca-app-pub-3253485608797245/9783238303</string>
     <string name="about_developer">Разработчик приложения: <a href="http://vk.com/id5170658" title="Сергей Ухарский">Сергей Ухарский</a></string>
-    <string name="about_version">Версия приложения: 1.3.7</string>
+    <string name="about_version">Версия приложения: 1.3.8</string>
     <string name="about_text">В приложении используются следующие иконки:
         Bus hand drawn transport free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
         X free icon made by <a href="http://www.zurb.com" title="Zurb">Zurb</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.

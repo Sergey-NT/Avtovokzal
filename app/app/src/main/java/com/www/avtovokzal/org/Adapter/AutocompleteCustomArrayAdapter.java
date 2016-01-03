@@ -23,21 +23,33 @@ public class AutocompleteCustomArrayAdapter extends ArrayAdapter<AutoCompleteObj
         this.data = data;
     }
 
+    static class ViewHolder {
+        private TextView textViewItem;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        ViewHolder holder;
 
         try {
             if (convertView==null){
                 LayoutInflater inflater = LayoutInflater.from(mContext);
                 convertView = inflater.inflate(layoutResourceId, parent, false);
+
+                holder = new ViewHolder();
+
+                holder.textViewItem = (TextView) convertView.findViewById(R.id.textViewDropDownItem);
+
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
 
             AutoCompleteObject objectItem = data[position];
 
-            TextView textViewItem = (TextView) convertView.findViewById(R.id.textViewDropDownItem);
-            textViewItem.setText(objectItem.objectName);
-            textViewItem.setTag(objectItem.objectCode);
-
+            holder.textViewItem.setText(objectItem.objectName);
+            holder.textViewItem.setTag(objectItem.objectCode);
         } catch (Exception e) {
             e.printStackTrace();
         }

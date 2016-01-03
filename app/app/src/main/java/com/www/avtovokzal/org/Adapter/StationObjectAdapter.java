@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.www.avtovokzal.org.Object.StationsObject;
@@ -40,57 +41,82 @@ public class StationObjectAdapter extends BaseAdapter {
         return i;
     }
 
+    static class ViewHolder {
+        private TextView item0;
+        private TextView item1;
+        private TextView item2;
+        private TextView item3;
+        private TextView item4;
+        private TextView item5;
+        private TextView item6;
+        private TextView description1;
+        private TextView description2;
+        private TextView description3;
+        private RelativeLayout relativeLayout;
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
 
         if(view == null) {
             view = layoutInflater.inflate(R.layout.listview_item_row, viewGroup, false);
+
+            holder = new ViewHolder();
+
+            holder.item0 = (TextView) view.findViewById(R.id.textViewMainTime);
+            holder.item1 = (TextView) view.findViewById(R.id.textViewMainNumber);
+            holder.item2 = (TextView) view.findViewById(R.id.textViewMainName);
+            holder.item3 = (TextView) view.findViewById(R.id.textViewMainNameBus);
+            holder.item4 = (TextView) view.findViewById(R.id.textViewMainCountBus);
+            holder.item5 = (TextView) view.findViewById(R.id.textViewMainFreeBus);
+            holder.item6 = (TextView) view.findViewById(R.id.textViewMainCancel);
+            holder.description1 = (TextView) view.findViewById(R.id.textViewMainNameBusDesc);
+            holder.description2 = (TextView) view.findViewById(R.id.textViewMainCountBusDesc);
+            holder.description3 = (TextView) view.findViewById(R.id.textViewMainFreeBusDesc);
+            holder.relativeLayout = (RelativeLayout) view.findViewById(R.id.listViewMainItem);
+
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
         StationsObject stationsObject = getStationObject(i);
 
-        TextView item0 = (TextView) view.findViewById(R.id.textViewMainTime);
-        TextView item1 = (TextView) view.findViewById(R.id.textViewMainNumber);
-        TextView item2 = (TextView) view.findViewById(R.id.textViewMainName);
-        TextView item3 = (TextView) view.findViewById(R.id.textViewMainNameBus);
-        TextView item4 = (TextView) view.findViewById(R.id.textViewMainCountBus);
-        TextView item5 = (TextView) view.findViewById(R.id.textViewMainFreeBus);
-        TextView item6 = (TextView) view.findViewById(R.id.textViewMainCancel);
-
         if (stationsObject.getFreeBus().equals("нет данных") || stationsObject.getFreeBus().equals("мест нет")) {
-            item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color_hint));
+            holder.item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color_hint));
         } else {
-            item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color));
+            holder.item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color));
         }
 
         if (stationsObject.getCancelBus() == 1){
-            view.findViewById(R.id.textViewMainNameBusDesc).setVisibility(View.GONE);
-            view.findViewById(R.id.textViewMainCountBusDesc).setVisibility(View.GONE);
-            view.findViewById(R.id.textViewMainFreeBusDesc).setVisibility(View.GONE);
-            item3.setVisibility(View.GONE);
-            item4.setVisibility(View.GONE);
-            item5.setVisibility(View.GONE);
-            item6.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.listViewMainItem).setBackgroundColor(ContextCompat.getColor(myContext, R.color.divider_color));
+            holder.description1.setVisibility(View.GONE);
+            holder.description2.setVisibility(View.GONE);
+            holder.description3.setVisibility(View.GONE);
+            holder.item3.setVisibility(View.GONE);
+            holder.item4.setVisibility(View.GONE);
+            holder.item5.setVisibility(View.GONE);
+            holder.item6.setVisibility(View.VISIBLE);
+            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(myContext, R.color.divider_color));
         } else {
-            view.findViewById(R.id.textViewMainNameBusDesc).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.textViewMainCountBusDesc).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.textViewMainFreeBusDesc).setVisibility(View.VISIBLE);
-            item3.setVisibility(View.VISIBLE);
-            item4.setVisibility(View.VISIBLE);
-            item5.setVisibility(View.VISIBLE);
-            item6.setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.listViewMainItem).setBackgroundColor(ContextCompat.getColor(myContext, R.color.background));
+            holder.description1.setVisibility(View.VISIBLE);
+            holder.description2.setVisibility(View.VISIBLE);
+            holder.description3.setVisibility(View.VISIBLE);
+            holder.item3.setVisibility(View.VISIBLE);
+            holder.item4.setVisibility(View.VISIBLE);
+            holder.item5.setVisibility(View.VISIBLE);
+            holder.item6.setVisibility(View.INVISIBLE);
+            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(myContext, R.color.background));
         }
 
-        item0.setText(stationsObject.getTimeOtpr());
-        item1.setText(stationsObject.getNumberMarsh());
-        item2.setText(stationsObject.getMarshName());
-        item3.setText(stationsObject.getNameBus());
-        item4.setText(stationsObject.getCountBus());
-        item5.setText(stationsObject.getFreeBus());
+        holder.item0.setText(stationsObject.getTimeOtpr());
+        holder.item1.setText(stationsObject.getNumberMarsh());
+        holder.item2.setText(stationsObject.getMarshName());
+        holder.item3.setText(stationsObject.getNameBus());
+        holder.item4.setText(stationsObject.getCountBus());
+        holder.item5.setText(stationsObject.getFreeBus());
 
-        item1.setTag(stationsObject.getNumberMarshToSend());
+        holder.item1.setTag(stationsObject.getNumberMarshToSend());
 
         return view;
     }

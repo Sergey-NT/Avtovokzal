@@ -25,6 +25,26 @@
             android:background="@color/background" >
 
             <CheckBox
+                android:id="@+id/checkBoxAll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:layout_marginStart="15sp"
+                android:paddingTop="15sp"
+                android:paddingBottom="15sp"
+                android:paddingRight="15sp"
+                android:paddingEnd="15sp"
+                android:paddingLeft="15sp"
+                android:text="@string/checkbox_all"
+                android:textSize="17sp"
+                android:textColor="@color/text_color" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1sp"
+                android:background="@color/divider_color" />
+
+            <CheckBox
                 android:id="@+id/checkBoxCancel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

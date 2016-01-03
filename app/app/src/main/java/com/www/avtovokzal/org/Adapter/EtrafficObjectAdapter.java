@@ -47,32 +47,49 @@ public class EtrafficObjectAdapter extends BaseAdapter{
         return (EtrafficObject)getItem(i);
     }
 
+    static class ViewHolder {
+        private TextView item0;
+        private TextView item1;
+        private TextView item2;
+        private TextView item3;
+        private TextView item4;
+        private TextView item5;
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
 
         if (view == null) {
             view = layoutInflater.inflate(R.layout.listview_item_etraffic_row, viewGroup, false);
+
+            holder = new ViewHolder();
+
+            holder.item0 = (TextView) view.findViewById(R.id.textViewEtrafficTime);
+            holder.item1 = (TextView) view.findViewById(R.id.textViewEtrafficNumber);
+            holder.item2 = (TextView) view.findViewById(R.id.textViewEtrafficName);
+            holder.item3 = (TextView) view.findViewById(R.id.textViewEtrafficTimeArrival);
+            holder.item4 = (TextView) view.findViewById(R.id.textViewEtrafficCountBus);
+            holder.item5 = (TextView) view.findViewById(R.id.textViewEtrafficPrice);
+
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
         EtrafficObject etrafficObject = getEtrafficObject(i);
 
-        TextView item0 = (TextView) view.findViewById(R.id.textViewEtrafficTime);
-        TextView item1 = (TextView) view.findViewById(R.id.textViewEtrafficNumber);
-        TextView item2 = (TextView) view.findViewById(R.id.textViewEtrafficName);
-        TextView item3 = (TextView) view.findViewById(R.id.textViewEtrafficTimeArrival);
-        TextView item4 = (TextView) view.findViewById(R.id.textViewEtrafficCountBus);
-        TextView item5 = (TextView) view.findViewById(R.id.textViewEtrafficPrice);
-
         String priceBus = etrafficObject.getPrice() + " \u20BD";
         CharSequence spannedPriceBus = spanWithRoubleTypeface(priceBus);
 
-        item0.setText(etrafficObject.getTime());
-        item0.setTag(etrafficObject.getUrlToBuy());
-        item1.setText(etrafficObject.getNumber());
-        item2.setText(etrafficObject.getName());
-        item3.setText(etrafficObject.getTimeArrival());
-        item4.setText(etrafficObject.getCountBus());
-        item5.setText(spannedPriceBus);
+        holder.item0.setText(etrafficObject.getTime());
+        holder.item1.setText(etrafficObject.getNumber());
+        holder.item2.setText(etrafficObject.getName());
+        holder.item3.setText(etrafficObject.getTimeArrival());
+        holder.item4.setText(etrafficObject.getCountBus());
+        holder.item5.setText(spannedPriceBus);
+
+        holder.item0.setTag(etrafficObject.getUrlToBuy());
 
         return view;
     }

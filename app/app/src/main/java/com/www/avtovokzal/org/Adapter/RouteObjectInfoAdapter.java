@@ -43,11 +43,44 @@ public class RouteObjectInfoAdapter extends BaseAdapter{
         return i;
     }
 
+    static class ViewHolder {
+        private TextView item0;
+        private TextView item1;
+        private TextView item2;
+        private TextView item3;
+        private TextView item4;
+        private TextView item5;
+        private TextView item6;
+        private TextView description1;
+        private TextView description2;
+        private TextView description3;
+        private TextView description4;
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
 
         if(view == null) {
             view = layoutInflater.inflate(R.layout.listview_item_info_row, viewGroup, false);
+
+            holder = new ViewHolder();
+
+            holder.item0 = (TextView) view.findViewById(R.id.textViewInfoNameStation);
+            holder.item1 = (TextView) view.findViewById(R.id.textViewInfoStationNote);
+            holder.item2 = (TextView) view.findViewById(R.id.textViewInfoTimePrib);
+            holder.item3 = (TextView) view.findViewById(R.id.textViewInfoTimeWay);
+            holder.item4 = (TextView) view.findViewById(R.id.textViewInfoDistance);
+            holder.item5 = (TextView) view.findViewById(R.id.textViewInfoPriceBus);
+            holder.item6 = (TextView) view.findViewById(R.id.textViewInfoBaggageBus);
+            holder.description1 = (TextView) view.findViewById(R.id.textViewInfoNoteStationDesc);
+            holder.description2 = (TextView) view.findViewById(R.id.textViewInfoInfoTimeWayDesc);
+            holder.description3 = (TextView) view.findViewById(R.id.textViewInfoTimePribDesc);
+            holder.description4 = (TextView) view.findViewById(R.id.textViewInfoDistanceDesc);
+
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
         RouteObjectInfo routeObjectInfo = getRouteObjectInfo(i);
@@ -59,51 +92,43 @@ public class RouteObjectInfoAdapter extends BaseAdapter{
         CharSequence spannedPriceBus = spanWithRoubleTypeface(priceBus);
         CharSequence spannedPriceBaggage = spanWithRoubleTypeface(priceBaggage);
 
-        TextView item0 = (TextView) view.findViewById(R.id.textViewInfoNameStation);
-        TextView item1 = (TextView) view.findViewById(R.id.textViewInfoStationNote);
-        TextView item2 = (TextView) view.findViewById(R.id.textViewInfoTimePrib);
-        TextView item3 = (TextView) view.findViewById(R.id.textViewInfoTimeWay);
-        TextView item4 = (TextView) view.findViewById(R.id.textViewInfoDistance);
-        TextView item5 = (TextView) view.findViewById(R.id.textViewInfoPriceBus);
-        TextView item6 = (TextView) view.findViewById(R.id.textViewInfoBaggageBus);
-
         if (routeObjectInfo.getNoteStation().length() == 0){
-            view.findViewById(R.id.textViewInfoNoteStationDesc).setVisibility(View.GONE);
-            item1.setVisibility(View.GONE);
+            holder.description1.setVisibility(View.GONE);
+            holder.item1.setVisibility(View.GONE);
         } else {
-            view.findViewById(R.id.textViewInfoNoteStationDesc).setVisibility(View.VISIBLE);
-            item1.setVisibility(View.VISIBLE);
+            holder.description1.setVisibility(View.VISIBLE);
+            holder.item1.setVisibility(View.VISIBLE);
         }
 
         if (routeObjectInfo.getTimeWay().equals("00:00")){
-            view.findViewById(R.id.textViewInfoInfoTimeWayDesc).setVisibility(View.GONE);
-            view.findViewById(R.id.textViewInfoTimePribDesc).setVisibility(View.GONE);
-            item2.setVisibility(View.GONE);
-            item3.setVisibility(View.GONE);
+            holder.description2.setVisibility(View.GONE);
+            holder.description3.setVisibility(View.GONE);
+            holder.item2.setVisibility(View.GONE);
+            holder.item3.setVisibility(View.GONE);
         } else {
-            view.findViewById(R.id.textViewInfoInfoTimeWayDesc).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.textViewInfoTimePribDesc).setVisibility(View.VISIBLE);
-            item2.setVisibility(View.VISIBLE);
-            item3.setVisibility(View.VISIBLE);
+            holder.description2.setVisibility(View.VISIBLE);
+            holder.description3.setVisibility(View.VISIBLE);
+            holder.item2.setVisibility(View.VISIBLE);
+            holder.item3.setVisibility(View.VISIBLE);
         }
 
         if(routeObjectInfo.getDistanceData().equals("0.0")){
-            view.findViewById(R.id.textViewInfoDistanceDesc).setVisibility(View.GONE);
-            item4.setVisibility(View.GONE);
+            holder.description4.setVisibility(View.GONE);
+            holder.item4.setVisibility(View.GONE);
         } else {
-            view.findViewById(R.id.textViewInfoDistanceDesc).setVisibility(View.VISIBLE);
-            item4.setVisibility(View.VISIBLE);
+            holder.description4.setVisibility(View.VISIBLE);
+            holder.item4.setVisibility(View.VISIBLE);
         }
 
-        item0.setText(routeObjectInfo.getNameStation());
-        item1.setText(routeObjectInfo.getNoteStation());
-        item2.setText(routeObjectInfo.getTimePrib());
-        item3.setText(routeObjectInfo.getTimeWay());
-        item4.setText(distanceData);
-        item5.setText(spannedPriceBus);
-        item6.setText(spannedPriceBaggage);
+        holder.item0.setText(routeObjectInfo.getNameStation());
+        holder.item1.setText(routeObjectInfo.getNoteStation());
+        holder.item2.setText(routeObjectInfo.getTimePrib());
+        holder.item3.setText(routeObjectInfo.getTimeWay());
+        holder.item4.setText(distanceData);
+        holder.item5.setText(spannedPriceBus);
+        holder.item6.setText(spannedPriceBaggage);
 
-        item0.setTag(routeObjectInfo.getCodeStation());
+        holder.item0.setTag(routeObjectInfo.getCodeStation());
 
         return view;
     }

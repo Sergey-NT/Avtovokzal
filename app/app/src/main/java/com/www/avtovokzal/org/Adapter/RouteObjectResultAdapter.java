@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.www.avtovokzal.org.Object.RouteObjectResult;
@@ -45,62 +46,96 @@ public class RouteObjectResultAdapter extends BaseAdapter{
         return i;
     }
 
+    static class ViewHolder {
+        private TextView item0;
+        private TextView item1;
+        private TextView item2;
+        private TextView item3;
+        private TextView item4;
+        private TextView item5;
+        private TextView item6;
+        private TextView item7;
+        private TextView item8;
+        private TextView item9;
+        private TextView description1;
+        private TextView description2;
+        private TextView description3;
+        private TextView description4;
+        private TextView description5;
+        private TextView description6;
+        private RelativeLayout relativeLayout;
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
 
         if(view == null) {
             view = layoutInflater.inflate(R.layout.listview_item_result_row, viewGroup, false);
+
+            holder = new ViewHolder();
+
+            holder.item0 = (TextView) view.findViewById(R.id.textViewMainResultTime);
+            holder.item1 = (TextView) view.findViewById(R.id.textViewMainResultNumber);
+            holder.item2 = (TextView) view.findViewById(R.id.textViewMainResultName);
+            holder.item3 = (TextView) view.findViewById(R.id.textViewMainResultNameBus);
+            holder.item4 = (TextView) view.findViewById(R.id.textViewMainResultCountBus);
+            holder.item5 = (TextView) view.findViewById(R.id.textViewMainResultFreeBus);
+            holder.item6 = (TextView) view.findViewById(R.id.textViewMainResultPriceBus);
+            holder.item7 = (TextView) view.findViewById(R.id.textViewMainResultBaggageBus);
+            holder.item8 = (TextView) view.findViewById(R.id.textViewMainResultTimePrib);
+            holder.item9 = (TextView) view.findViewById(R.id.textViewMainResultCancel);
+            holder.description1 = (TextView) view.findViewById(R.id.textViewMainResultTimePribDesc);
+            holder.description2 = (TextView) view.findViewById(R.id.textViewMainResultNameBusDesc);
+            holder.description3 = (TextView) view.findViewById(R.id.textViewMainResultCountBusDesc);
+            holder.description4 = (TextView) view.findViewById(R.id.textViewMainResultFreeBusDesc);
+            holder.description5 = (TextView) view.findViewById(R.id.textViewMainResultPriceBusDesc);
+            holder.description6 = (TextView) view.findViewById(R.id.textViewMainResultBaggageBusDesc);
+            holder.relativeLayout = (RelativeLayout) view.findViewById(R.id.listViewMainResultItem);
+
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
         RouteObjectResult routeObjectResult = getRouteObjectResult(i);
 
-        TextView item0 = (TextView) view.findViewById(R.id.textViewMainResultTime);
-        TextView item1 = (TextView) view.findViewById(R.id.textViewMainResultNumber);
-        TextView item2 = (TextView) view.findViewById(R.id.textViewMainResultName);
-        TextView item3 = (TextView) view.findViewById(R.id.textViewMainResultNameBus);
-        TextView item4 = (TextView) view.findViewById(R.id.textViewMainResultCountBus);
-        TextView item5 = (TextView) view.findViewById(R.id.textViewMainResultFreeBus);
-        TextView item6 = (TextView) view.findViewById(R.id.textViewMainResultPriceBus);
-        TextView item7 = (TextView) view.findViewById(R.id.textViewMainResultBaggageBus);
-        TextView item8 = (TextView) view.findViewById(R.id.textViewMainResultTimePrib);
-        TextView item9 = (TextView) view.findViewById(R.id.textViewMainResultCancel);
-
         if (routeObjectResult.getCancelBus() == 1){
-            view.findViewById(R.id.textViewMainResultTimePribDesc).setVisibility(View.GONE);
-            view.findViewById(R.id.textViewMainResultNameBusDesc).setVisibility(View.GONE);
-            view.findViewById(R.id.textViewMainResultCountBusDesc).setVisibility(View.GONE);
-            view.findViewById(R.id.textViewMainResultFreeBusDesc).setVisibility(View.GONE);
-            view.findViewById(R.id.textViewMainResultPriceBusDesc).setVisibility(View.GONE);
-            view.findViewById(R.id.textViewMainResultBaggageBusDesc).setVisibility(View.GONE);
-            item3.setVisibility(View.GONE);
-            item4.setVisibility(View.GONE);
-            item5.setVisibility(View.GONE);
-            item6.setVisibility(View.GONE);
-            item7.setVisibility(View.GONE);
-            item8.setVisibility(View.GONE);
-            item9.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.listViewMainResultItem).setBackgroundColor(ContextCompat.getColor(myContext, R.color.divider_color));
+            holder.description1.setVisibility(View.GONE);
+            holder.description2.setVisibility(View.GONE);
+            holder.description3.setVisibility(View.GONE);
+            holder.description4.setVisibility(View.GONE);
+            holder.description5.setVisibility(View.GONE);
+            holder.description6.setVisibility(View.GONE);
+            holder.item3.setVisibility(View.GONE);
+            holder.item4.setVisibility(View.GONE);
+            holder.item5.setVisibility(View.GONE);
+            holder.item6.setVisibility(View.GONE);
+            holder.item7.setVisibility(View.GONE);
+            holder.item8.setVisibility(View.GONE);
+            holder.item9.setVisibility(View.VISIBLE);
+            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(myContext, R.color.divider_color));
         } else {
-            view.findViewById(R.id.textViewMainResultTimePribDesc).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.textViewMainResultNameBusDesc).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.textViewMainResultCountBusDesc).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.textViewMainResultFreeBusDesc).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.textViewMainResultPriceBusDesc).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.textViewMainResultBaggageBusDesc).setVisibility(View.VISIBLE);
-            item3.setVisibility(View.VISIBLE);
-            item4.setVisibility(View.VISIBLE);
-            item5.setVisibility(View.VISIBLE);
-            item6.setVisibility(View.VISIBLE);
-            item7.setVisibility(View.VISIBLE);
-            item8.setVisibility(View.VISIBLE);
-            item9.setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.listViewMainResultItem).setBackgroundColor(ContextCompat.getColor(myContext, R.color.background));
+            holder.description1.setVisibility(View.VISIBLE);
+            holder.description2.setVisibility(View.VISIBLE);
+            holder.description3.setVisibility(View.VISIBLE);
+            holder.description4.setVisibility(View.VISIBLE);
+            holder.description5.setVisibility(View.VISIBLE);
+            holder.description6.setVisibility(View.VISIBLE);
+            holder.item3.setVisibility(View.VISIBLE);
+            holder.item4.setVisibility(View.VISIBLE);
+            holder.item5.setVisibility(View.VISIBLE);
+            holder.item6.setVisibility(View.VISIBLE);
+            holder.item7.setVisibility(View.VISIBLE);
+            holder.item8.setVisibility(View.VISIBLE);
+            holder.item9.setVisibility(View.INVISIBLE);
+            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(myContext, R.color.background));
         }
 
         if(routeObjectResult.getFreeBus().equals("нет данных") || routeObjectResult.getFreeBus().equals("мест нет")) {
-            item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color_hint));
+            holder.item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color_hint));
         } else {
-            item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color));
+            holder.item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color));
         }
 
         String priceBus = routeObjectResult.getPriceBus() + " \u20BD";
@@ -109,17 +144,17 @@ public class RouteObjectResultAdapter extends BaseAdapter{
         CharSequence spannedPriceBus = spanWithRoubleTypeface(priceBus);
         CharSequence spannedPriceBaggage = spanWithRoubleTypeface(priceBaggage);
 
-        item0.setText(routeObjectResult.getTimeOtpr());
-        item1.setText(routeObjectResult.getNumberMarsh());
-        item2.setText(routeObjectResult.getMarshName());
-        item3.setText(routeObjectResult.getNameBus());
-        item4.setText(routeObjectResult.getCountBus());
-        item5.setText(routeObjectResult.getFreeBus());
-        item6.setText(spannedPriceBus);
-        item7.setText(spannedPriceBaggage);
-        item8.setText(routeObjectResult.getTimePrib());
+        holder.item0.setText(routeObjectResult.getTimeOtpr());
+        holder.item1.setText(routeObjectResult.getNumberMarsh());
+        holder.item2.setText(routeObjectResult.getMarshName());
+        holder.item3.setText(routeObjectResult.getNameBus());
+        holder.item4.setText(routeObjectResult.getCountBus());
+        holder.item5.setText(routeObjectResult.getFreeBus());
+        holder.item6.setText(spannedPriceBus);
+        holder.item7.setText(spannedPriceBaggage);
+        holder.item8.setText(routeObjectResult.getTimePrib());
 
-        item1.setTag(routeObjectResult.getNumberMarshToSend());
+        holder.item1.setTag(routeObjectResult.getNumberMarshToSend());
 
         return view;
     }

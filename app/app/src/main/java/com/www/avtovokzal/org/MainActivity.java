@@ -6,7 +6,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -40,7 +43,9 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -91,6 +96,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     private boolean sell;
     private boolean AdShowGone;
     private boolean update;
+    private boolean all;
 
     private static final String TAG = "MainActivity";
     private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
@@ -98,6 +104,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     private static final String APP_PREFERENCES_MD5_EKB = "md5_ekb";
     private static final String APP_PREFERENCES_MD5_CHECK = "checkMD5";
     private static final String APP_PREFERENCES_MD5_EKB_CHECK = "checkMD5_ekb";
+    private static final String APP_PREFERENCES_SEND_PHONE_INFORMATION = "send_phone_information";
 
     IabHelper mHelper;
 
@@ -109,6 +116,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         boolean defaultStation;
         boolean checkMD5;
         boolean checkMD5ekb;
+        boolean sendPhoneInfo;
         Button btnDate;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
         databaseH = DatabaseHandler.getInstance(getApplicationContext());
@@ -124,7 +132,8 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
 
         // Check for Google Play Services
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int status = api.isGooglePlayServicesAvailable(getApplicationContext());
         if (status == ConnectionResult.SUCCESS && !AdShowGone) {
             // Создание helper, передавая ему наш контекст и открытый ключ для проверки подписи
             mHelper = new IabHelper(this, base64EncodedPublicKey);
@@ -203,7 +212,9 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         cancel = getSettingsParams(APP_PREFERENCES_CANCEL);
         sell = getSettingsParams(APP_PREFERENCES_SELL);
         load = getSettingsParams(APP_PREFERENCES_LOAD);
+        all = getSettingsParams(APP_PREFERENCES_ALL);
         defaultStation = getSettingsParams(APP_PREFERENCES_DEFAULT);
+        sendPhoneInfo = getSettingsParams(APP_PREFERENCES_SEND_PHONE_INFORMATION);
 
         if (defaultStation && settings.contains(APP_PREFERENCES_STATION_CODE) && settings.contains(APP_PREFERENCES_STATION_NAME) && !load) {
             code = settings.getString(APP_PREFERENCES_STATION_CODE, null);
@@ -233,6 +244,50 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         initializeNavigationDrawer();
         initializeFloatingActionButton();
         checkAdSettings();
+
+        if (!sendPhoneInfo) {
+            sendPhoneInformationToServer();
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(APP_PREFERENCES_SEND_PHONE_INFORMATION, true);
+            editor.apply();
+        }
+    }
+
+    private void sendPhoneInformationToServer() {
+
+        String manufacturer = Uri.encode(Build.MANUFACTURER);
+        String model = Uri.encode(Build.MODEL);
+        String device = Uri.encode(Build.DEVICE);
+        String board = Uri.encode(Build.BOARD);
+        String brand = Uri.encode(Build.BRAND);
+        String display = Uri.encode(Build.DISPLAY);
+        String id = Uri.encode(Build.ID);
+        String product = Uri.encode(Build.PRODUCT);
+        String release = Uri.encode(Build.VERSION.RELEASE);
+
+        if(LOG_ON) {
+            Log.v(TAG, "1: " + manufacturer + " 2: " + model + " 3: " + device + " 4: " + board + " 5: " + brand + " 6: " + display + " 7: " + id + " 8: " + product + " 9: " + release);
+        }
+
+        String url = "http://www.avtovokzal.org/php/app/sendPhoneInformation.php?manufacturer="+manufacturer+"&model="+model+"&device="+device+"&board="+board+"&brand="+brand+"&display="+display+"&build_id="+id+"&product="+product+"&release_number="+release;
+
+        if (isOnline()) {
+            StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {}
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
+                }
+            });
+            // Установливаем TimeOut, Retry
+            strReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            // Добавляем запрос в очередь
+            AppController.getInstance().addToRequestQueue(strReq);
+        } else {
+            callErrorActivity();
+        }
     }
 
     private void myAutoCompleteFocus() {
@@ -263,7 +318,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                 code = tv.getTag().toString();
 
                 // Запрос и отображение результатов поиска
-                loadScheduleResult(code, day, cancel, sell);
+                loadScheduleResult(code, day, cancel, sell, all);
 
                 myAutoComplete.clearFocus();
             }
@@ -285,7 +340,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
                         inputMethodManager.hideSoftInputFromWindow(myAutoComplete.getWindowToken(), 0);
 
                         // Запрос и отображение результатов поиска
-                        loadScheduleResult(code, day, cancel, sell);
+                        loadScheduleResult(code, day, cancel, sell, all);
 
                         myAutoComplete.clearFocus();
                     }
@@ -347,7 +402,9 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     }
 
     private void initializeFloatingActionButton() {
-        // Floating Action Button
+        fab.setImageDrawable(new IconicsDrawable(this)
+                .icon(GoogleMaterial.Icon.gmd_vertical_align_bottom)
+                .color(Color.WHITE));
         fab.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -551,9 +608,10 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         sell = getIntent().getBooleanExtra("sell", getSettingsParams(APP_PREFERENCES_SELL));
         day = getIntent().getIntExtra("day", 0);
         load = getIntent().getBooleanExtra("cancel_load", getSettingsParams(APP_PREFERENCES_LOAD));
+        all = getIntent().getBooleanExtra("all", getSettingsParams(APP_PREFERENCES_ALL));
 
         if (code != null){
-            loadScheduleResult(code, day, cancel, sell);
+            loadScheduleResult(code, day, cancel, sell, all);
             if (newNameStation != null) {
                 myAutoComplete.setText(newNameStation);
             }
@@ -694,7 +752,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
 
     // Загрузка результатов запроса расписания
     private void loadScheduleResult (Object... params) {
-        String url = "http://www.avtovokzal.org/php/app/result.php?id="+params[0]+"&day="+params[1]+"&cancel="+params[2]+"&sell="+params[3];
+        String url = "http://www.avtovokzal.org/php/app/result_1.3.8.php?id="+params[0]+"&day="+params[1]+"&cancel="+params[2]+"&sell="+params[3]+"&all="+params[4];
 
         if (isOnline()) {
             queryDialog = new ProgressDialog(MainActivity.this);
@@ -858,7 +916,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             textView.setText(string);
 
             if (code != null) {
-                loadScheduleResult(code, day, cancel, sell);
+                loadScheduleResult(code, day, cancel, sell, all);
             } else {
                 loadSchedule(day, cancel, sell);
             }
@@ -908,7 +966,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             }
 
             if (code != null && days >= 0 && days <= 9) {
-                loadScheduleResult(code, day, cancel, sell);
+                loadScheduleResult(code, day, cancel, sell, all);
                 String string = getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year;
                 textView.setText(string);
                 // fix for Android 4.4.4

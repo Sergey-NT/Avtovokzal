@@ -26,7 +26,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -56,6 +56,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
     private boolean cancel;
     private boolean sell;
     private boolean load;
+    private boolean all;
     private boolean AdShowGone;
 
     private static final String TAG = "MenuActivity";
@@ -73,6 +74,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
         CheckBox checkBoxCancel;
         CheckBox checkBoxSell;
         CheckBox checkBoxLoad;
+        CheckBox checkBoxAll;
         Button btnFeedback;
         String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
 
@@ -85,6 +87,7 @@ public class MenuActivity extends AppCompatSettingsActivity {
         // Определяем элементы интерфейса
         btnAdsDisable = (Button) findViewById(R.id.btnAdsDisable);
         btnFeedback = (Button) findViewById(R.id.btnFeedback);
+        checkBoxAll = (CheckBox) findViewById(R.id.checkBoxAll);
         checkBoxCancel = (CheckBox) findViewById(R.id.checkBoxCancel);
         checkBoxSell = (CheckBox) findViewById(R.id.checkBoxSell);
         checkBoxLoad = (CheckBox) findViewById(R.id.checkBoxCancelLoad);
@@ -102,7 +105,8 @@ public class MenuActivity extends AppCompatSettingsActivity {
         AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
 
         // Check for Google Play Services
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int status = api.isGooglePlayServicesAvailable(getApplicationContext());
         if (status == ConnectionResult.SUCCESS && !AdShowGone) {
             // Создание Helper, передавая ему наш контекст и открытый ключ для проверки подписи
             mHelper = new IabHelper(this, base64EncodedPublicKey);
@@ -152,16 +156,18 @@ public class MenuActivity extends AppCompatSettingsActivity {
         cancel = getSettingsParams(APP_PREFERENCES_CANCEL);
         sell = getSettingsParams(APP_PREFERENCES_SELL);
         load = getSettingsParams(APP_PREFERENCES_LOAD);
+        all = getSettingsParams(APP_PREFERENCES_ALL);
         defaultStation = getSettingsParams(APP_PREFERENCES_DEFAULT);
 
         checkBoxCancel.setChecked(cancel);
         checkBoxSell.setChecked(sell);
         checkBoxLoad.setChecked(load);
         checkBoxDefaultStation.setChecked(defaultStation);
+        checkBoxAll.setChecked(all);
 
         checkBoxCancel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 updateCheckBoxValue(APP_PREFERENCES_CANCEL);
             }
         });
@@ -184,6 +190,13 @@ public class MenuActivity extends AppCompatSettingsActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 updateCheckBoxValue(APP_PREFERENCES_DEFAULT);
+            }
+        });
+
+        checkBoxAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                updateCheckBoxValue(APP_PREFERENCES_ALL);
             }
         });
 
@@ -464,14 +477,16 @@ public class MenuActivity extends AppCompatSettingsActivity {
             boolean checkBoxCancelValue = getSettingsParams(APP_PREFERENCES_CANCEL);
             boolean checkBoxSellValue = getSettingsParams(APP_PREFERENCES_SELL);
             boolean checkBoxLoadValue = getSettingsParams(APP_PREFERENCES_LOAD);
+            boolean checkBoxAllValue = getSettingsParams(APP_PREFERENCES_ALL);
 
             // Если изменили настройки отображения расписания передаем переменные в MainActivity
-            if (checkBoxCancelValue != cancel || checkBoxLoadValue != load || checkBoxSellValue != sell) {
+            if (checkBoxCancelValue != cancel || checkBoxLoadValue != load || checkBoxSellValue != sell || checkBoxAllValue != all) {
                 Intent intent = new Intent(MenuActivity.this, MainActivity.class);
                 intent.putExtra("cancel", checkBoxCancelValue);
                 intent.putExtra("sell", checkBoxSellValue);
                 intent.putExtra("cancel_load", checkBoxLoadValue);
                 intent.putExtra("day", day);
+                intent.putExtra("all", checkBoxAllValue);
 
                 if (code != null) {
                     intent.putExtra("code", code);

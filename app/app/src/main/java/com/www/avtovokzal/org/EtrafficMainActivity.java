@@ -522,7 +522,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
-            }  finally {
+            } finally {
                 queryDialog = null;
             }
             super.onPostExecute(list);

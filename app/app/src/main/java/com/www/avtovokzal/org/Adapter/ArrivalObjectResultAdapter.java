@@ -41,28 +41,43 @@ public class ArrivalObjectResultAdapter extends BaseAdapter {
         return (ArrivalObjectResult)getItem(i);
     }
 
+    static class ViewHolder {
+        private TextView item0;
+        private TextView item1;
+        private TextView item2;
+        private TextView item3;
+        private TextView item4;
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
 
         if (view == null) {
             view = layoutInflater.inflate(R.layout.listview_item_arrival_result_row, viewGroup, false);
+
+            holder = new ViewHolder();
+
+            holder.item0 = (TextView) view.findViewById(R.id.textViewArrivalTimeOtpr);
+            holder.item1 = (TextView) view.findViewById(R.id.textViewArrivalNumber);
+            holder.item2 = (TextView) view.findViewById(R.id.textViewArrivalName);
+            holder.item3 = (TextView) view.findViewById(R.id.textViewArrivalTimePrib);
+            holder.item4 = (TextView) view.findViewById(R.id.textViewArrivalSchedule);
+
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
         ArrivalObjectResult arrivalObjectResult = getArrivalObjectResult(i);
 
-        TextView item0 = (TextView) view.findViewById(R.id.textViewArrivalTimeOtpr);
-        TextView item1 = (TextView) view.findViewById(R.id.textViewArrivalNumber);
-        TextView item2 = (TextView) view.findViewById(R.id.textViewArrivalName);
-        TextView item3 = (TextView) view.findViewById(R.id.textViewArrivalTimePrib);
-        TextView item4 = (TextView) view.findViewById(R.id.textViewArrivalSchedule);
+        holder.item0.setText(arrivalObjectResult.getTimeOtpr());
+        holder.item1.setText(arrivalObjectResult.getNumberMarsh());
+        holder.item2.setText(arrivalObjectResult.getNameMarsh());
+        holder.item3.setText(arrivalObjectResult.getTimePrib());
+        holder.item4.setText(arrivalObjectResult.getScheduleMarsh());
 
-        item0.setText(arrivalObjectResult.getTimeOtpr());
-        item1.setText(arrivalObjectResult.getNumberMarsh());
-        item2.setText(arrivalObjectResult.getNameMarsh());
-        item3.setText(arrivalObjectResult.getTimePrib());
-        item4.setText(arrivalObjectResult.getScheduleMarsh());
-
-        item3.setTag(arrivalObjectResult.getTimeFromStation());
+        holder.item3.setTag(arrivalObjectResult.getTimeFromStation());
 
         return view;
     }

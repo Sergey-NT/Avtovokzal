@@ -15,6 +15,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
@@ -37,6 +38,7 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES_LOAD = "load";
     public static final String APP_PREFERENCES_DATE = "date";
     public static final String APP_PREFERENCES_AD_DATE = "date_ad_click";
+    public static final String APP_PREFERENCES_ALL = "all";
 
     public AdView adView;
     public InterstitialAd interstitial;
@@ -58,7 +60,7 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
         int count;
         settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         count = settings.getInt(APP_PREFERENCES_COUNT_AD, 0);
-        if(LOG_ON) Log.v("Count", ""+count);
+        if(LOG_ON) Log.v("Count", String.valueOf(count));
         return count;
     }
 
@@ -81,37 +83,38 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
 
     @NonNull
     public IDrawerItem[] getDrawerItems() {
-        return new IDrawerItem[]{new SectionDrawerItem()
-                .withName(R.string.app_name_city),
+        return new IDrawerItem[]{
+                new SectionDrawerItem()
+                        .withName(R.string.app_name_city),
                 new PrimaryDrawerItem()
                         .withName(R.string.app_subtitle_main)
                         .withIdentifier(1)
-                        .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
+                        .withIcon(GoogleMaterial.Icon.gmd_vertical_align_top),
                 new PrimaryDrawerItem()
                         .withName(R.string.app_subtitle_arrival)
                         .withIdentifier(2)
-                        .withIcon(R.drawable.ic_vertical_align_bottom_black_18dp),
+                        .withIcon(GoogleMaterial.Icon.gmd_vertical_align_bottom),
                 new SectionDrawerItem()
                         .withName(R.string.app_name_city_ggm),
                 new PrimaryDrawerItem()
                         .withName(R.string.app_subtitle_main)
                         .withIdentifier(3)
-                        .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
+                        .withIcon(GoogleMaterial.Icon.gmd_vertical_align_top),
                 new SectionDrawerItem()
                         .withName(R.string.app_name_city_ekb),
                 new PrimaryDrawerItem()
                         .withName(R.string.app_subtitle_main)
                         .withIdentifier(4)
-                        .withIcon(R.drawable.ic_vertical_align_top_black_18dp),
+                        .withIcon(GoogleMaterial.Icon.gmd_vertical_align_top),
                 new DividerDrawerItem(),
                 new PrimaryDrawerItem()
                         .withName(R.string.menu_settings)
                         .withIdentifier(5)
-                        .withIcon(R.drawable.ic_settings_black_18dp),
+                        .withIcon(GoogleMaterial.Icon.gmd_settings),
                 new PrimaryDrawerItem()
                         .withName(R.string.menu_about)
                         .withIdentifier(6)
-                        .withIcon(R.drawable.ic_info_outline_black_18dp)};
+                        .withIcon(GoogleMaterial.Icon.gmd_info_outline)};
     }
 
     public void initializeAd(int layoutId) {
@@ -123,6 +126,8 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
                 .addTestDevice("4A47A797D4302A0BEC716C29A53C4881")
+                .addTestDevice("3184464AD3C4A51FB5B9A88B000B8559")
+                .addTestDevice("CD86C90AFF2735971D1B226E64BEC4F3")
                 .build();
 
         // Запуск загрузки межстраничного объявления
@@ -143,6 +148,8 @@ public class AppCompatSettingsActivity extends AppCompatActivity {
         AdRequest request = new AdRequest.Builder()
                 .addTestDevice("4B954499F159024FD4EFD592E7A5F658")
                 .addTestDevice("4A47A797D4302A0BEC716C29A53C4881")
+                .addTestDevice("3184464AD3C4A51FB5B9A88B000B8559")
+                .addTestDevice("CD86C90AFF2735971D1B226E64BEC4F3")
                 .build();
 
         // Загрузка adView с объявлением

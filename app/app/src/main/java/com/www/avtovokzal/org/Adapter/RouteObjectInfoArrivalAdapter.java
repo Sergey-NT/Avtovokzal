@@ -39,32 +39,47 @@ public class RouteObjectInfoArrivalAdapter extends BaseAdapter {
         return i;
     }
 
+    static class ViewHolder {
+        private TextView item0;
+        private TextView item1;
+        private TextView item2;
+        private TextView description1;
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
 
         if(view == null) {
             view = layoutInflater.inflate(R.layout.listview_item_info_arrival_row, viewGroup, false);
+
+            holder = new ViewHolder();
+
+            holder.item0 = (TextView) view.findViewById(R.id.textViewInfoArrivalNameStation);
+            holder.item1 = (TextView) view.findViewById(R.id.textViewInfoArrivalStationNote);
+            holder.item2 = (TextView) view.findViewById(R.id.textViewInfoArrivalTimeOtpr);
+            holder.description1 = (TextView) view.findViewById(R.id.textViewInfoArrivalNoteStationDesc);
+
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
         RouteObjectInfoArrival routeObjectInfoArrival = getRouteObjectInfoArrival(i);
 
-        TextView item0 = (TextView) view.findViewById(R.id.textViewInfoArrivalNameStation);
-        TextView item1 = (TextView) view.findViewById(R.id.textViewInfoArrivalStationNote);
-        TextView item2 = (TextView) view.findViewById(R.id.textViewInfoArrivalTimeOtpr);
-
         if (routeObjectInfoArrival.getNoteStation().length() == 0){
-            view.findViewById(R.id.textViewInfoArrivalNoteStationDesc).setVisibility(View.GONE);
-            item1.setVisibility(View.GONE);
+            holder.description1.setVisibility(View.GONE);
+            holder.item1.setVisibility(View.GONE);
         } else {
-            view.findViewById(R.id.textViewInfoArrivalNoteStationDesc).setVisibility(View.VISIBLE);
-            item1.setVisibility(View.VISIBLE);
+            holder.description1.setVisibility(View.VISIBLE);
+            holder.item1.setVisibility(View.VISIBLE);
         }
 
-        item0.setText(routeObjectInfoArrival.getNameStation());
-        item1.setText(routeObjectInfoArrival.getNoteStation());
-        item2.setText(routeObjectInfoArrival.getTimeOtpr());
+        holder.item0.setText(routeObjectInfoArrival.getNameStation());
+        holder.item1.setText(routeObjectInfoArrival.getNoteStation());
+        holder.item2.setText(routeObjectInfoArrival.getTimeOtpr());
 
-        item0.setTag(routeObjectInfoArrival.getCode());
+        holder.item0.setTag(routeObjectInfoArrival.getCode());
 
         return view;
     }
