@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
             nameStation = settings.getString(APP_PREFERENCES_STATION_NAME, null);
             myAutoComplete.setText(nameStation);
 
-            loadScheduleResult(code, day, cancel, sell);
+            loadScheduleResult(code, day, cancel, sell, all);
         } else if (!load && !defaultStation)  {
             loadSchedule(day, cancel, sell);
         }
