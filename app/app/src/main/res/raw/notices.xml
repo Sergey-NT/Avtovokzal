@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<notices>
+    <notice>
+        <name>Android-Iconics</name>
+        <url>https://github.com/mikepenz/Android-Iconics</url>
+        <copyright>Copyright 2016 Mike Penz</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Android Volley</name>
+        <url>https://github.com/mcxiaoke/android-volley</url>
+        <copyright>Copyright (C) 2014 Xiaoke Zhang Copyright (C) 2011 The Android Open Source Project</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>LicensesDialog</name>
+        <url>https://github.com/PSDev/LicensesDialog</url>
+        <copyright>Copyright 2013 Philip Schiffer</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>MaterialDrawer</name>
+        <url>https://github.com/mikepenz/MaterialDrawer</url>
+        <copyright>Copyright 2016 Mike Penz</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>jsoup: Java HTML Parser</name>
+        <url>http://jsoup.org/</url>
+        <copyright/>
+        <license>MIT License</license>
+    </notice>
+</notices>

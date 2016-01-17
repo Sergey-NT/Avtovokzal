@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -254,6 +256,14 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
     }
 
     private void sendPhoneInformationToServer() {
+        String version = null;
+        PackageInfo packageInfo = null;
+
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(),0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         String manufacturer = Uri.encode(Build.MANUFACTURER);
         String model = Uri.encode(Build.MODEL);
@@ -265,11 +275,15 @@ public class MainActivity extends AppCompatSettingsActivity implements DatePicke
         String product = Uri.encode(Build.PRODUCT);
         String release = Uri.encode(Build.VERSION.RELEASE);
 
-        if(LOG_ON) {
-            Log.v(TAG, "1: " + manufacturer + " 2: " + model + " 3: " + device + " 4: " + board + " 5: " + brand + " 6: " + display + " 7: " + id + " 8: " + product + " 9: " + release);
+        if (packageInfo != null) {
+            version = Uri.encode(packageInfo.versionName);
         }
 
-        String url = "http://www.avtovokzal.org/php/app/sendPhoneInformation.php?manufacturer="+manufacturer+"&model="+model+"&device="+device+"&board="+board+"&brand="+brand+"&display="+display+"&build_id="+id+"&product="+product+"&release_number="+release;
+        if(LOG_ON) {
+            Log.v(TAG, "1: " + manufacturer + " 2: " + model + " 3: " + device + " 4: " + board + " 5: " + brand + " 6: " + display + " 7: " + id + " 8: " + product + " 9: " + release + " 10: " + version);
+        }
+
+        String url = "http://www.avtovokzal.org/php/app/sendPhoneInformation.php?manufacturer="+manufacturer+"&model="+model+"&device="+device+"&board="+board+"&brand="+brand+"&display="+display+"&build_id="+id+"&product="+product+"&release_number="+release+"&version="+version;
 
         if (isOnline()) {
             StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {

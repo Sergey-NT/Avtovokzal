@@ -31,6 +31,22 @@
                 android:textColor="@color/text_color"
                 android:textColorLink="@color/text_color_link" />
 
+            <Button
+                android:id="@+id/btnLicense"
+                android:onClick="btnLicenseOnClick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:layout_marginBottom="10sp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="15sp"
+                android:layout_gravity="center"
+                android:background="@color/primary"
+                android:padding="10sp"
+                android:text="@string/button_license"
+                android:textSize="17sp"
+                android:textColor="@color/text_color_white" />
+
             <TextView
                 android:id="@+id/about_developer"
                 android:layout_width="match_parent"

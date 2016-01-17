@@ -5,13 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
+import de.psdev.licensesdialog.LicensesDialog;
 
 public class AboutActivity extends AppCompatSettingsActivity {
 
@@ -27,6 +31,9 @@ public class AboutActivity extends AppCompatSettingsActivity {
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
         t.enableAdvertisingIdCollection(true);
+
+        Button btnLicense = (Button) findViewById(R.id.btnLicense);
+        btnLicense.setTransformationMethod(null);
 
         // Переменная, отвечает за работу с настройками
         settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -51,6 +58,20 @@ public class AboutActivity extends AppCompatSettingsActivity {
 
         initializeToolbar(R.string.app_name, R.string.menu_about);
         initializeNavigationDrawer();
+    }
+
+    public void btnLicenseOnClick (View view) {
+        // Google Analytics
+        Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(getString(R.string.analytics_category_button))
+                .setAction(getString(R.string.analytics_action_license))
+                .build());
+
+        new LicensesDialog.Builder(this)
+                .setNotices(R.raw.notices)
+                .build()
+                .showAppCompat();
     }
 
     private void initializeNavigationDrawer() {
