@@ -8,7 +8,12 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
+
 import java.util.HashMap;
+
+@ReportsCrashes(formUri = "http://www.avtovokzal.org/php/app/log/log.php")
 
 public class AppController extends Application {
 
@@ -50,6 +55,7 @@ public class AppController extends Application {
         super.onCreate();
         mInstance = this;
 
+        ACRA.init(this);
         FixNoClassDefFoundError81083();
     }
 
