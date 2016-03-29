@@ -20,10 +20,10 @@ public class RouteObjectInfoAdapter extends BaseAdapter{
 
     private List<RouteObjectInfo> list;
     private LayoutInflater layoutInflater;
-    private Context myContext;
+    private Context context;
 
     public RouteObjectInfoAdapter(Context context, List<RouteObjectInfo> list) {
-        myContext = context;
+        this.context = context;
         this.list = list;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -138,7 +138,7 @@ public class RouteObjectInfoAdapter extends BaseAdapter{
     }
 
     private CharSequence spanWithRoubleTypeface(String priceHint) {
-        final Typeface roubleSupportedTypeface = Typeface.createFromAsset(myContext.getAssets(), "fonts/rouble2.ttf");
+        final Typeface roubleSupportedTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/rouble2.ttf");
 
         SpannableStringBuilder resultSpan = new SpannableStringBuilder(priceHint);
         for (int i = 0; i < resultSpan.length(); i++) {

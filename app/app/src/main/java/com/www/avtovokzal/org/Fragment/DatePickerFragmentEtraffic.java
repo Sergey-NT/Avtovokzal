@@ -1,4 +1,4 @@
-package com.www.avtovokzal.org;
+package com.www.avtovokzal.org.Fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
+import com.www.avtovokzal.org.EtrafficActivity;
+
 import java.util.Calendar;
 import java.util.Locale;
 
-public class DatePickerFragment extends DialogFragment {
+public class DatePickerFragmentEtraffic extends DialogFragment {
 
     @NonNull
     @Override
@@ -28,11 +30,12 @@ public class DatePickerFragment extends DialogFragment {
             getActivity().getApplicationContext().getResources().updateConfiguration(config, null);
         }
 
-        return new DatePickerDialog(getActivity(), (MainActivity)getActivity(), year, month, day);
+        return new DatePickerDialog(getActivity(), (EtrafficActivity)getActivity(), year, month, day);
     }
 
     private static boolean isBrokenSamsungDevice() {
-        return (Build.MANUFACTURER.equalsIgnoreCase("samsung") && isBetweenAndroidVersions(Build.VERSION_CODES.LOLLIPOP, Build.VERSION_CODES.LOLLIPOP_MR1));
+        return (Build.MANUFACTURER.equalsIgnoreCase("samsung")
+                && isBetweenAndroidVersions(Build.VERSION_CODES.LOLLIPOP, Build.VERSION_CODES.LOLLIPOP_MR1));
     }
 
     private static boolean isBetweenAndroidVersions(int min, int max) {

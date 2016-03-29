@@ -15,7 +15,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Версия базы данных
     private static final int DATABASE_VERSION = 6;
-    private final static boolean LOG_ON = false;
     // Имя базы данных
     protected static final String DATABASE_NAME = "Avtovokzal";
     // Имена таблицы и полей в базе данных
@@ -62,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(sql);
         db.execSQL(sqlEkb);
 
-        if (LOG_ON) Log.v("Database", "Таблицы созданы");
+        if (Constants.LOG_ON) Log.v("Database", "Таблицы созданы");
     }
 
     // При обновлении базы данных произойдет удаление текущих таблиц и создание новых
@@ -76,14 +75,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         onCreate(db);
 
-        if (LOG_ON) Log.v("Database", "Таблицы обновлены");
+        if (Constants.LOG_ON) Log.v("Database", "Таблицы обновлены");
     }
 
     public void removeAll (String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(tableName, null, null);
 
-        if (LOG_ON) Log.v("Database", "Таблица очищена");
+        if (Constants.LOG_ON) Log.v("Database", "Таблица очищена");
     }
 
     public boolean checkIfExistsRowTable(String tableName) {
@@ -95,7 +94,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.moveToFirst();
             if (cursor.getInt(0) > 0) {
-                if (LOG_ON) Log.v("Count row", " " + cursor.getInt(0));
+                if (Constants.LOG_ON) Log.v("Count row", " " + cursor.getInt(0));
                 recordExists = true;
             }
         }
@@ -103,7 +102,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.close();
         }
 
-        if (LOG_ON) Log.v("Check Row Table", tableName + " " + recordExists);
+        if (Constants.LOG_ON) Log.v("Check Row Table", tableName + " " + recordExists);
         return recordExists;
     }
 
@@ -118,7 +117,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(fieldObjectCode, myObj.objectCode);
         db.insert(tableName, null, values);
 
-        if (LOG_ON) {
+        if (Constants.LOG_ON) {
             Log.v("Station", myObj.objectName + " created.");
             Log.v("Station", myObj.objectSum + " created.");
             Log.v("Station", myObj.objectCode + " created");
@@ -150,7 +149,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 long objectSum = cursor.getLong(cursor.getColumnIndex(fieldObjectSum));
                 long objectCode = cursor.getLong(cursor.getColumnIndex(fieldObjectCode));
 
-                if (LOG_ON) {
+                if (Constants.LOG_ON) {
                     Log.v("Result", "objectName: " + objectName);
                     Log.v("Result", "objectSum: " + objectSum);
                     Log.v("Result", "objectCode: " + objectCode);

@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,33 +20,29 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.SkuDetails;
+import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
-import com.www.avtovokzal.org.Billing.IabHelper;
-import com.www.avtovokzal.org.Billing.IabResult;
-import com.www.avtovokzal.org.Billing.Inventory;
-import com.www.avtovokzal.org.Billing.Purchase;
 import com.www.avtovokzal.org.Listener.MenuAutoCompleteTextChangedListener;
 import com.www.avtovokzal.org.Object.AutoCompleteObject;
 
-import java.util.ArrayList;
+public class MenuActivity extends AppCompatSettingsActivity implements BillingProcessor.IBillingHandler {
 
-public class MenuActivity extends AppCompatSettingsActivity {
+    private static final int LAYOUT = R.layout.menu_layout;
+    private static final String PRODUCT_ID = "com.www.avtovokzal.org.ads.disable";
+    private static final String LICENSE_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
 
     public CustomAutoCompleteView myAutoComplete;
     public ArrayAdapter<AutoCompleteObject> myAdapter;
     public DatabaseHandler databaseH;
 
+    private BillingProcessor bp;
     private Button btnAdsDisable;
     private CheckBox checkBoxDefaultStation;
-    private Drawer drawerResult = null;
 
     private String activity;
     private String code;
@@ -57,26 +51,13 @@ public class MenuActivity extends AppCompatSettingsActivity {
     private boolean sell;
     private boolean load;
     private boolean all;
-    private boolean AdShowGone;
-
-    private static final String TAG = "MenuActivity";
-    private static final String SKU_ADS_DISABLE = "com.www.avtovokzal.org.ads.disable";
-    private static final int RC_REQUEST = 10001;
-
-    IabHelper mHelper;
+    private boolean readyToPurchase = false;
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.menu_layout);
-
-        boolean defaultStation;
-        CheckBox checkBoxCancel;
-        CheckBox checkBoxSell;
-        CheckBox checkBoxLoad;
-        CheckBox checkBoxAll;
-        Button btnFeedback;
-        String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5XXw+M1Yp9Nz7EbiKEBrknpsTRGV2NKZU8e6EMB3C0BvgiKvDiCQTqYJasfPj/ICsJ+oAfYMlJRS1y5V/fpOWYJCHr0vr7r+cgnd7GqKk5DMIxRe8hKMppqYDdTjW4oPuoS/qhH5mVapZWyOWh/kl4ZshAAmxnk9eRRA9W5zUz62jzAu30lwbr66YpwKulYYQw3wcOoBQcm9bYXMK4SEJKfkiZ7btYS1iDq1pshm9F5dW3E067JYdf4Sdxg9kLpVtOh9FqvHCrXai0stTf+0wLlBLOogNzPG9Gj7z2TVaZIdCWJKqZ97XP/Ur8kGBNaqDLCBSzm6IL+hsE5bzbmlQIDAQAB";
+        setContentView(LAYOUT);
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
@@ -86,11 +67,12 @@ public class MenuActivity extends AppCompatSettingsActivity {
 
         // Определяем элементы интерфейса
         btnAdsDisable = (Button) findViewById(R.id.btnAdsDisable);
-        btnFeedback = (Button) findViewById(R.id.btnFeedback);
-        checkBoxAll = (CheckBox) findViewById(R.id.checkBoxAll);
-        checkBoxCancel = (CheckBox) findViewById(R.id.checkBoxCancel);
-        checkBoxSell = (CheckBox) findViewById(R.id.checkBoxSell);
-        checkBoxLoad = (CheckBox) findViewById(R.id.checkBoxCancelLoad);
+        Button btnFeedback = (Button) findViewById(R.id.btnFeedback);
+        CheckBox checkBoxAll = (CheckBox) findViewById(R.id.checkBoxAll);
+        CheckBox checkBoxCancel = (CheckBox) findViewById(R.id.checkBoxCancel);
+        CheckBox checkBoxSell = (CheckBox) findViewById(R.id.checkBoxSell);
+        CheckBox checkBoxLoad = (CheckBox) findViewById(R.id.checkBoxCancelLoad);
+        CheckBox checkBoxUpdate = (CheckBox) findViewById(R.id.checkBoxUpdate);
         checkBoxDefaultStation = (CheckBox) findViewById(R.id.checkBoxDefaultStation);
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.autoCompleteMenu);
 
@@ -99,52 +81,22 @@ public class MenuActivity extends AppCompatSettingsActivity {
         btnFeedback.setTransformationMethod(null);
 
         // Переменная, отвечает за работу с настройками
-        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        settings = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        // Проверка отключения рекламы
-        AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
-
-        // Check for Google Play Services
-        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int status = api.isGooglePlayServicesAvailable(getApplicationContext());
-        if (status == ConnectionResult.SUCCESS && !AdShowGone) {
-            // Создание Helper, передавая ему наш контекст и открытый ключ для проверки подписи
-            mHelper = new IabHelper(this, base64EncodedPublicKey);
-
-            // Включаем логирование в debug режиме (перед публикацией поставить false)
-            mHelper.enableDebugLogging(false);
-
-            // Инициализируем. Запрос асинхронен будет вызван, когда инициализация завершится
-            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-                public void onIabSetupFinished(IabResult result) {
-                    if (!result.isSuccess()) {
-                        if (LOG_ON) Log.v(TAG, "Ошибка создания в приложении биллинга: " + result);
-                        return;
-                    }
-                    if (mHelper == null) return;
-                    // Проверка уже купленного, запрос цены.
-                    ArrayList<String> skuList = new ArrayList<>();
-                    skuList.add(SKU_ADS_DISABLE);
-                    mHelper.queryInventoryAsync(true, skuList, mGotInventoryListener);
-                }
-            });
-        } else if (status != ConnectionResult.SUCCESS) {
+        bp = new BillingProcessor(this, LICENSE_KEY, this);
+        boolean isAvailable = BillingProcessor.isIabServiceAvailable(this);
+        if(!isAvailable) {
             btnAdsDisable.setVisibility(View.GONE);
             btnFeedback.setVisibility(View.GONE);
         }
 
-        if (DEVELOPER) {
-            AdShowGone = true;
-        }
-
-        // Если покупка совершена скрывать кнопку оплаты
-        if (AdShowGone) {
+        String price = settings.getString(Constants.APP_PREFERENCES_ADS_DISABLE_PRICE, "");
+        boolean adShowGone = settings.getBoolean(Constants.APP_PREFERENCES_ADS_SHOW, false);
+        if (!adShowGone) {
+            String buttonText = getString(R.string.button_ads_disable) + " " + price;
+            btnAdsDisable.setText(buttonText);
+        } else {
             btnAdsDisable.setVisibility(View.GONE);
-        }
-
-        // Реклама в приложении
-        if (!AdShowGone) {
-            initializeAd(R.id.adViewMenuActivity);
         }
 
         // Получаем переменные
@@ -153,56 +105,65 @@ public class MenuActivity extends AppCompatSettingsActivity {
         activity = getIntent().getStringExtra("activity");
 
         // Получаем значения настроек
-        cancel = getSettingsParams(APP_PREFERENCES_CANCEL);
-        sell = getSettingsParams(APP_PREFERENCES_SELL);
-        load = getSettingsParams(APP_PREFERENCES_LOAD);
-        all = getSettingsParams(APP_PREFERENCES_ALL);
-        defaultStation = getSettingsParams(APP_PREFERENCES_DEFAULT);
+        cancel = getSettingsParams(Constants.APP_PREFERENCES_CANCEL);
+        sell = getSettingsParams(Constants.APP_PREFERENCES_SELL);
+        load = getSettingsParams(Constants.APP_PREFERENCES_LOAD);
+        all = getSettingsParams(Constants.APP_PREFERENCES_ALL);
+        boolean defaultStation = getSettingsParams(Constants.APP_PREFERENCES_DEFAULT);
+        boolean update = getSettingsParams(Constants.APP_PREFERENCES_CANCEL_CHECK_VERSION);
 
         checkBoxCancel.setChecked(cancel);
         checkBoxSell.setChecked(sell);
         checkBoxLoad.setChecked(load);
         checkBoxDefaultStation.setChecked(defaultStation);
         checkBoxAll.setChecked(all);
+        checkBoxUpdate.setChecked(update);
 
         checkBoxCancel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                updateCheckBoxValue(APP_PREFERENCES_CANCEL);
+                updateCheckBoxValue(Constants.APP_PREFERENCES_CANCEL);
             }
         });
 
         checkBoxSell.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                updateCheckBoxValue(APP_PREFERENCES_SELL);
+                updateCheckBoxValue(Constants.APP_PREFERENCES_SELL);
             }
         });
 
         checkBoxLoad.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                updateCheckBoxValue(APP_PREFERENCES_LOAD);
+                updateCheckBoxValue(Constants.APP_PREFERENCES_LOAD);
             }
         });
 
         checkBoxDefaultStation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                updateCheckBoxValue(APP_PREFERENCES_DEFAULT);
+                updateCheckBoxValue(Constants.APP_PREFERENCES_DEFAULT);
             }
         });
 
         checkBoxAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                updateCheckBoxValue(APP_PREFERENCES_ALL);
+                updateCheckBoxValue(Constants.APP_PREFERENCES_ALL);
+            }
+        });
+
+        checkBoxUpdate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                updateCheckBoxValue(Constants.APP_PREFERENCES_CANCEL_CHECK_VERSION);
             }
         });
 
         // Загружаем если есть сохраненную остановку из настроек
-        if (settings.contains(APP_PREFERENCES_STATION_NAME)) {
-            myAutoComplete.setText(settings.getString(APP_PREFERENCES_STATION_NAME, null));
+        if (settings.contains(Constants.APP_PREFERENCES_STATION_NAME)) {
+            myAutoComplete.setText(settings.getString(Constants.APP_PREFERENCES_STATION_NAME, null));
         }
 
         myAutoCompleteListener();
@@ -212,8 +173,26 @@ public class MenuActivity extends AppCompatSettingsActivity {
         AutoCompleteObject[] ObjectItemData = new AutoCompleteObject[0];
         myAdapter = new AutocompleteCustomArrayAdapter(this, R.layout.listview_dropdown_item, ObjectItemData);
 
-        initializeToolbar(R.string.app_name, R.string.menu_settings);
-        initializeNavigationDrawer();
+        initToolbar(R.string.app_name, R.string.menu_settings);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public void initToolbar(int title, int subtitle) {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+            toolbar.setSubtitle(subtitle);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
     private void myAutoCompleteFocus() {
@@ -247,9 +226,9 @@ public class MenuActivity extends AppCompatSettingsActivity {
 
                 // Запись названия и кода остановки в файл настроек
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putBoolean(APP_PREFERENCES_DEFAULT, true);
-                editor.putString(APP_PREFERENCES_STATION_NAME, tv.getText().toString());
-                editor.putString(APP_PREFERENCES_STATION_CODE, code);
+                editor.putBoolean(Constants.APP_PREFERENCES_DEFAULT, true);
+                editor.putString(Constants.APP_PREFERENCES_STATION_NAME, tv.getText().toString());
+                editor.putString(Constants.APP_PREFERENCES_STATION_CODE, code);
                 editor.apply();
 
                 // Google Analytics
@@ -282,9 +261,9 @@ public class MenuActivity extends AppCompatSettingsActivity {
 
                         // Запись названия и кода остановки в файл настроек
                         SharedPreferences.Editor editor = settings.edit();
-                        editor.putBoolean(APP_PREFERENCES_DEFAULT, true);
-                        editor.putString(APP_PREFERENCES_STATION_NAME, object.toString());
-                        editor.putString(APP_PREFERENCES_STATION_CODE, code);
+                        editor.putBoolean(Constants.APP_PREFERENCES_DEFAULT, true);
+                        editor.putString(Constants.APP_PREFERENCES_STATION_NAME, object.toString());
+                        editor.putString(Constants.APP_PREFERENCES_STATION_CODE, code);
                         editor.apply();
 
                         // Google Analytics
@@ -302,143 +281,10 @@ public class MenuActivity extends AppCompatSettingsActivity {
         });
     }
 
-    private void initializeNavigationDrawer() {
-        drawerResult = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withDisplayBelowStatusBar(true)
-                .withActionBarDrawerToggleAnimated(true)
-                .addDrawerItems(getDrawerItems())
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
-                        switch (position) {
-                            case 1:
-                                setCountOnePlus();
-                                Intent intentMain = new Intent(MenuActivity.this, MainActivity.class);
-                                startActivity(intentMain);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 2:
-                                setCountOnePlus();
-                                Intent intentArrival = new Intent(MenuActivity.this, ArrivalActivity.class);
-                                startActivity(intentArrival);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 4:
-                                setCountOnePlus();
-                                Intent intentEtraffic = new Intent(MenuActivity.this, EtrafficActivity.class);
-                                startActivity(intentEtraffic);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 6:
-                                setCountOnePlus();
-                                Intent intentEtrafficMain = new Intent(MenuActivity.this, EtrafficMainActivity.class);
-                                startActivity(intentEtrafficMain);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 8:
-                                drawerResult.closeDrawer();
-                                return true;
-                            case 9:
-                                setCountOnePlus();
-                                Intent intentAbout = new Intent(MenuActivity.this, AboutActivity.class);
-                                startActivity(intentAbout);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                        }
-                        return false;
-                    }
-                })
-                .build();
-        drawerResult.setSelection(5);
-    }
-
-    // Listener для востановителя покупок.
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-            if (mHelper == null) return;
-
-            if (result.isFailure()) {
-                if(LOG_ON) Log.v(TAG, "Failed to query inventory: " + result);
-                return;
-            }
-
-            // Проверка отключена ли реклама в приложении
-            Purchase purchase = inventory.getPurchase(SKU_ADS_DISABLE);
-
-            // Устанавливаем текст с ценой со знаком "рубль" на кнопку
-            String btnAdsDisableText;
-
-            if (inventory.getSkuDetails(SKU_ADS_DISABLE) != null) {
-                String price = inventory.getSkuDetails(SKU_ADS_DISABLE).getPrice();
-                price = price.replace("руб.", "\u20BD");
-                btnAdsDisableText = getString(R.string.button_ads_disable) + " " + price;
-                CharSequence spannedBtnAdsDisableText = spanWithRoubleTypeface(btnAdsDisableText);
-                btnAdsDisable.setText(spannedBtnAdsDisableText);
-            } else {
-                btnAdsDisableText = getString(R.string.button_ads_disable);
-                btnAdsDisable.setText(btnAdsDisableText);
-            }
-
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(APP_PREFERENCES_ADS_SHOW, (purchase != null && verifyDeveloperPayload(purchase)));
-            editor.putString(APP_PREFERENCES_AD_DATE, null);
-            editor.apply();
-        }
-    };
-
-    // Callback когда покупка завершена
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            if (mHelper == null) return;
-
-            if (result.isFailure()) {
-                if(LOG_ON) Log.v(TAG, "Error purchasing: " + result);
-                return;
-            }
-            if (!verifyDeveloperPayload(purchase)) {
-                if(LOG_ON) Log.v(TAG,"Error purchasing. Authenticity verification failed.");
-                return;
-            }
-
-            if (purchase.getSku().equals(SKU_ADS_DISABLE)) {
-                Toast.makeText(getApplicationContext(), getString(R.string.menu_ads_disable_toast), Toast.LENGTH_LONG).show();
-
-                // Сохраняем в настройках
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putBoolean(APP_PREFERENCES_ADS_SHOW, true);
-                editor.putString(APP_PREFERENCES_AD_DATE, null);
-                editor.apply();
-
-                // Убираем ракламу, кнопку оплаты
-                if (adView != null) {
-                    adView.setVisibility(View.GONE);
-                    btnAdsDisable.setVisibility(View.GONE);
-                }
-            }
-        }
-    };
-
-    boolean verifyDeveloperPayload(Purchase p) {
-        String payload = p.getDeveloperPayload();
-        return true;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (mHelper == null) return;
-
-        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+        if (!bp.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
-        }
-        else {
-            if(LOG_ON) Log.v(TAG, "onActivityResult handled by IABUtil.");
         }
     }
 
@@ -455,29 +301,13 @@ public class MenuActivity extends AppCompatSettingsActivity {
     }
 
     @Override
-    protected void onPause() {
-        if (adView != null) {
-            adView.pause();
-        }
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (adView != null) {
-            adView.resume();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         // Если перешли из MainActivity
         if (activity != null) {
-            boolean checkBoxCancelValue = getSettingsParams(APP_PREFERENCES_CANCEL);
-            boolean checkBoxSellValue = getSettingsParams(APP_PREFERENCES_SELL);
-            boolean checkBoxLoadValue = getSettingsParams(APP_PREFERENCES_LOAD);
-            boolean checkBoxAllValue = getSettingsParams(APP_PREFERENCES_ALL);
+            boolean checkBoxCancelValue = getSettingsParams(Constants.APP_PREFERENCES_CANCEL);
+            boolean checkBoxSellValue = getSettingsParams(Constants.APP_PREFERENCES_SELL);
+            boolean checkBoxLoadValue = getSettingsParams(Constants.APP_PREFERENCES_LOAD);
+            boolean checkBoxAllValue = getSettingsParams(Constants.APP_PREFERENCES_ALL);
 
             // Если изменили настройки отображения расписания передаем переменные в MainActivity
             if (checkBoxCancelValue != cancel || checkBoxLoadValue != load || checkBoxSellValue != sell || checkBoxAllValue != all) {
@@ -494,24 +324,8 @@ public class MenuActivity extends AppCompatSettingsActivity {
                 startActivity(intent);
             }
         }
-        if (adView != null) {
-            adView.destroy();
-        }
-        int count;
-        count = getCountAD();
-        if (count % 5 == 0) {
-            if (!AdShowGone) {
-                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
-                    if (interstitial.isLoaded()) {
-                        setCountOnePlus();
-                        interstitial.show();
-                    }
-                }
-            }
-        }
-        if (mHelper != null) {
-            mHelper.dispose();
-            mHelper = null;
+        if (bp != null) {
+            bp.release();
         }
         super.onDestroy();
     }
@@ -524,8 +338,11 @@ public class MenuActivity extends AppCompatSettingsActivity {
                 .setAction(getString(R.string.analytics_action_ads_disable))
                 .build());
 
-        String payload = "";
-        mHelper.launchPurchaseFlow(this, SKU_ADS_DISABLE, RC_REQUEST, mPurchaseFinishedListener, payload);
+        if (!readyToPurchase) {
+            showToast(getString(R.string.menu_billing_not_initialized));
+            return;
+        }
+        bp.purchase(this, PRODUCT_ID);
     }
 
     public void btnFeedbackOnClick (View view) {
@@ -569,16 +386,62 @@ public class MenuActivity extends AppCompatSettingsActivity {
         }
     }
 
-    private CharSequence spanWithRoubleTypeface(String priceHint) {
-        final Typeface roubleSupportedTypeface = Typeface.createFromAsset(this.getAssets(), "fonts/rouble2.ttf");
+    private class getSkuDetails extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            SkuDetails list = bp.getPurchaseListingDetails(PRODUCT_ID);
 
-        SpannableStringBuilder resultSpan = new SpannableStringBuilder(priceHint);
-        for (int i = 0; i < resultSpan.length(); i++) {
-            if (resultSpan.charAt(i) == '\u20BD') {
-                TypefaceSpan2 roubleTypefaceSpan = new TypefaceSpan2(roubleSupportedTypeface);
-                resultSpan.setSpan(roubleTypefaceSpan, i, i + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (list != null) {
+                String price = String.valueOf(list.priceValue);
+                String currency = list.currency;
+                String textPrice = price + " " + currency;
+                final String buttonText = getString(R.string.button_ads_disable) + " " + textPrice;
+
+                if (!settings.getString(Constants.APP_PREFERENCES_ADS_DISABLE_PRICE, "").equals(textPrice)) {
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString(Constants.APP_PREFERENCES_ADS_DISABLE_PRICE, textPrice);
+                    editor.apply();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnAdsDisable.setText(buttonText);
+                        }
+                    });
+                }
             }
+            return null;
         }
-        return resultSpan;
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProductPurchased(String productId, TransactionDetails details) {
+        showToast(getString(R.string.menu_ads_disable_toast));
+
+        // Сохраняем в настройках
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(Constants.APP_PREFERENCES_ADS_SHOW, true);
+        editor.apply();
+    }
+
+    @Override
+    public void onPurchaseHistoryRestored() {
+
+    }
+
+    @Override
+    public void onBillingError(int errorCode, Throwable error) {
+
+    }
+
+    @Override
+    public void onBillingInitialized() {
+        readyToPurchase = true;
+        getSkuDetails task = new getSkuDetails();
+        task.execute();
     }
 }

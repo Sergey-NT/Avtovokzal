@@ -16,10 +16,8 @@ public class RouteObjectInfoArrivalAdapter extends BaseAdapter {
 
     private List<RouteObjectInfoArrival> list;
     private LayoutInflater layoutInflater;
-    Context myContext;
 
     public RouteObjectInfoArrivalAdapter(Context context, List<RouteObjectInfoArrival> list) {
-        myContext = context;
         this.list = list;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

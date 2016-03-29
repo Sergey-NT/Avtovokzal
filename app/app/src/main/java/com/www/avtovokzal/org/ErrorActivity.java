@@ -2,6 +2,8 @@ package com.www.avtovokzal.org;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,7 +13,9 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-public class ErrorActivity extends AppCompatSettingsActivity {
+public class ErrorActivity extends AppCompatActivity {
+
+    private static final int LAYOUT = R.layout.activity_error;
 
     private String number;
     private String time;
@@ -29,7 +33,7 @@ public class ErrorActivity extends AppCompatSettingsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_error);
+        setContentView(LAYOUT);
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
@@ -48,9 +52,28 @@ public class ErrorActivity extends AppCompatSettingsActivity {
         sell = getIntent().getBooleanExtra("sell", false);
         newNameStation = getIntent().getStringExtra("newNameStation");
 
-        if (LOG_ON) Log.v("Params", "newNameStation: " + newNameStation + "Number: " + number + " Time: " + time + " TimePrib: " + timePrib + " TimeFromStation: " + timeFromStation + " Activity: " + activity + " Number: " + numberToView + " Name: " + name + " Day: " + day + " Code: " + code + " Cancel: " + cancel + " Sell: " + sell);
+        if (Constants.LOG_ON) Log.v("Params", "newNameStation: " + newNameStation + "Number: " + number + " Time: " + time + " TimePrib: " + timePrib + " TimeFromStation: " + timeFromStation + " Activity: " + activity + " Number: " + numberToView + " Name: " + name + " Day: " + day + " Code: " + code + " Cancel: " + cancel + " Sell: " + sell);
 
-        initializeToolbar(R.string.app_name, R.string.no_connect);
+        initToolbar(R.string.app_name, R.string.no_connect);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public void initToolbar(int title, int subtitle) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+            toolbar.setSubtitle(subtitle);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
     @Override

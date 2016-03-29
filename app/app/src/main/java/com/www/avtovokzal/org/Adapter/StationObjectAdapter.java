@@ -18,10 +18,10 @@ public class StationObjectAdapter extends BaseAdapter {
 
     private List<StationsObject> list;
     private LayoutInflater layoutInflater;
-    private Context myContext;
+    private Context context;
 
     public StationObjectAdapter(Context context, List<StationsObject> list) {
-        myContext = context;
+        this.context = context;
         this.list = list;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -84,9 +84,9 @@ public class StationObjectAdapter extends BaseAdapter {
         StationsObject stationsObject = getStationObject(i);
 
         if (stationsObject.getFreeBus().equals("нет данных") || stationsObject.getFreeBus().equals("мест нет")) {
-            holder.item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color_hint));
+            holder.item5.setTextColor(ContextCompat.getColor(context, R.color.text_color_hint));
         } else {
-            holder.item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color));
+            holder.item5.setTextColor(ContextCompat.getColor(context, R.color.text_color));
         }
 
         if (stationsObject.getCancelBus() == 1){
@@ -97,7 +97,7 @@ public class StationObjectAdapter extends BaseAdapter {
             holder.item4.setVisibility(View.GONE);
             holder.item5.setVisibility(View.GONE);
             holder.item6.setVisibility(View.VISIBLE);
-            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(myContext, R.color.divider_color));
+            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.divider_color));
         } else {
             holder.description1.setVisibility(View.VISIBLE);
             holder.description2.setVisibility(View.VISIBLE);
@@ -106,7 +106,7 @@ public class StationObjectAdapter extends BaseAdapter {
             holder.item4.setVisibility(View.VISIBLE);
             holder.item5.setVisibility(View.VISIBLE);
             holder.item6.setVisibility(View.INVISIBLE);
-            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(myContext, R.color.background));
+            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.background));
         }
 
         holder.item0.setText(stationsObject.getTimeOtpr());

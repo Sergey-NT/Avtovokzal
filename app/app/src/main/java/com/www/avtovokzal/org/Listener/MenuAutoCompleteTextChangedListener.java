@@ -6,13 +6,13 @@ import android.text.TextWatcher;
 import android.util.Log;
 
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
+import com.www.avtovokzal.org.Constants;
 import com.www.avtovokzal.org.MenuActivity;
 import com.www.avtovokzal.org.Object.AutoCompleteObject;
 import com.www.avtovokzal.org.R;
 
 public class MenuAutoCompleteTextChangedListener implements TextWatcher {
-    Context context;
-    private final static boolean LOG_ON = false;
+    private Context context;
 
     public MenuAutoCompleteTextChangedListener(Context context) {
         this.context = context;
@@ -32,7 +32,7 @@ public class MenuAutoCompleteTextChangedListener implements TextWatcher {
             if(userInput.length() > 0) {
                 String tableName = "stations";
 
-                if (LOG_ON) Log.v("Input: ", "User input: " + userInput);
+                if (Constants.LOG_ON) Log.v("Input: ", "User input: " + userInput);
 
                 MenuActivity menuActivity = ((MenuActivity) context);
                 menuActivity.myAdapter.notifyDataSetChanged();

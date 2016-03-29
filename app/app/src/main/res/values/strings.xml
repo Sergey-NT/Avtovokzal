@@ -32,6 +32,7 @@
     <string name="menu_settings">Настройки</string>
     <string name="menu_about">О приложении</string>
     <string name="menu_status">Статус</string>
+    <string name="menu_billing_not_initialized">Биллинг не инициализирован.</string>
     <string name="menu_ads_disable_toast">Оплата за отключение показа рекламы прошла успешно</string>
     <string name="menu_station">Если Вы регулярно просматриваете расписание до одной и той же остановки, то можно эту остановку установить, как остановку по умолчанию. При запуске программы расписание сразу же будет загружаться до выбранного пункта назначения.</string>
     <string name="checkbox_all">В результатах поиска показывать все рейсы</string>
@@ -39,6 +40,7 @@
     <string name="checkbox_cancel_load">Не загружать расписание при запуске программы</string>
     <string name="checkbox_sell">Скрывать рейсы с отсутствием свободных мест (кроме транзитных рейсов)</string>
     <string name="checkbox_station_default">При запуске программы показывать расписание до остановки:</string>
+    <string name="check_box_update_app">Отменить проверку наличия новой версии при выходе из приложения</string>
     <string name="info_note">Примечание:</string>
     <string name="info_distance">Растояние:</string>
     <string name="main_schedule">Дата отправления:</string>
@@ -48,13 +50,22 @@
     <string name="admob_activity">ca-app-pub-3253485608797245/6313884709</string>
     <string name="admob_interstitial">ca-app-pub-3253485608797245/9783238303</string>
     <string name="about_developer">Разработчик приложения: <a href="http://vk.com/id5170658" title="Сергей Ухарский">Сергей Ухарский</a></string>
-    <string name="about_version">Версия приложения: 1.4.2</string>
+    <string name="about_version">Версия приложения: 1.4.3</string>
     <string name="about_text">В приложении используются следующие иконки:
         Bus hand drawn transport free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
         X free icon made by <a href="http://www.zurb.com" title="Zurb">Zurb</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
         Lightbulb outline free icon made by <a href="http://www.elegantthemes.com" title="Elegant Themes">Elegant Themes</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
         Calendar free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
+        Airplane outline free icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.
     </string>
+    <string name="koltsovo_title">Кольцово</string>
+    <string name="koltsovo_message">Установите электронное онлайн табло расписания прилёта, вылета самолётов аэропорта Екатеринбурга Кольцово. Push уведомления об изменении статуса рейса, времени отправления, прибытия. Детальная информация о рейсе: маршрут, стойки регистрации, номер выхода и т.д.</string>
+    <string name="koltsovo_negative_button">Не интересует</string>
+    <string name="koltsovo_positive_button">Установить</string>
+    <string name="dialog_title_new_version">Новая версия</string>
+    <string name="dialog_message_new_version">В магазине приложений Google Play появилась новая версия. Обновите приложение Автовокзал до последней версии.</string>
+    <string name="dialog_button_negative_update">Не напоминать</string>
+    <string name="dialog_button_positive_update">Обновить</string>
     <string name="analytics_category_button">Button</string>
     <string name="analytics_category_listview">ListView</string>
     <string name="analytics_category_dropdown">Dropdown</string>
@@ -77,4 +88,6 @@
     <string name="analytics_action_checkbox_ok">Опция включена</string>
     <string name="analytics_action_google_result">Google Play Services недоступен</string>
     <string name="analytics_action_fab">Floating Action Button</string>
+    <string name="analytics_action_koltsovo">Установить Кольцово</string>
+    <string name="analytics_action_koltsovo_not_interested">Не интересует Кольцово</string>
 </resources>

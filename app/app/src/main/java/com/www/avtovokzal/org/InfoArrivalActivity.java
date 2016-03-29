@@ -1,10 +1,10 @@
 package com.www.avtovokzal.org;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,9 +23,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.RouteObjectInfoArrivalAdapter;
 import com.www.avtovokzal.org.Object.RouteObjectInfoArrival;
 
@@ -38,7 +35,9 @@ import java.util.List;
 
 public class InfoArrivalActivity extends AppCompatSettingsActivity {
 
-    private Drawer drawerResult = null;
+    private static final int LAYOUT = R.layout.activity_info_arrival;
+    private final static String TAG = "InfoArrivalActivity";
+
     private ListView listView;
     private ProgressDialog progressDialog;
 
@@ -47,41 +46,20 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
     private String timeFromStation;
     private String name;
 
-    private boolean AdShowGone;
-
-    private final static String TAG = "InfoArrivalActivity";
-
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info_arrival);
-
-        TextView textViewName;
-        TextView textViewTime;
+        setContentView(LAYOUT);
 
         // Google Analytics
         Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
         t.enableAdvertisingIdCollection(true);
 
-        // Переменная, отвечает за работу с настройками
-        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-
-        // Проверка отключена ли реклама
-        AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
-
-        if (DEVELOPER) {
-            AdShowGone = true;
-        }
-
-        // Реклама в приложении
-        if (!AdShowGone) {
-            initializeAd(R.id.adViewInfoArrivalActivity);
-        }
-
         // Определяем элементы интерфейса
         listView = (ListView) findViewById(R.id.listViewInfoArrival);
-        textViewName = (TextView) findViewById(R.id.textViewInfoArrivalName);
-        textViewTime = (TextView) findViewById(R.id.textViewInfoArrivalTimeToStation);
+        TextView textViewName = (TextView) findViewById(R.id.textViewInfoArrivalName);
+        TextView textViewTime = (TextView) findViewById(R.id.textViewInfoArrivalTimeToStation);
 
         // Получаем переменные
         number = getIntent().getStringExtra("number");
@@ -96,11 +74,27 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
 
         // Загружаем информацию об остановках на маршруте
         loadRouteInfoArrival(number, timePrib, timeFromStation);
-
         listViewListener();
+        initToolbar(R.string.app_name, R.string.app_subtitle_info);
+    }
 
-        initializeToolbar(R.string.app_name, R.string.app_subtitle_info);
-        initializeNavigationDrawer();
+    @SuppressWarnings("ConstantConditions")
+    public void initToolbar(int title, int subtitle) {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+            toolbar.setSubtitle(subtitle);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
     private void listViewListener() {
@@ -115,13 +109,11 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                 String nameStation = textViewNameStation.getText().toString();
                 String noteStation = textViewNoteStation.getText().toString();
 
-                setCountOnePlus();
-
                 Intent intent = new Intent(getApplicationContext(), ArrivalActivity.class);
                 intent.putExtra("newNameStation", nameStation + " " + noteStation);
                 intent.putExtra("code", codeStation);
 
-                if (LOG_ON) Log.v("newNameStation", "" + nameStation + " " + noteStation);
+                if (Constants.LOG_ON) Log.v("newNameStation", "" + nameStation + " " + noteStation);
                 // Google Analytics
                 Tracker t = ((AppController) getApplication()).getTracker(AppController.TrackerName.APP_TRACKER);
                 t.send(new HitBuilders.EventBuilder()
@@ -133,75 +125,6 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
                 finish();
             }
         });
-    }
-
-    private void initializeNavigationDrawer() {
-        drawerResult = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withDisplayBelowStatusBar(true)
-                .withActionBarDrawerToggleAnimated(true)
-                .addDrawerItems(getDrawerItems())
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
-                        switch (position) {
-                            case 1:
-                                setCountOnePlus();
-                                Intent intentMain = new Intent(InfoArrivalActivity.this, MainActivity.class);
-                                startActivity(intentMain);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 2:
-                                setCountOnePlus();
-                                Intent intentArrival = new Intent(InfoArrivalActivity.this, ArrivalActivity.class);
-                                startActivity(intentArrival);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 4:
-                                setCountOnePlus();
-                                Intent intentEtraffic = new Intent(InfoArrivalActivity.this, EtrafficActivity.class);
-                                startActivity(intentEtraffic);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 6:
-                                setCountOnePlus();
-                                Intent intentEtrafficMain = new Intent(InfoArrivalActivity.this, EtrafficMainActivity.class);
-                                startActivity(intentEtrafficMain);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 8:
-                                setCountOnePlus();
-                                Intent intentMenu = new Intent(InfoArrivalActivity.this, MenuActivity.class);
-                                startActivity(intentMenu);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                            case 9:
-                                setCountOnePlus();
-                                Intent intentAbout = new Intent(InfoArrivalActivity.this, AboutActivity.class);
-                                startActivity(intentAbout);
-                                finish();
-                                overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
-                                return true;
-                        }
-                        return false;
-                    }
-                })
-                .build();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerResult != null && drawerResult.isDrawerOpen()) {
-            drawerResult.closeDrawer();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -217,50 +140,8 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
     }
 
     @Override
-    protected void onPause() {
-        if (adView != null) {
-            adView.pause();
-        }
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (adView != null) {
-            adView.resume();
-        }
-        if (adView != null && getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
-            adView.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
     protected void onDestroy() {
-        if (adView != null) {
-            adView.destroy();
-        }
-        int count;
-        count = getCountAD();
-        if (count % 5 == 0) {
-            if (!AdShowGone) {
-                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
-                    if (interstitial.isLoaded()) {
-                        setCountOnePlus();
-                        interstitial.show();
-                    }
-                }
-            }
-        }
-        try {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }  finally {
-            progressDialog = null;
-        }
+        queryDialogDismiss();
         super.onDestroy();
     }
 
@@ -296,17 +177,9 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) {
+                    if(Constants.LOG_ON) {
                         VolleyLog.d(TAG, "Error: " + error.getMessage());}
-                    try {
-                        if (progressDialog != null && progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                        progressDialog = null;
-                    }
+                    queryDialogDismiss();
                     callErrorActivity();
                 }
             });
@@ -337,7 +210,7 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
             JSONObject dataJsonQbj;
             List<RouteObjectInfoArrival> list = new ArrayList<>();
 
-            if(LOG_ON){Log.d(TAG, response[0]);}
+            if(Constants.LOG_ON){Log.d(TAG, response[0]);}
 
             try {
                 dataJsonQbj = new JSONObject(response[0]);
@@ -364,15 +237,19 @@ public class InfoArrivalActivity extends AppCompatSettingsActivity {
             listView.setAdapter(adapter);
             super.onPostExecute(list);
 
-            try {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }  finally {
-                progressDialog = null;
+            queryDialogDismiss();
+        }
+    }
+
+    private void queryDialogDismiss() {
+        try {
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
             }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }  finally {
+            progressDialog = null;
         }
     }
 }

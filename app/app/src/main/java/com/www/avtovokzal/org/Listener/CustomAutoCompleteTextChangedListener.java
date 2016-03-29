@@ -6,25 +6,23 @@ import android.text.TextWatcher;
 import android.util.Log;
 
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
+import com.www.avtovokzal.org.Constants;
 import com.www.avtovokzal.org.MainActivity;
 import com.www.avtovokzal.org.Object.AutoCompleteObject;
 import com.www.avtovokzal.org.R;
 
 public class CustomAutoCompleteTextChangedListener implements TextWatcher {
-    Context context;
-    private final static boolean LOG_ON = false;
+    private Context context;
 
     public CustomAutoCompleteTextChangedListener(Context context) {
         this.context = context;
     }
 
     @Override
-    public void afterTextChanged(Editable s) {
-    }
+    public void afterTextChanged(Editable s) {}
 
     @Override
-    public void beforeTextChanged(CharSequence userInput, int start, int count, int after) {
-    }
+    public void beforeTextChanged(CharSequence userInput, int start, int count, int after) {}
 
     @Override
     public void onTextChanged(CharSequence userInput, int start, int before, int count) {
@@ -32,7 +30,7 @@ public class CustomAutoCompleteTextChangedListener implements TextWatcher {
             if(userInput.length() > 0) {
                 String tableName = "stations";
 
-                if (LOG_ON) Log.v("Input: ", "User input: " + userInput);
+                if (Constants.LOG_ON) Log.v("Input: ", "User input: " + userInput);
 
                 MainActivity mainActivity = ((MainActivity) context);
                 mainActivity.myAdapter.notifyDataSetChanged();

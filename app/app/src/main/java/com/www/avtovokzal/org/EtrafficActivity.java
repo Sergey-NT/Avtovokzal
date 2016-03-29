@@ -24,6 +24,7 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.EtrafficObjectAdapter;
+import com.www.avtovokzal.org.Fragment.DatePickerFragmentEtraffic;
 import com.www.avtovokzal.org.Object.EtrafficObject;
 
 import org.jsoup.Jsoup;
@@ -40,6 +41,9 @@ import java.util.List;
 
 public class EtrafficActivity extends AppCompatSettingsActivity implements DatePickerDialog.OnDateSetListener {
 
+    private static final int LAYOUT = R.layout.activity_etraffic;
+    private final static String TAG = "EtrafficActivity";
+
     private Button btnDate;
     private Drawer drawerResult = null;
     private ListView listView;
@@ -47,14 +51,12 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
 
     private String dateNow;
     private int day = 0;
-    private boolean AdShowGone;
-
-    private final static String TAG = "EtrafficActivity";
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_etraffic);
+        setContentView(LAYOUT);
 
         Button btnNextDay;
 
@@ -67,13 +69,13 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         listView.addFooterView(footer, null, false);
 
         // Переменная отвечает за работу с настройками
-        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        dateNow = settings.getString(APP_PREFERENCES_DATE, null);
+        settings = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        dateNow = settings.getString(Constants.APP_PREFERENCES_DATE, null);
 
         // Проверка отключения рекламы
-        AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
+        boolean AdShowGone = settings.contains(Constants.APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(Constants.APP_PREFERENCES_ADS_SHOW, false);
 
-        if (DEVELOPER) {
+        if (Constants.DEVELOPER) {
             AdShowGone = true;
         }
 
@@ -109,14 +111,12 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
-                                setCountOnePlus();
                                 Intent intentMain = new Intent(EtrafficActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
-                                setCountOnePlus();
                                 Intent intentArrival = new Intent(EtrafficActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
@@ -126,21 +126,18 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                                 drawerResult.closeDrawer();
                                 return true;
                             case 6:
-                                setCountOnePlus();
                                 Intent intentEtrafficMain = new Intent(EtrafficActivity.this, EtrafficMainActivity.class);
                                 startActivity(intentEtrafficMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 8:
-                                setCountOnePlus();
                                 Intent intentMenu = new Intent(EtrafficActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 9:
-                                setCountOnePlus();
                                 Intent intentAbout = new Intent(EtrafficActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -183,6 +180,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                     if (table == null) {
                         runOnUiThread(new Runnable() {
                             @Override
+                            @SuppressWarnings("ConstantConditions")
                             public void run() {
                                 TextView textView = (TextView) findViewById(R.id.noItems);
                                 textView.setVisibility(View.VISIBLE);
@@ -194,6 +192,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                         if (rows.size() == 0) {
                             runOnUiThread(new Runnable() {
                                 @Override
+                                @SuppressWarnings("ConstantConditions")
                                 public void run() {
                                     TextView textView = (TextView) findViewById(R.id.noItems);
                                     textView.setVisibility(View.VISIBLE);
@@ -202,6 +201,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                         } else {
                             runOnUiThread(new Runnable() {
                                 @Override
+                                @SuppressWarnings("ConstantConditions")
                                 public void run() {
                                     TextView textView = (TextView) findViewById(R.id.noItems);
                                     textView.setVisibility(View.GONE);
@@ -234,7 +234,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                                             price = col.text();
                                     }
                                 }
-                                if (LOG_ON) Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);
+                                if (Constants.LOG_ON) Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);
                                 list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price, ""));
                             }
                         }
@@ -263,15 +263,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
             listView.setAdapter(adapter);
             super.onPostExecute(list);
 
-            try {
-                if (queryDialog != null && queryDialog.isShowing()) {
-                    queryDialog.dismiss();
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }  finally {
-                queryDialog = null;
-            }
+            queryDialogDismiss();
         }
     }
 
@@ -321,16 +313,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
                 String string = getString(R.string.main_schedule) + " " + dayNumber + "." + monthNumber + "." + year;
                 btnDate.setText(string);
                 // fix for Android 4.4.4
-                try {
-                    if (queryDialog != null && queryDialog.isShowing()) {
-                        queryDialog.dismiss();
-                        if (LOG_ON) Log.v(TAG, "Dialog.dismiss");
-                    }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } finally {
-                    queryDialog = null;
-                }
+                queryDialogDismiss();
             } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.main_invalid_date), Toast.LENGTH_SHORT).show();
             }
@@ -412,7 +395,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         if (adView != null) {
             adView.resume();
         }
-        if (adView != null && getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+        if (adView != null && getSettingsParams(Constants.APP_PREFERENCES_ADS_SHOW)) {
             adView.setVisibility(View.GONE);
         }
     }
@@ -422,18 +405,7 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         if (adView != null) {
             adView.destroy();
         }
-        int count;
-        count = getCountAD();
-        if (count % 5 == 0) {
-            if (!AdShowGone) {
-                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
-                    if (interstitial.isLoaded()) {
-                        setCountOnePlus();
-                        interstitial.show();
-                    }
-                }
-            }
-        }
+        queryDialogDismiss();
         super.onDestroy();
     }
 
@@ -443,5 +415,18 @@ public class EtrafficActivity extends AppCompatSettingsActivity implements DateP
         intent.putExtra("activity", TAG);
         startActivity(intent);
         finish();
+    }
+
+    private void queryDialogDismiss() {
+        try {
+            if (queryDialog != null && queryDialog.isShowing()) {
+                queryDialog.dismiss();
+                if (Constants.LOG_ON) Log.v(TAG, "Dialog.dismiss");
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            queryDialog = null;
+        }
     }
 }

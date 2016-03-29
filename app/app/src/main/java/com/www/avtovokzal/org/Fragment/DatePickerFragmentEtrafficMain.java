@@ -1,4 +1,4 @@
-package com.www.avtovokzal.org;
+package com.www.avtovokzal.org.Fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+
+import com.www.avtovokzal.org.EtrafficMainActivity;
 
 import java.util.Calendar;
 import java.util.Locale;

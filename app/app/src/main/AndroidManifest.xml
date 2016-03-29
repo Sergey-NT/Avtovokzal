@@ -1,21 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.www.avtovokzal.org">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <application
         android:allowBackup="false"
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme"
-        android:name=".AppController" >
+        android:name=".AppController"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
         <meta-data android:name="com.google.android.gms.analytics.globalConfigResource"
-            android:resource="@xml/global_tracker" />
+            android:resource="@xml/global_tracker"/>
 
         <service android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
@@ -25,58 +27,58 @@
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:noHistory="false"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"></action>
-                <category android:name="android.intent.category.LAUNCHER"></category>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <activity android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:theme="@android:style/Theme.Translucent" />
+            android:theme="@android:style/Theme.Translucent"/>
 
         <activity
             android:name=".ErrorActivity"
             android:configChanges="orientation|screenSize"
-            android:noHistory="true" >
+            android:noHistory="true">
         </activity>
 
         <activity
             android:name=".MenuActivity"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize">
         </activity>
 
         <activity
             android:name=".InfoActivity"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize">
         </activity>
 
         <activity
             android:name=".AboutActivity"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize">
         </activity>
 
         <activity
             android:name=".ArrivalActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".InfoArrivalActivity"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize">
         </activity>
 
         <activity
             android:name=".EtrafficActivity"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize">
         </activity>
 
         <activity
             android:name=".EtrafficMainActivity"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize">
         </activity>
 
     </application>

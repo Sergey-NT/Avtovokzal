@@ -13,6 +13,12 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
+        <name>Android In-App Billing v3 Library</name>
+        <url>https://github.com/anjlab/android-inapp-billing-v3</url>
+        <copyright>Copyright 2014 AnjLab</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
         <name>Android Volley</name>
         <url>https://github.com/mcxiaoke/android-volley</url>
         <copyright>Copyright (C) 2014 Xiaoke Zhang Copyright (C) 2011 The Android Open Source Project</copyright>

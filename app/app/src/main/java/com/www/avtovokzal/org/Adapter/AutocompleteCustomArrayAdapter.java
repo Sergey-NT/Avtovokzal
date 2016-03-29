@@ -12,13 +12,13 @@ import com.www.avtovokzal.org.R;
 
 public class AutocompleteCustomArrayAdapter extends ArrayAdapter<AutoCompleteObject> {
 
-    Context mContext;
-    int layoutResourceId;
-    AutoCompleteObject data[] = null;
+    private Context context;
+    private int layoutResourceId;
+    private AutoCompleteObject data[] = null;
 
-    public AutocompleteCustomArrayAdapter(Context mContext, int layoutResourceId, AutoCompleteObject[] data) {
-        super(mContext, layoutResourceId, data);
-        this.mContext = mContext;
+    public AutocompleteCustomArrayAdapter(Context context, int layoutResourceId, AutoCompleteObject[] data) {
+        super(context, layoutResourceId, data);
+        this.context = context;
         this.layoutResourceId = layoutResourceId;
         this.data = data;
     }
@@ -28,32 +28,27 @@ public class AutocompleteCustomArrayAdapter extends ArrayAdapter<AutoCompleteObj
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
+    public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
 
-        try {
-            if (convertView==null){
-                LayoutInflater inflater = LayoutInflater.from(mContext);
-                convertView = inflater.inflate(layoutResourceId, parent, false);
+        if (view == null){
+            LayoutInflater inflater = LayoutInflater.from(context);
+            view = inflater.inflate(layoutResourceId, viewGroup, false);
 
-                holder = new ViewHolder();
+            holder = new ViewHolder();
 
-                holder.textViewItem = (TextView) convertView.findViewById(R.id.textViewDropDownItem);
+            holder.textViewItem = (TextView) view.findViewById(R.id.textViewDropDownItem);
 
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            AutoCompleteObject objectItem = data[position];
-
-            holder.textViewItem.setText(objectItem.objectName);
-            holder.textViewItem.setTag(objectItem.objectCode);
-        } catch (Exception e) {
-            e.printStackTrace();
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
-        return convertView;
+        AutoCompleteObject objectItem = data[i];
+
+        holder.textViewItem.setText(objectItem.objectName);
+        holder.textViewItem.setTag(objectItem.objectCode);
+
+        return view;
     }
 }

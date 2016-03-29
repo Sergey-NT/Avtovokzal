@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.ArrivalObjectResultAdapter;
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
+import com.www.avtovokzal.org.Fragment.KoltsovoDialogFragment;
 import com.www.avtovokzal.org.Listener.ArrivalAutoCompleteTextChangedListener;
 import com.www.avtovokzal.org.Object.ArrivalObjectResult;
 import com.www.avtovokzal.org.Object.AutoCompleteObject;
@@ -44,6 +46,9 @@ import java.util.List;
 
 public class ArrivalActivity extends AppCompatSettingsActivity {
 
+    private static final int LAYOUT = R.layout.activity_arrival;
+    private static final String TAG = "ArrivalActivity";
+
     public CustomAutoCompleteView myAutoComplete;
     public ArrayAdapter<AutoCompleteObject> myAdapter;
     public DatabaseHandler databaseH;
@@ -52,17 +57,15 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
     private ListView listView;
     private ProgressDialog progressDialog;
 
-    private boolean AdShowGone;
-
     private String code;
     private String newNameStation;
 
-    private static final String TAG = "ArrivalActivity";
+    private boolean showDialogKoltsovo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_arrival);
+        setContentView(LAYOUT);
 
         boolean defaultStation;
         databaseH = DatabaseHandler.getInstance(getApplicationContext());
@@ -72,12 +75,13 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
         t.enableAdvertisingIdCollection(true);
 
         // Переменная, отвечает за работу с настройками
-        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        settings = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        showDialogKoltsovo = settings.getBoolean(Constants.APP_PREFERENCES_SHOW_DIALOG_KOLTSOVO, true);
 
         // Проверка отключения рекламы
-        AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
+        boolean AdShowGone = settings.contains(Constants.APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(Constants.APP_PREFERENCES_ADS_SHOW, false);
 
-        if (DEVELOPER) {
+        if (Constants.DEVELOPER) {
             AdShowGone = true;
         }
 
@@ -98,13 +102,13 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
             myAutoComplete.setText(newNameStation);
         }
 
-        if (LOG_ON) Log.v("newNameStation", "" + newNameStation);
+        if (Constants.LOG_ON) Log.v("newNameStation", "" + newNameStation);
 
-        defaultStation = getSettingsParams(APP_PREFERENCES_DEFAULT);
+        defaultStation = getSettingsParams(Constants.APP_PREFERENCES_DEFAULT);
 
-        if (defaultStation && settings.contains(APP_PREFERENCES_STATION_CODE) && settings.contains(APP_PREFERENCES_STATION_NAME)) {
-            code = settings.getString(APP_PREFERENCES_STATION_CODE, null);
-            myAutoComplete.setText(settings.getString(APP_PREFERENCES_STATION_NAME, null));
+        if (defaultStation && settings.contains(Constants.APP_PREFERENCES_STATION_CODE) && settings.contains(Constants.APP_PREFERENCES_STATION_NAME)) {
+            code = settings.getString(Constants.APP_PREFERENCES_STATION_CODE, null);
+            myAutoComplete.setText(settings.getString(Constants.APP_PREFERENCES_STATION_NAME, null));
             loadArrivalResult(code);
         } else if (code != null) {
             loadArrivalResult(code);
@@ -152,6 +156,12 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                 loadArrivalResult(code);
 
                 myAutoComplete.clearFocus();
+
+                if (Integer.parseInt(code) == 102 && showDialogKoltsovo) {
+                    FragmentManager manager = getSupportFragmentManager();
+                    KoltsovoDialogFragment dialogFragment = new KoltsovoDialogFragment();
+                    dialogFragment.show(manager, "dialog");
+                }
             }
         });
 
@@ -174,6 +184,12 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                         loadArrivalResult(code);
 
                         myAutoComplete.clearFocus();
+
+                        if (Integer.parseInt(code) == 102 && showDialogKoltsovo) {
+                            FragmentManager manager = getSupportFragmentManager();
+                            KoltsovoDialogFragment dialogFragment = new KoltsovoDialogFragment();
+                            dialogFragment.show(manager, "dialog");
+                        }
                     }
                 }
                 return false;
@@ -200,8 +216,6 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                 timePrib = textViewTimePrib.getText().toString();
                 timeFromStation = textViewTimePrib.getTag().toString();
 
-                setCountOnePlus();
-
                 Intent intent = new Intent(getApplicationContext(), InfoArrivalActivity.class);
 
                 intent.putExtra("number", number);
@@ -226,7 +240,6 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
-                                setCountOnePlus();
                                 Intent intentMain = new Intent(ArrivalActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
@@ -236,28 +249,24 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                                 drawerResult.closeDrawer();
                                 return true;
                             case 4:
-                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(ArrivalActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 6:
-                                setCountOnePlus();
                                 Intent intentEtrafficMain = new Intent(ArrivalActivity.this, EtrafficMainActivity.class);
                                 startActivity(intentEtrafficMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 8:
-                                setCountOnePlus();
                                 Intent intentMenu = new Intent(ArrivalActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 9:
-                                setCountOnePlus();
                                 Intent intentAbout = new Intent(ArrivalActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -322,7 +331,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
         if (adView != null) {
             adView.resume();
         }
-        if (adView != null && getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+        if (adView != null && getSettingsParams(Constants.APP_PREFERENCES_ADS_SHOW)) {
             adView.setVisibility(View.GONE);
         }
     }
@@ -332,27 +341,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
         if (adView != null) {
             adView.destroy();
         }
-        int count;
-        count = getCountAD();
-        if (count % 5 == 0) {
-            if (!AdShowGone) {
-                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
-                    if (interstitial.isLoaded()) {
-                        setCountOnePlus();
-                        interstitial.show();
-                    }
-                }
-            }
-        }
-        try {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }  finally {
-            progressDialog = null;
-        }
+        queryDialogDismiss();
         super.onDestroy();
     }
 
@@ -388,16 +377,8 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
-                    try {
-                        if (progressDialog != null && progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }  finally {
-                        progressDialog = null;
-                    }
+                    if(Constants.LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    queryDialogDismiss();
                     callErrorActivity();
                 }
             });
@@ -427,7 +408,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
             JSONObject dataJsonQbj;
             List<ArrivalObjectResult> list = new ArrayList<>();
 
-            if(LOG_ON)Log.v(TAG, response[0]);
+            if(Constants.LOG_ON)Log.v(TAG, response[0]);
 
             try {
                 dataJsonQbj = new JSONObject(response[0]);
@@ -436,6 +417,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                 if (rasp.length() == 0) {
                     runOnUiThread(new Runnable() {
                         @Override
+                        @SuppressWarnings("ConstantConditions")
                         public void run() {
                             TextView textView1 = (TextView) findViewById(R.id.noArrivalItems);
                             textView1.setVisibility(View.VISIBLE);
@@ -444,6 +426,7 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
                 } else {
                      runOnUiThread(new Runnable() {
                         @Override
+                        @SuppressWarnings("ConstantConditions")
                         public void run() {
                             TextView textView1 = (TextView) findViewById(R.id.noArrivalItems);
                             textView1.setVisibility(View.GONE);
@@ -474,15 +457,19 @@ public class ArrivalActivity extends AppCompatSettingsActivity {
             listView.setAdapter(adapter);
             super.onPostExecute(list);
 
-            try {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }  finally {
-                progressDialog = null;
+            queryDialogDismiss();
+        }
+    }
+
+    private void queryDialogDismiss() {
+        try {
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
             }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }  finally {
+            progressDialog = null;
         }
     }
 }

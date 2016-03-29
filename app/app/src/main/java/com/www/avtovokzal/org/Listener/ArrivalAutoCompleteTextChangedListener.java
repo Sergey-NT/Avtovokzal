@@ -7,12 +7,12 @@ import android.util.Log;
 
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
 import com.www.avtovokzal.org.ArrivalActivity;
+import com.www.avtovokzal.org.Constants;
 import com.www.avtovokzal.org.Object.AutoCompleteObject;
 import com.www.avtovokzal.org.R;
 
 public class ArrivalAutoCompleteTextChangedListener implements TextWatcher {
-    Context context;
-    private final static boolean LOG_ON = false;
+    private Context context;
 
     public ArrivalAutoCompleteTextChangedListener (Context context) {
         this.context = context;
@@ -32,7 +32,7 @@ public class ArrivalAutoCompleteTextChangedListener implements TextWatcher {
             if(userInput.length() > 0) {
                 String tableName = "stations";
 
-                if (LOG_ON) Log.v("Input: ", "User input: " + userInput);
+                if (Constants.LOG_ON) Log.v("Input: ", "User input: " + userInput);
 
                 ArrivalActivity arrivalActivity = ((ArrivalActivity) context);
                 arrivalActivity.myAdapter.notifyDataSetChanged();

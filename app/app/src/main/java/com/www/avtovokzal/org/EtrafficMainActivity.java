@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,6 +39,8 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.www.avtovokzal.org.Adapter.AutocompleteCustomArrayAdapter;
 import com.www.avtovokzal.org.Adapter.EtrafficObjectAdapter;
+import com.www.avtovokzal.org.Fragment.DatePickerFragmentEtrafficMain;
+import com.www.avtovokzal.org.Fragment.KoltsovoDialogFragment;
 import com.www.avtovokzal.org.Listener.EtrafficAutoCompleteTextChangedListener;
 import com.www.avtovokzal.org.Object.AutoCompleteObject;
 import com.www.avtovokzal.org.Object.EtrafficObject;
@@ -55,6 +58,9 @@ import java.util.Calendar;
 import java.util.List;
 
 public class EtrafficMainActivity extends AppCompatSettingsActivity implements DatePickerDialog.OnDateSetListener {
+
+    private static final int LAYOUT = R.layout.activity_etraffic_main;
+    private final static String TAG = "EtrafficMainActivity";
 
     public CustomAutoCompleteView myAutoComplete;
     public ArrayAdapter<AutoCompleteObject> myAdapter;
@@ -74,7 +80,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
 
     private boolean rest = true;
     private boolean loading = true;
-    private boolean AdShowGone;
+    private boolean showDialogKoltsovo;
 
     private String date;
     private String code;
@@ -83,12 +89,11 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
     private String codeSettings = "";
     private String nameStation;
 
-    private final static String TAG = "EtrafficMainActivity";
-
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_etraffic_main);
+        setContentView(LAYOUT);
 
         Button btnNextDay;
 
@@ -105,14 +110,15 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         listView.addFooterView(footer, null, false);
 
         // Переменная отвечает за работу с настройками
-        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        dateSystem = settings.getString(APP_PREFERENCES_DATE, null);
+        settings = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        dateSystem = settings.getString(Constants.APP_PREFERENCES_DATE, null);
+        showDialogKoltsovo = settings.getBoolean(Constants.APP_PREFERENCES_SHOW_DIALOG_KOLTSOVO, true);
         date = dateSystem;
 
         // Проверка отключения рекламы
-        AdShowGone = settings.contains(APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(APP_PREFERENCES_ADS_SHOW, false);
+        boolean AdShowGone = settings.contains(Constants.APP_PREFERENCES_ADS_SHOW) && settings.getBoolean(Constants.APP_PREFERENCES_ADS_SHOW, false);
 
-        if (DEVELOPER) {
+        if (Constants.DEVELOPER) {
             AdShowGone = true;
         }
 
@@ -153,21 +159,18 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                     public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
                         switch (position) {
                             case 1:
-                                setCountOnePlus();
                                 Intent intentMain = new Intent(EtrafficMainActivity.this, MainActivity.class);
                                 startActivity(intentMain);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 2:
-                                setCountOnePlus();
                                 Intent intentArrival = new Intent(EtrafficMainActivity.this, ArrivalActivity.class);
                                 startActivity(intentArrival);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 4:
-                                setCountOnePlus();
                                 Intent intentEtraffic = new Intent(EtrafficMainActivity.this, EtrafficActivity.class);
                                 startActivity(intentEtraffic);
                                 finish();
@@ -177,14 +180,12 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                                 drawerResult.closeDrawer();
                                 return true;
                             case 8:
-                                setCountOnePlus();
                                 Intent intentMenu = new Intent(EtrafficMainActivity.this, MenuActivity.class);
                                 startActivity(intentMenu);
                                 finish();
                                 overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left);
                                 return true;
                             case 9:
-                                setCountOnePlus();
                                 Intent intentAbout = new Intent(EtrafficMainActivity.this, AboutActivity.class);
                                 startActivity(intentAbout);
                                 finish();
@@ -240,6 +241,12 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 sendIdToDb(code);
 
                 myAutoComplete.clearFocus();
+
+                if (Integer.parseInt(code) == 2510 && showDialogKoltsovo) {
+                    FragmentManager manager = getSupportFragmentManager();
+                    KoltsovoDialogFragment dialogFragment = new KoltsovoDialogFragment();
+                    dialogFragment.show(manager, "dialog");
+                }
             }
         });
 
@@ -264,6 +271,12 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                         sendIdToDb(code);
 
                         myAutoComplete.clearFocus();
+
+                        if (Integer.parseInt(code) == 2510 && showDialogKoltsovo) {
+                            FragmentManager manager = getSupportFragmentManager();
+                            KoltsovoDialogFragment dialogFragment = new KoltsovoDialogFragment();
+                            dialogFragment.show(manager, "dialog");
+                        }
                     }
                 }
                 return false;
@@ -322,16 +335,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                 String string = getString(R.string.main_schedule) + " " + date;
                 btnDate.setText(string);
                 // fix for Android 4.4.4
-                try {
-                    if (queryDialog != null && queryDialog.isShowing()) {
-                        queryDialog.dismiss();
-                        if (LOG_ON) Log.d(TAG, "Dialog.dismiss");
-                    }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } finally {
-                    queryDialog = null;
-                }
+                queryDialogDismiss();
             } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.main_invalid_date), Toast.LENGTH_SHORT).show();
             }
@@ -482,12 +486,12 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
                                             break;
                                     }
                                 }
-                                if (LOG_ON) Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);
+                                if (Constants.LOG_ON) Log.v("Info", time + " " + number + " " + name + " " + timeArrival + " " + countBus + " " + price);
                                 list.add(new EtrafficObject(time, number, name, timeArrival, countBus, price, urlToBuy));
                                 count = i;
                             }
                             countRows = count;
-                            if (LOG_ON) Log.v("Count rows:", ""+countRows);
+                            if (Constants.LOG_ON) Log.v("Count rows:", ""+countRows);
                         }
                     }
                 } catch (IOException e) {
@@ -516,15 +520,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             } else {
                 adapter.notifyDataSetChanged();
             }
-            try {
-                if (queryDialog != null && queryDialog.isShowing()) {
-                    queryDialog.dismiss();
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } finally {
-                queryDialog = null;
-            }
+            queryDialogDismiss();
             super.onPostExecute(list);
         }
     }
@@ -548,15 +544,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold) && countRows == 20) {
                 new parsingHTML().execute(code, date, ""+currentPage);
                 loading = true;
-                try {
-                    if (queryDialog != null && queryDialog.isShowing()) {
-                        queryDialog.dismiss();
-                    }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                }  finally {
-                    queryDialog = null;
-                }
+                queryDialogDismiss();
             }
         }
 
@@ -591,7 +579,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         if (adView != null) {
             adView.resume();
         }
-        if (adView != null && getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
+        if (adView != null && getSettingsParams(Constants.APP_PREFERENCES_ADS_SHOW)) {
             adView.setVisibility(View.GONE);
         }
     }
@@ -601,18 +589,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
         if (adView != null) {
             adView.destroy();
         }
-        int count;
-        count = getCountAD();
-        if (count % 5 == 0) {
-            if (!AdShowGone) {
-                if (!getSettingsParams(APP_PREFERENCES_ADS_SHOW)) {
-                    if (interstitial.isLoaded()) {
-                        setCountOnePlus();
-                        interstitial.show();
-                    }
-                }
-            }
-        }
+        queryDialogDismiss();
         super.onDestroy();
     }
 
@@ -639,7 +616,7 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if(LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    if(Constants.LOG_ON) VolleyLog.d(TAG, "Error: " + error.getMessage());
                     callErrorActivity();
                 }
             });
@@ -649,6 +626,18 @@ public class EtrafficMainActivity extends AppCompatSettingsActivity implements D
             AppController.getInstance().addToRequestQueue(strReq);
         } else {
             callErrorActivity();
+        }
+    }
+
+    private void queryDialogDismiss() {
+        try {
+            if (queryDialog != null && queryDialog.isShowing()) {
+                queryDialog.dismiss();
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }  finally {
+            queryDialog = null;
         }
     }
 }

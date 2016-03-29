@@ -22,11 +22,11 @@ public class RouteObjectResultAdapter extends BaseAdapter{
 
     private List<RouteObjectResult> list;
     private LayoutInflater layoutInflater;
-    private Context myContext;
+    private Context context;
 
 
     public RouteObjectResultAdapter(Context context, List<RouteObjectResult> list) {
-        myContext = context;
+        this.context = context;
         this.list = list;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -114,7 +114,7 @@ public class RouteObjectResultAdapter extends BaseAdapter{
             holder.item7.setVisibility(View.GONE);
             holder.item8.setVisibility(View.GONE);
             holder.item9.setVisibility(View.VISIBLE);
-            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(myContext, R.color.divider_color));
+            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.divider_color));
         } else {
             holder.description1.setVisibility(View.VISIBLE);
             holder.description2.setVisibility(View.VISIBLE);
@@ -129,13 +129,13 @@ public class RouteObjectResultAdapter extends BaseAdapter{
             holder.item7.setVisibility(View.VISIBLE);
             holder.item8.setVisibility(View.VISIBLE);
             holder.item9.setVisibility(View.INVISIBLE);
-            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(myContext, R.color.background));
+            holder.relativeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.background));
         }
 
         if(routeObjectResult.getFreeBus().equals("нет данных") || routeObjectResult.getFreeBus().equals("мест нет")) {
-            holder.item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color_hint));
+            holder.item5.setTextColor(ContextCompat.getColor(context, R.color.text_color_hint));
         } else {
-            holder.item5.setTextColor(ContextCompat.getColor(myContext, R.color.text_color));
+            holder.item5.setTextColor(ContextCompat.getColor(context, R.color.text_color));
         }
 
         String priceBus = routeObjectResult.getPriceBus() + " \u20BD";
@@ -164,7 +164,7 @@ public class RouteObjectResultAdapter extends BaseAdapter{
     }
 
     private CharSequence spanWithRoubleTypeface(String priceHint) {
-        final Typeface roubleSupportedTypeface = Typeface.createFromAsset(myContext.getAssets(), "fonts/rouble2.ttf");
+        final Typeface roubleSupportedTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/rouble2.ttf");
 
         SpannableStringBuilder resultSpan = new SpannableStringBuilder(priceHint);
         for (int i = 0; i < resultSpan.length(); i++) {
